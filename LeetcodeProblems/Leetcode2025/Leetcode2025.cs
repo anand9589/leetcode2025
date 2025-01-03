@@ -3,6 +3,29 @@
     public class Leetcode2025
     {
 
+        #region 2270. Number of Ways to Split Array
+        public int WaysToSplitArray(int[] nums)
+        {
+            int count = 0;
+            long sum = 0;
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                sum += nums[i];
+            }
+
+            long prefixSum = 0;
+
+            for (int i = 0; i < nums.Length-1; i++)
+            {
+                prefixSum += nums[i];
+                sum -= nums[i];
+                if(prefixSum>=sum) count++; 
+            }
+
+            return count;
+        }
+        #endregion
 
         #region 2559. Count Vowel Strings in Ranges
         public int[] VowelStrings(string[] words, int[][] queries)

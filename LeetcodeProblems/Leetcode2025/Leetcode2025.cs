@@ -2,6 +2,49 @@
 {
     public class Leetcode2025
     {
+        #region 1422. Maximum Score After Splitting a String
+        public int MaxScore(string s)
+        {
+            int one = 0;
+            foreach (char c in s)
+            {
+                if (c == '1')
+                {
+                    one++;
+                }
+            }
+
+            if (one == 0 || one == s.Length) return s.Length - 1;
+            int zero = 0;
+            if (s[0] == '0')
+            {
+                zero = 1;
+            }
+            else
+            {
+                one--;
+            }
+
+            int result = zero + one;
+
+            for (int i = 1; i < s.Length - 1; i++)
+            {
+                char c = s[i];
+                if (c == '0')
+                {
+                    zero++;
+                }
+                else
+                {
+                    one--;
+                }
+
+                result = Math.Max(result, zero + one);
+            }
+
+            return result;
+        } 
+        #endregion
 
         #region 2270. Number of Ways to Split Array
         public int WaysToSplitArray(int[] nums)

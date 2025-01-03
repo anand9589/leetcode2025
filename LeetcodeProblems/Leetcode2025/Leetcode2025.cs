@@ -3,7 +3,7 @@
     public class Leetcode2025
     {
         #region 153. Find Minimum in Rotated Sorted Array
-        public int FindMin(int[] nums)
+        public int FindMin_153(int[] nums)
         {
 
             int low = 0, high = nums.Length - 1;
@@ -12,6 +12,50 @@
             {
                 int mid = (low + high) / 2;
 
+                if (nums[mid] > nums[high])
+                {
+                    min = Math.Min(min, nums[high]);
+                    low = mid + 1;
+                }
+                else if (nums[mid] < nums[low])
+                {
+                    min = Math.Min(min, nums[mid]);
+                    high = mid - 1;
+                }
+                else
+                {
+                    min = Math.Min(min, nums[low]);
+                    high = mid - 1;
+                }
+            }
+            return min;
+        }
+        #endregion
+
+        #region 154. Find Minimum in Rotated Sorted Array II
+        public int FindMin(int[] nums)
+        {
+            return FindMin_Helper(nums, 0, nums.Length - 1);
+        }
+
+        private int FindMin_Helper(int[] nums, int low, int high)
+        {
+            if (high < 0) return nums[low];
+            if (low >= nums.Length) return nums[high];
+            if (low == high) return nums[low];
+            
+            int min = Math.Min(nums[low], nums[high]);
+            if (low > high) return min;
+                int mid = (low + high) / 2;
+
+            if (nums[low] == nums[mid] && nums[high] == nums[mid])
+            {
+                return Math.Min(FindMin_Helper(nums, low, mid - 1), FindMin_Helper(nums, mid + 1, high));
+            }
+
+            while (low < high)
+            {
+                mid = (low + high) / 2;
                 if (nums[mid] > nums[high])
                 {
                     min = Math.Min(min, nums[high]);

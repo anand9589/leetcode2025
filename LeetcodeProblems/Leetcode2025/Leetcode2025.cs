@@ -14,6 +14,7 @@
 
                 if (nums[mid] > nums[high])
                 {
+                    min = Math.Min(min, nums[high]);
                     low = mid + 1;
                 }
                 else if (nums[mid] < nums[low])

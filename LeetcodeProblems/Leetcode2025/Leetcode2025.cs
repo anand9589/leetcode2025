@@ -2,6 +2,35 @@
 {
     public class Leetcode2025
     {
+        #region 153. Find Minimum in Rotated Sorted Array
+        public int FindMin(int[] nums)
+        {
+
+            int low = 0, high = nums.Length - 1;
+            int min = Math.Min(nums[low], nums[high]);
+            while (low < high)
+            {
+                int mid = (low + high) / 2;
+
+                if (nums[mid] > nums[high])
+                {
+                    low = mid + 1;
+                }
+                else if (nums[mid] < nums[low])
+                {
+                    min = Math.Min(min, nums[mid]);
+                    high = mid - 1;
+                }
+                else
+                {
+                    min = Math.Min(min, nums[low]);
+                    high = mid - 1;
+                }
+            }
+            return min;
+        }
+        #endregion
+
         #region 1422. Maximum Score After Splitting a String
         public int MaxScore(string s)
         {
@@ -43,7 +72,7 @@
             }
 
             return result;
-        } 
+        }
         #endregion
 
         #region 2270. Number of Ways to Split Array
@@ -59,11 +88,11 @@
 
             long prefixSum = 0;
 
-            for (int i = 0; i < nums.Length-1; i++)
+            for (int i = 0; i < nums.Length - 1; i++)
             {
                 prefixSum += nums[i];
                 sum -= nums[i];
-                if(prefixSum>=sum) count++; 
+                if (prefixSum >= sum) count++;
             }
 
             return count;

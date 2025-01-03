@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/leetcode2025/v17/.wsuo
+/LeetcodeProblems/.vs/LeetcodeProblems
+/LeetcodeProblems/Leetcode2025/obj
+/LeetcodeProblems/Leetcode2025.Tests/obj
+/.vs
+/LeetcodeProblems/Leetcode2025/bin/
+/LeetcodeProblems/Leetcode2025.Tests/bin/

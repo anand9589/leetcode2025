@@ -3,13 +3,30 @@ namespace Leetcode2025.Tests
     [TestClass]
     public class Leetcode2025Tests
     {
+        #region Initialize
         Leetcode2025 leetcode;
         [TestInitialize]
         public void TestInitialize()
         {
             this.leetcode = new Leetcode2025();
         }
+        #endregion
 
+        #region Input Read
+        private int[][] getMultiDimensionalArray(string str)
+        {
+            str = str.Trim('[');
+            str = str.Trim(']');
+            string[] strings = str.Split("],[");
+            int[][] result = new int[strings.Length][];
+            for (int i = 0; i < strings.Length; i++)
+            {
+                result[i] = Array.ConvertAll(strings[i].Split(","), int.Parse);
+            }
+
+            return result;
+        }
+        #endregion
         [TestMethod]
         public void Test()
         {
@@ -68,6 +85,20 @@ namespace Leetcode2025.Tests
             int[] nums = { -1, -1, -1, -1 };
             var result = leetcode.FindMin(nums);
             Assert.AreEqual(-1, result);
+        }
+        #endregion
+
+        #region 174. Dungeon Game
+        [TestMethod]
+        public void CalculateMinimumHPTest()
+        {
+            string str = "[[-2,-3,3],[-5,-10,1],[10,30,-5]]";
+
+            int[][] dungeon = getMultiDimensionalArray(str);
+
+            var res = leetcode.CalculateMinimumHP(dungeon);
+
+            Assert.AreEqual(7, res);
         }
         #endregion
     }

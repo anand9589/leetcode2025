@@ -43,10 +43,10 @@
             if (high < 0) return nums[low];
             if (low >= nums.Length) return nums[high];
             if (low == high) return nums[low];
-            
+
             int min = Math.Min(nums[low], nums[high]);
             if (low > high) return min;
-                int mid = (low + high) / 2;
+            int mid = (low + high) / 2;
 
             if (nums[low] == nums[mid] && nums[high] == nums[mid])
             {
@@ -73,6 +73,38 @@
                 }
             }
             return min;
+        }
+        #endregion
+
+        #region 174. Dungeon Game
+        public int CalculateMinimumHP(int[][] dungeon)
+        {
+            int rows = dungeon.Length;
+            int cols = dungeon[0].Length;
+
+            for (int i = 1; i < rows; i++)
+            {
+                dungeon[i][0] += dungeon[i - 1][0];
+            }
+
+            for (int i = 1; i < cols; i++)
+            {
+                dungeon[0][i] += dungeon[0][i - 1];
+            }
+
+            for (int row = 1; row < rows; row++)
+            {
+                for (int col = 1; col < cols; col++)
+                {
+                    int right = 0 - dungeon[row][col] + dungeon[row][col - 1];
+                    int down = 0 - dungeon[row][col] + dungeon[row - 1][col];
+                    int min = Math.Min(right, down);
+                    dungeon[row][col] = min;
+                }
+            }
+
+
+            return dungeon[rows - 1][cols - 1] + 1;
         }
         #endregion
 

@@ -1,8 +1,9 @@
-namespace Leetcode2025.Tests
+﻿namespace Leetcode2025.Tests
 {
     [TestClass]
-    public class Leetcode2025Tests
+    public sealed class Leetcode2025Tests
     {
+
         #region Initialize
         Leetcode2025 leetcode;
         [TestInitialize]
@@ -27,6 +28,7 @@ namespace Leetcode2025.Tests
             return result;
         }
         #endregion
+
         [TestMethod]
         public void Test()
         {
@@ -45,7 +47,7 @@ namespace Leetcode2025.Tests
         [TestMethod]
         public void FindMinTest1()
         {
-            int[] nums = { 2,1 };
+            int[] nums = { 2, 1 };
 
             int result = leetcode.FindMin_153(nums);
 
@@ -99,6 +101,80 @@ namespace Leetcode2025.Tests
             var res = leetcode.CalculateMinimumHP(dungeon);
 
             Assert.AreEqual(7, res);
+        }
+        [TestMethod]
+        public void CalculateMinimumHPTest1()
+        {
+            string str = "[[0]]";
+
+            int[][] dungeon = getMultiDimensionalArray(str);
+
+            var res = leetcode.CalculateMinimumHP(dungeon);
+
+            Assert.AreEqual(1, res);
+        }
+        [TestMethod]
+        public void CalculateMinimumHPTest2()
+        {
+            string str = "[[2,3,3],[5,10,1],[10,30,5]]";
+
+            int[][] dungeon = getMultiDimensionalArray(str);
+
+            var res = leetcode.CalculateMinimumHP(dungeon);
+
+            Assert.AreEqual(1, res);
+        }
+        #endregion
+
+
+        #region 1769. Minimum Number of Operations to Move All Balls to Each Box
+
+        [TestMethod]
+        public void MinOperationsTest()
+        {
+            string s = "110";
+            var res = leetcode.MinOperations(s);
+        }
+
+        [TestMethod]
+        public void MinOperationsTest1()
+        {
+            string s = "001011";
+            var res = leetcode.MinOperations(s);
+        }
+        #endregion
+
+        #region 1930. Unique Length-3 Palindromic Subsequences
+        [TestMethod]
+        public void CountPalindromicSubsequenceTest()
+        {
+            string s = "after";
+            var result = leetcode.CountPalindromicSubsequence(s);
+            Assert.AreEqual(0, result);
+        }
+
+        #endregion
+
+        #region 2381. Shifting Letters II
+
+        [TestMethod]
+        public void ShiftingLettersTest1()
+        {
+            string s = "abc";
+            string shiftsstring = "[[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[0,1,0],[1,2,1],[0,2,1]]";
+            int[][] shifts = getMultiDimensionalArray(shiftsstring);
+            var result = leetcode.ShiftingLetters(s, shifts);
+            Assert.AreEqual("kme",result);
+        }
+
+        [TestMethod]
+        public void ShiftingLettersTest2()
+        {
+            string s = "dztz";
+            string shiftsstring = "[[0,0,0],[1,1,1]]";
+            int[][] shifts = getMultiDimensionalArray(shiftsstring);
+            var result = leetcode.ShiftingLetters(s, shifts);
+            Assert.AreEqual("catz", result);
         }
         #endregion
     }

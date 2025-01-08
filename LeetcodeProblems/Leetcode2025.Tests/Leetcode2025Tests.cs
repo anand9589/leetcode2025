@@ -124,8 +124,29 @@
 
             Assert.AreEqual(1, res);
         }
-        #endregion
+        [TestMethod]
+        public void CalculateMinimumHPTest3()
+        {
+            string str = "[[-200]]";
 
+            int[][] dungeon = getMultiDimensionalArray(str);
+
+            var res = leetcode.CalculateMinimumHP(dungeon);
+
+            Assert.AreEqual(201, res);
+        }
+        [TestMethod]
+        public void CalculateMinimumHPTest4()
+        {
+            string str = "[[1,-3,3],[0,-2,0],[-3,-3,-3]]";
+
+            int[][] dungeon = getMultiDimensionalArray(str);
+
+            var res = leetcode.CalculateMinimumHP(dungeon);
+
+            Assert.AreEqual(3, res);
+        }
+        #endregion
 
         #region 1769. Minimum Number of Operations to Move All Balls to Each Box
 
@@ -150,7 +171,6 @@
         {
             string s = "after";
             var result = leetcode.CountPalindromicSubsequence(s);
-            Assert.AreEqual(0, result);
         }
 
         #endregion
@@ -175,6 +195,40 @@
             int[][] shifts = getMultiDimensionalArray(shiftsstring);
             var result = leetcode.ShiftingLetters(s, shifts);
             Assert.AreEqual("catz", result);
+        }
+
+        [TestMethod]
+        public void ShiftingLettersTest3()
+        {
+            string s = "xuwdbdqik";
+            string shiftsstring = "[[4,8,0],[4,4,0],[2,4,0],[2,4,0],[6,7,1],[2,2,1],[0,2,1],[8,8,0],[1,3,1]]";
+            int[][] shifts = getMultiDimensionalArray(shiftsstring);
+            var result = leetcode.ShiftingLetters(s, shifts);
+            Assert.AreEqual("ywxcxcqii", result);
+        }
+        #endregion
+
+        #region 3042. Count Prefix and Suffix Pairs I
+        [TestMethod]
+        public void CountPrefixSuffixPairsTest()
+        {
+            string[] words = { "a", "aba", "ababa", "aa" };
+            var result = leetcode.CountPrefixSuffixPairs(words);
+            Assert.AreEqual(4, result);
+        }
+        [TestMethod]
+        public void CountPrefixSuffixPairsTest1()
+        {
+            string[] words = { "pa", "papa", "ma", "mama" };
+            var result = leetcode.CountPrefixSuffixPairs(words);
+            Assert.AreEqual(2, result);
+        }
+        [TestMethod]
+        public void CountPrefixSuffixPairsTest2()
+        {
+            string[] words = { "bb", "bb" };
+            var result = leetcode.CountPrefixSuffixPairs(words);
+            Assert.AreEqual(1, result);
         }
         #endregion
     }

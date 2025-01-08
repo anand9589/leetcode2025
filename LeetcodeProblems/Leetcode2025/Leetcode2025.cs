@@ -81,6 +81,220 @@ namespace Leetcode2025
         #region 174. Dungeon Game
         public int CalculateMinimumHP(int[][] dungeon)
         {
+            int rows = dungeon.Length;
+            int cols = dungeon[0].Length;
+            int[,] dp = new int[rows, cols];
+
+            dp[rows - 1, cols - 1] = dungeon[rows - 1][cols - 1];
+            if (dp[rows - 1, cols - 1] > 0)
+            {
+                dp[rows-1, cols - 1] = 0;
+            }
+            for (int row = rows - 2; row >= 0; row--)
+            {
+                int curr = dungeon[row][cols-1] + dp[row+1,cols-1];
+
+                if(curr > 0)
+                {
+                    curr = 0;
+                }
+                dp[row,cols-1] = curr;
+            }
+            for (int col = cols - 2; col >= 0; col--)
+            {
+                int curr = dungeon[rows - 1][col] + dp[rows - 1, col + 1];
+
+                if(curr > 0)
+                {
+                    curr = 0;
+                }
+                dp[rows-1, col] = curr; 
+            }
+            for (int row = rows-2; row >= 0; row--)
+            {
+                for (int col = cols-2; col >= 0; col--)
+                {
+                    int max = Math.Max(dp[row+1,col], dp[row,col+1]);
+
+                    int curr = dungeon[row][col] + max;
+
+                    if(curr > 0)
+                    {
+                        curr = 0;
+                    }
+
+                    dp[row,col] = curr;
+                }
+            }
+
+            if (dp[0,0] <= 0)
+            {
+                dp[0, 0] = (dp[0, 0] * -1) + 1;
+            }
+
+            return dp[0, 0];
+        }
+        public int CalculateMinimumHP_NotWorking(int[][] dungeon)
+        {
+            int[,] dpHP = new int[dungeon.Length, dungeon[0].Length];
+            int[,] dpSum = new int[dungeon.Length, dungeon[0].Length];
+
+            int x = dungeon[0][0];
+            int hp = 1;
+            if (x < 0)
+            {
+                hp = (x * -1) + 1;
+            }
+            dpHP[0, 0] = hp;
+            dpSum[0, 0] = x;
+
+            for (int row = 1; row < dungeon.Length; row++)
+            {
+                dpSum[row, 0] = dpSum[row - 1, 0] + dungeon[row][0];
+                if (dpSum[row, 0] < dpSum[row - 1, 0] && dpSum[row, 0] < 0)
+                {
+                    dpHP[row, 0] = (dpSum[row, 0] * -1) + 1;
+                }
+                else
+                {
+                    dpHP[row, 0] = dpHP[row - 1, 0];
+                }
+            }
+
+            for (int col = 1; col < dungeon[0].Length; col++)
+            {
+                dpSum[0, col] = dpSum[0, col - 1] + dungeon[0][col];
+
+                if (dpSum[0, col] < dpSum[0, col - 1] && dpSum[0, col] < 0)
+                {
+                    dpHP[0, col] = (dpSum[0, col] * -1) + 1;
+                }
+                else
+                {
+                    dpHP[0, col] = dpHP[0, col - 1];
+                }
+            }
+
+            for (int row = 1; row < dungeon.Length; row++)
+            {
+                for (int col = 1; col < dungeon[row].Length; col++)
+                {
+                    int topSum = dpSum[row - 1, col] + dungeon[row][col];
+                    int topHP = dpHP[row - 1, col];
+                    int leftSum = dpSum[row, col - 1] + dungeon[row][col];
+                    int leftHP = dpHP[row, col - 1];
+
+                    if (dungeon[row][col] < 0)
+                    {
+                        if (topSum < 0)
+                        {
+                            topHP = (topSum * -1) + 1;
+                        }
+
+                        if (leftSum < 0)
+                        {
+                            leftHP = (leftSum * -1) + 1;
+                        }
+                    }
+
+                    if (leftHP == topHP)
+                    {
+                        dpSum[row, col] = Math.Max(leftSum, topSum);
+                        dpHP[row, col] = leftHP;
+                    }
+                    else if (leftHP < topHP)
+                    {
+                        dpSum[row, col] = leftSum;
+                        dpHP[row, col] = leftHP;
+                    }
+                    else
+                    {
+                        dpSum[row, col] = topSum;
+                        dpHP[row, col] = topHP;
+                    }
+                }
+            }
+
+            return dpHP[dungeon.Length - 1, dungeon[0].Length - 1];
+        }
+
+        public int CalculateMinimumHP3(int[][] dungeon)
+        {
+            bool[,] visited = new bool[dungeon.Length, dungeon[0].Length];
+            PriorityQueue<(int row, int col, int sum, int hp), int> pq = new PriorityQueue<(int row, int col, int sum, int hp), int>(Comparer<int>.Create((a, b) => b - a));
+
+            int hp = 1;
+            if (dungeon[0][0] < 0)
+            {
+                hp = (dungeon[0][0] * -1) + 1;
+            }
+            pq.Enqueue((0, 0, dungeon[0][0], hp), dungeon[0][0]);
+            while (pq.Count > 0)
+            {
+                var dq = pq.Dequeue();
+                if (dq.row == dungeon.Length - 1 && dq.col == dungeon[0].Length - 1) return dq.hp;
+
+                visited[dq.row, dq.col] = true;
+                enqueue(pq, dungeon, visited, dq.row + 1, dq.col, dq.sum, dq.hp);
+                enqueue(pq, dungeon, visited, dq.row, dq.col + 1, dq.sum, dq.hp);
+            }
+            return 1;
+        }
+
+        private void enqueue(PriorityQueue<(int row, int col, int sum, int hp), int> pq, int[][] dungeon, bool[,] visited, int row, int col, int sum, int hp)
+        {
+            if (row == dungeon.Length || col == dungeon[0].Length || visited[row, col])
+                return;
+
+            sum += dungeon[row][col];
+
+            if (sum < 0)
+            {
+                int currHp = (sum * -1) + 1;
+
+                hp = Math.Max(hp, currHp);
+            }
+            pq.Enqueue((row, col, sum, hp), sum);
+        }
+
+        public int CalculateMinimumHP_TLE(int[][] dungeon)
+        {
+            PriorityQueue<(int row, int col, int sum, int hp), int> pq = new PriorityQueue<(int row, int col, int sum, int hp), int>(Comparer<int>.Create((a, b) => b - a));
+
+            int hp = 1;
+            if (dungeon[0][0] < 0)
+            {
+                hp = (dungeon[0][0] * -1) + 1;
+            }
+            pq.Enqueue((0, 0, dungeon[0][0], hp), dungeon[0][0]);
+
+            while (pq.Count > 0)
+            {
+                var dq = pq.Dequeue();
+                if (dq.row == dungeon.Length - 1 && dq.col == dungeon[0].Length - 1) return dq.hp;
+                enqueue(pq, dungeon, dq.row + 1, dq.col, dq.sum, dq.hp);
+                enqueue(pq, dungeon, dq.row, dq.col + 1, dq.sum, dq.hp);
+            }
+            return 1;
+        }
+
+        private void enqueue(PriorityQueue<(int row, int col, int sum, int hp), int> pq, int[][] dungeon, int row, int col, int sum, int hp)
+        {
+            if (row == dungeon.Length || col == dungeon[0].Length) return;
+
+            sum += dungeon[row][col];
+
+            if (sum < 0)
+            {
+                int currHp = (sum * -1) + 1;
+
+                hp = Math.Max(hp, currHp);
+            }
+            pq.Enqueue((row, col, sum, hp), sum);
+        }
+
+        public int CalculateMinimumHP_2(int[][] dungeon)
+        {
             PriorityQueue<(int row, int col, int prefixSum, int hp), int> priorityQueue = new PriorityQueue<(int row, int col, int prefixSum, int hp), int>();
             bool[][] visited = new bool[dungeon.Length][];
             for (int i = 0; i < dungeon.Length; i++)
@@ -160,6 +374,29 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1408. String Matching in an Array
+        public IList<string> StringMatching(string[] words)
+        {
+            IList<string> result = new List<string>();
+            for (int i = 0; i < words.Length; i++)
+            {
+                for (int j = 0; j < words.Length; j++)
+                {
+                    if (i == j) continue;
+
+                    if (words[j].Contains(words[j]))
+                    {
+                        result.Add(words[j]);
+                        break;
+                    }
+                }
+            }
+
+
+            return result;
+        }
+        #endregion
+
         #region 1422. Maximum Score After Splitting a String
         public int MaxScore(string s)
         {
@@ -210,16 +447,16 @@ namespace Leetcode2025
             int[] result = new int[boxes.Length];
             int leftSum = 0, rightSum = 0, leftone = 0, rightone = 0;
 
-            for (int i = 0; i < boxes.Length ; i++)
+            for (int i = 0; i < boxes.Length; i++)
             {
                 leftSum += leftone;
                 result[i] += leftSum;
-                if (boxes[i]=='1') leftone++;
+                if (boxes[i] == '1') leftone++;
 
                 int k = boxes.Length - 1 - i;
                 rightSum += rightone;
                 result[k] += rightSum;
-                if(boxes[k] == '1') rightone++;
+                if (boxes[k] == '1') rightone++;
             }
 
             return result;
@@ -320,7 +557,7 @@ namespace Leetcode2025
 
         #region 2381. Shifting Letters II
 
-        public string ShiftingLetters(string s, int[][] shifts)
+        public string ShiftingLetters_3(string s, int[][] shifts)
         {
             int n = s.Length;
             int[] diffArray = new int[n]; // Initialize a difference array with all elements set to 0.
@@ -330,18 +567,18 @@ namespace Leetcode2025
             {
                 if (shift[2] == 1)
                 { // If direction is forward (1)
-                    diffArray[shift[0]]++; // Increment at the start index
+                    diffArray[shift[0]]++; // Increment at the start wordIndex
                     if (shift[1] + 1 < n)
                     {
-                        diffArray[shift[1] + 1]--; // Decrement at the end+1 index
+                        diffArray[shift[1] + 1]--; // Decrement at the end+1 wordIndex
                     }
                 }
                 else
                 { // If direction is backward (0)
-                    diffArray[shift[0]]--; // Decrement at the start index
+                    diffArray[shift[0]]--; // Decrement at the start wordIndex
                     if (shift[1] + 1 < n)
                     {
-                        diffArray[shift[1] + 1]++; // Increment at the end+1 index
+                        diffArray[shift[1] + 1]++; // Increment at the end+1 wordIndex
                     }
                 }
             }
@@ -355,7 +592,7 @@ namespace Leetcode2025
                 numberOfShifts = (numberOfShifts + diffArray[i]) % 26; // Update cumulative shifts, keeping within the alphabet range
                 if (numberOfShifts < 0) numberOfShifts += 26; // Ensure non-negative shifts
 
-                // Calculate the new character by shifting `s[i]`
+                // Calculate the new character by shifting `s[row]`
                 char shiftedChar = (char)('a' +
                     ((s[i] - 'a' + numberOfShifts) % 26));
                 result[i] = shiftedChar;
@@ -363,7 +600,7 @@ namespace Leetcode2025
 
             return result.ToString();
         }
-        public string ShiftingLetters_2(string s, int[][] shifts)
+        public string ShiftingLetters(string s, int[][] shifts)
         {
             char[] chars = new char[s.Length];
             int[] charPos = new int[chars.Length];
@@ -411,7 +648,14 @@ namespace Leetcode2025
             chars[0] = (char)('a' + index);
             for (int i = 1; i < chars.Length; i++)
             {
-                chars[i] = (char)((chars[i - 1] + charPos[i]) % 26);
+                index += charPos[i];
+
+                index %= 26;
+                if (index < 0)
+                {
+                    index += 26;
+                }
+                chars[i] = (char)(index + 'a');
             }
             return new string(chars);
         }
@@ -487,5 +731,95 @@ namespace Leetcode2025
             return result;
         }
         #endregion
+
+        #region 3042. Count Prefix and Suffix Pairs I
+        public int CountPrefixSuffixPairs(string[] words)
+        {
+            int count = 0;
+            Trie suffixTrie = new Trie('.');
+            Trie prefixTrie = new Trie('.');
+            int wordIndex = 0;
+            foreach (string word in words)
+            {
+                suffixTrie.Insert(word, word.Length - 1, wordIndex, true);
+                prefixTrie.Insert(word, 0, wordIndex);
+                wordIndex++;
+            }
+            wordIndex = 0;
+            foreach (string word in words)
+            {
+                HashSet<int> prefixIndex = prefixTrie.GetIndexes(word, 0);
+                HashSet<int> suffixIndex = suffixTrie.GetIndexes(word, word.Length - 1, true);
+
+                foreach (var item in suffixIndex)
+                {
+                    if (item <= wordIndex || !prefixIndex.Contains(item)) continue;
+                    count++;
+                }
+                wordIndex++;
+            }
+
+            return count;
+        }
+
+        class Trie
+        {
+            public char C { get; set; }
+            public HashSet<int> Indexes { get; set; }
+            public Trie[] Childrens { get; set; }
+
+            public Trie(char c)
+            {
+                C = c;
+                Indexes = new HashSet<int>();
+                Childrens = new Trie[26];
+            }
+
+            public void Insert(string word, int index, int wordIndex, bool reverseFlag = false)
+            {
+                if ((reverseFlag && index < 0) || (!reverseFlag && index == word.Length)) return;
+                int childIndex = word[index] - 'a';
+                if (Childrens[childIndex] == null)
+                {
+                    Childrens[childIndex] = new Trie(word[index]);
+                }
+                Childrens[childIndex].Indexes.Add(wordIndex);
+                index = reverseFlag ? index - 1 : index + 1;
+                Childrens[childIndex].Insert(word, index, wordIndex, reverseFlag);
+            }
+
+            public HashSet<int> GetIndexes(string word, int index, bool reverseFlag = false)
+            {
+                if ((!reverseFlag && index == word.Length - 1) || (reverseFlag && index == 0))
+                {
+                    if (Childrens[word[index] - 'a'] != null) return Childrens[word[index] - 'a'].Indexes;
+                    return new HashSet<int>();
+                }
+                return Childrens[word[index] - 'a'].GetIndexes(word, reverseFlag ? index - 1 : index + 1, reverseFlag);
+            }
+        }
+
+        public int CountPrefixSuffixPairs_1(string[] words)
+        {
+            int count = 0;
+
+            for (int i = 0; i < words.Length - 1; i++)
+            {
+                for (int j = i + 1; j < words.Length; j++)
+                {
+                    count += isPrefixAndSuffix_1(words[i], words[j]);
+                }
+            }
+
+            return count;
+        }
+
+        private int isPrefixAndSuffix_1(string v1, string v2)
+        {
+            if (v2.StartsWith(v1) && v2.EndsWith(v1)) return 1;
+            return 0;
+        }
+        #endregion
+
     }
 }

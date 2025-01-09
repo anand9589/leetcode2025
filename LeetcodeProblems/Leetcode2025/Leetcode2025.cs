@@ -88,46 +88,46 @@ namespace Leetcode2025
             dp[rows - 1, cols - 1] = dungeon[rows - 1][cols - 1];
             if (dp[rows - 1, cols - 1] > 0)
             {
-                dp[rows-1, cols - 1] = 0;
+                dp[rows - 1, cols - 1] = 0;
             }
             for (int row = rows - 2; row >= 0; row--)
             {
-                int curr = dungeon[row][cols-1] + dp[row+1,cols-1];
+                int curr = dungeon[row][cols - 1] + dp[row + 1, cols - 1];
 
-                if(curr > 0)
+                if (curr > 0)
                 {
                     curr = 0;
                 }
-                dp[row,cols-1] = curr;
+                dp[row, cols - 1] = curr;
             }
             for (int col = cols - 2; col >= 0; col--)
             {
                 int curr = dungeon[rows - 1][col] + dp[rows - 1, col + 1];
 
-                if(curr > 0)
+                if (curr > 0)
                 {
                     curr = 0;
                 }
-                dp[rows-1, col] = curr; 
+                dp[rows - 1, col] = curr;
             }
-            for (int row = rows-2; row >= 0; row--)
+            for (int row = rows - 2; row >= 0; row--)
             {
-                for (int col = cols-2; col >= 0; col--)
+                for (int col = cols - 2; col >= 0; col--)
                 {
-                    int max = Math.Max(dp[row+1,col], dp[row,col+1]);
+                    int max = Math.Max(dp[row + 1, col], dp[row, col + 1]);
 
                     int curr = dungeon[row][col] + max;
 
-                    if(curr > 0)
+                    if (curr > 0)
                     {
                         curr = 0;
                     }
 
-                    dp[row,col] = curr;
+                    dp[row, col] = curr;
                 }
             }
 
-            if (dp[0,0] <= 0)
+            if (dp[0, 0] <= 0)
             {
                 dp[0, 0] = (dp[0, 0] * -1) + 1;
             }
@@ -374,6 +374,100 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 214. Shortest Palindrome
+        public string ShortestPalindrome(string s)
+        {
+            int index = s.Length-1;
+            while (index>=0)
+            {
+                if (s[0] == s[index])
+                {
+                    int left = 0, right = index;
+
+                    while (left<right && s[left] == s[right])
+                    {
+                        left++;
+                        right--;
+                    }
+
+                    if(left>=right)
+                    {
+                        break;
+                    }
+
+                }
+                index--;
+            }
+
+            if (index < s.Length - 1)
+            {
+                string ss = s.Substring(index + 1);
+
+                return new string(ss.Reverse().ToArray()) + s;
+            }
+
+            return s;
+        }
+
+        public string ShortestPalindrome1(string s)
+        {
+            int len = s.Length;
+            char[] chars = new char[len];
+            for (int i = 0; i < s.Length; i++)
+            {
+                chars[i] = s[len - 1 - i];
+            }
+
+            bool[,] palindromeMatrix = new bool[len, len];
+
+            for (int i = 0; i < len - 1; i++)
+            {
+                palindromeMatrix[i, i] = true;
+                palindromeMatrix[i + 1, i] = true;
+            }
+
+            palindromeMatrix[len - 1, len - 1] = true;
+            int col = 1;
+            while (col < len)
+            {
+                int curCol = col;
+                for (int row = 0; row < len && curCol < len; row++)
+                {
+                    if (chars[row] == chars[curCol] && palindromeMatrix[row + 1, curCol - 1])
+                    {
+                        palindromeMatrix[row, curCol] = true;
+                    }
+                    curCol++;
+                }
+                col++;
+            }
+
+            if (palindromeMatrix[0, len - 1]) return s;
+
+            int index= len-1;
+
+            for (int k = 1; k < len; k++)
+            {
+                if (palindromeMatrix[k, len - 1])
+                {
+                    index = k;
+                    break;
+                }
+            } 
+
+            StringBuilder sb = new StringBuilder();
+            int kIndex = 0;
+            while (kIndex<index)
+            {
+                sb.Append(chars[kIndex++]);
+            }
+
+            sb.Append(s);
+
+            return sb.ToString();
+        }
+        #endregion
+
         #region 1408. String Matching in an Array
         public IList<string> StringMatching(string[] words)
         {
@@ -527,6 +621,20 @@ namespace Leetcode2025
                     count += set.Count;
                 }
             }
+            return count;
+        }
+        #endregion
+
+        #region 2185. Counting Words With a Given Prefix
+        public int PrefixCount(string[] words, string pref)
+        {
+            int count = 0;
+
+            foreach (var word in words)
+            {
+                if (word.StartsWith(pref)) count++;
+            }
+
             return count;
         }
         #endregion

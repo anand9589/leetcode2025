@@ -148,6 +148,17 @@
         }
         #endregion
 
+        #region 214. Shortest Palindrome
+
+        [TestMethod]
+        public void ShortestPalindromeTest()
+        {
+            string s = "abcd";
+            var result =leetcode.ShortestPalindrome(s);
+            Assert.AreEqual("dcbabcd", result);
+        }
+        #endregion
+
         #region 1769. Minimum Number of Operations to Move All Balls to Each Box
 
         [TestMethod]

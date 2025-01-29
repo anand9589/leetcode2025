@@ -9,6 +9,98 @@ namespace Leetcode2025
 {
     public class Leetcode2025
     {
+        #region 128. Longest Consecutive Sequence
+        public int LongestConsecutive(int[] nums)
+        {
+            if (nums.Length <= 1) return nums.Length;
+            UnionFind128 unionFind128 = new UnionFind128(nums.Length);
+            Dictionary<int, int> map = new Dictionary<int, int>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (!map.ContainsKey(nums[i]))
+                {
+                    map[nums[i]] = i;
+
+                    if (map.ContainsKey(nums[i] - 1))
+                    {
+                        unionFind128.Union(i, map[nums[i] - 1]);
+                    }
+
+                    if (map.ContainsKey(nums[i] + 1))
+                    {
+                        unionFind128.Union(i, map[nums[i] + 1]);
+                    }
+                }
+            }
+
+
+            return unionFind128.GetMaxSize();
+        }
+
+        internal class UnionFind128
+        {
+            int[] parent;
+            int[] rank;
+            int[] size;
+            int maxSize = 1;
+
+            public UnionFind128(int n)
+            {
+                parent = new int[n];
+                rank = new int[n];
+                size = new int[n];
+
+                for (int i = 0; i < n; i++)
+                {
+                    parent[i] = i;
+                    rank[i] = 1;
+                    size[i] = 1;
+                }
+            }
+
+            internal void Union(int x, int y)
+            {
+                int parentX = Find(x);
+                int parentY = Find(y);
+
+                if (parentX != parentY)
+                {
+                    if (rank[parentX] > rank[parentY])
+                    {
+                        parent[parentY] = parentX;
+                        size[parentX] += size[parentY];
+                        maxSize = Math.Max(maxSize, size[parentX]);
+                    }
+                    else if (rank[parentX] < rank[parentY])
+                    {
+                        parent[parentX] = parentY;
+                        size[parentY] += size[parentX];
+                        maxSize = Math.Max(maxSize, size[parentY]);
+                    }
+                    else
+                    {
+                        parent[parentY] = parentX;
+                        size[parentX] += size[parentY];
+                        rank[parentX]++;
+                        maxSize = Math.Max(maxSize, size[parentX]);
+                    }
+                }
+            }
+
+            internal int Find(int x)
+            {
+                if (parent[x] == x) return x;
+
+                return parent[x] = Find(parent[x]);
+            }
+
+            internal int GetMaxSize()
+            {
+                return maxSize;
+            }
+        }
+        #endregion
+
         #region 153. Find Minimum in Rotated Sorted Array
         public int FindMin_153(int[] nums)
         {
@@ -925,8 +1017,9 @@ namespace Leetcode2025
         {
             UnionFind684 unionFind684 = new UnionFind684(edges.Length);
 
-            foreach (int[] edge in edges) {
-                if (!unionFind684.Union(edge[0]-1, edge[1] - 1))
+            foreach (int[] edge in edges)
+            {
+                if (!unionFind684.Union(edge[0] - 1, edge[1] - 1))
                 {
                     return edge;
                 }
@@ -955,7 +1048,7 @@ namespace Leetcode2025
                 int parentX = Find(x);
                 int parentY = Find(y);
 
-                if(parentX ==  parentY) return false;
+                if (parentX == parentY) return false;
 
                 if (rank[parentX] > rank[parentY])
                 {

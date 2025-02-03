@@ -222,6 +222,19 @@
         }
         #endregion
 
+
+        #region 827. Making A Large Island
+
+        [TestMethod]
+        public void LargestIslandTest()
+        {
+            string s = "[[1,1],[1,1]]";
+            int[][] grid = getMultiDimensionalArray(s);
+            var result = leetcode.LargestIsland(grid);
+            Assert.AreEqual(4,result);
+        }
+        #endregion
+
         #region 1769. Minimum Number of Operations to Move All Balls to Each Box
 
         [TestMethod]

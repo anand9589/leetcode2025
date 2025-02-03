@@ -590,7 +590,7 @@ namespace Leetcode2025
             result.Add(new List<int> { top.left, top.height });
 
 
-            //for(int i = 1; i<buildings.Length; i++)
+            //for(int node = 1; node<buildings.Length; node++)
             //{
             //    if()
             //}
@@ -1128,6 +1128,83 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 827. Making A Large Island
+        public int LargestIsland(int[][] grid)
+        {
+            IList<(int row, int col)> zerosSet = new List<(int row, int col)>();
+            Dictionary<int, int> mapArea = new Dictionary<int, int>();
+            int result = 0;
+            int currCounter = 2;
+            for (int row = 0; row < grid.Length; row++)
+            {
+                for (int col = 0; col < grid.Length; col++)
+                {
+                    if (grid[row][col] == 1)
+                    {
+                        int areaCount = getLandAreaCount(grid, row, col, currCounter);
+                        result = Math.Max(result, areaCount);
+                        mapArea.Add(currCounter, areaCount);
+                        currCounter++;
+                    }
+                    else if (grid[row][col] == 0)
+                    {
+                        zerosSet.Add((row, col));
+                    }
+                }
+            }
+
+            if (result == 0) return 1;
+
+            foreach ((int row, int col) in zerosSet)
+            {
+                int cur = 1;
+                HashSet<int> neighbors = new HashSet<int>();
+
+                if (row - 1 >= 0 && grid[row - 1][col] > 0) neighbors.Add(grid[row - 1][col]);
+                if (row + 1 < grid.Length && grid[row + 1][col] > 0) neighbors.Add(grid[row + 1][col]);
+                if (col - 1 >= 0 && grid[row][col - 1] > 0) neighbors.Add(grid[row][col - 1]);
+                if (col + 1 < grid.Length && grid[row][col + 1] > 0) neighbors.Add(grid[row][col + 1]);
+
+                foreach (var neighbor in neighbors)
+                {
+                    cur += mapArea[neighbor];
+                }
+                result = Math.Max((int)cur, result);
+            }
+
+            return result;
+        }
+
+        private int getLandAreaCount(int[][] grid, int row, int col, int currCounter)
+        {
+            int count = 0;
+            Queue<(int row, int col)> q = new Queue<(int, int)>();
+            q.Enqueue((row, col));
+            grid[row][col] = currCounter;
+            while (q.Count > 0)
+            {
+                count++;
+                var dq = q.Dequeue();
+
+                enqueue(q, dq.row + 1, dq.col, grid, currCounter);
+                enqueue(q, dq.row - 1, dq.col, grid, currCounter);
+                enqueue(q, dq.row, dq.col + 1, grid, currCounter);
+                enqueue(q, dq.row, dq.col - 1, grid, currCounter);
+
+            }
+
+            return count;
+        }
+
+        private void enqueue(Queue<(int row, int col)> q, int row, int col, int[][] grid, int currCounter)
+        {
+            if (row < 0 || row >= grid.Length || col < 0 || col >= grid.Length || grid[row][col] != 1) return;
+
+            grid[row][col] = currCounter;
+            q.Enqueue((row, col));
+        }
+        #endregion
+
         #region 916. Word Subsets
         public IList<string> WordSubsets(string[] words1, string[] words2)
         {
@@ -1529,6 +1606,37 @@ namespace Leetcode2025
             }
 
             return result;
+        }
+        #endregion
+
+
+        #region 1752. Check if Array Is Sorted and Rotated
+        public bool Check(int[] nums)
+        {
+            int curr = nums[0];
+
+            for (int i = 1; i < nums.Length; i++)
+            {
+                if (curr > nums[i])
+                {
+                    if (nums[i] > nums[0]) return false;
+
+                    return Check(nums, i);
+                }
+                curr = nums[i];
+            }
+            return true;
+        }
+
+        private bool Check(int[] nums, int i)
+        {
+            int curr = nums[i++];
+            for (; i < nums.Length; i++)
+            {
+                if(curr > nums[i] || nums[i] > nums[0]) return false;
+            }
+
+            return true;
         }
         #endregion
 
@@ -2152,6 +2260,119 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2493. Divide Nodes Into the Maximum Number of Groups
+        public int MagnificentSets(int n, int[][] edges)
+        {
+            IList<int>[] adjList = new IList<int>[n];
+            int[] colors = new int[n];
+            for (int i = 0; i < n; i++)
+            {
+                adjList[i] = new List<int>();
+                colors[i] = -1;
+            }
+
+            foreach (int[] edge in edges)
+            {
+                adjList[edge[0] - 1].Add(edge[1] - 1);
+                adjList[edge[1] - 1].Add(edge[0] - 1);
+            }
+
+            for (int node = 0; node < n; node++)
+            {
+                if (colors[node] != -1) continue;
+
+                colors[node] = 0;
+
+                if (!isBipartite(adjList, node, colors)) return -1;
+            }
+
+            int[] distances = new int[n];
+            for (int node = 0; node < n; node++)
+            {
+                distances[node] = getLongestShortestPath(adjList, node, n);
+            }
+            int maxNumberOfGroups = 0;
+            bool[] visited = new bool[n];
+            for (int node = 0; node < n; node++)
+            {
+                if (visited[node]) continue;
+                maxNumberOfGroups += getNumberOfGroupsForComponent(
+                    adjList,
+                    node,
+                    distances,
+                    visited
+                );
+            }
+
+            return maxNumberOfGroups;
+        }
+
+        private int getNumberOfGroupsForComponent(IList<int>[] adjList, int node, int[] distances, bool[] visited)
+        {
+            int maxNumberOfGroups = distances[node];
+            visited[node] = true;
+
+            foreach (int neighbor in adjList[node])
+            {
+                if (visited[neighbor]) continue;
+                maxNumberOfGroups = Math.Max(
+                    maxNumberOfGroups,
+                    getNumberOfGroupsForComponent(
+                        adjList,
+                        neighbor,
+                        distances,
+                        visited
+                    )
+                );
+            }
+            return maxNumberOfGroups;
+        }
+
+        private int getLongestShortestPath(IList<int>[] adjList, int srcNode, int n)
+        {
+            Queue<int> queue = new Queue<int>();
+            bool[] visited = new bool[n];
+            queue.Enqueue(srcNode);
+            visited[srcNode] = true;
+            int distance = 0;
+
+            while (queue.Count > 0)
+            {
+                int numOfNodesInLayer = queue.Count;
+                for (int i = 0; i < numOfNodesInLayer; i++)
+                {
+                    int currentNode = queue.Dequeue();
+
+                    foreach (int neighbor in adjList[currentNode])
+                    {
+                        if (visited[neighbor]) continue;
+                        visited[neighbor] = true;
+                        queue.Enqueue(neighbor);
+                    }
+                }
+                distance++;
+            }
+
+            return distance;
+        }
+
+        private bool isBipartite(IList<int>[] adjList, int node, int[] colors)
+        {
+            foreach (int neighbor in adjList[node])
+            {
+                if (colors[neighbor] == colors[node]) return false;
+
+                if (colors[neighbor] != -1) continue;
+
+                colors[neighbor] = (colors[node] + 1) % 2;
+
+                if (!isBipartite(adjList, neighbor, colors)) return false;
+            }
+
+            return true;
+        }
+        #endregion
+
         #region 2559. Count Vowel Strings in Ranges
         public int[] VowelStrings(string[] words, int[][] queries)
         {
@@ -2603,6 +2824,40 @@ namespace Leetcode2025
             if (v2.StartsWith(v1) && v2.EndsWith(v1)) return 1;
             return 0;
         }
+        #endregion
+
+        #region 3105. Longest Strictly Increasing or Strictly Decreasing Subarray
+        public int LongestMonotonicSubarray(int[] nums)
+        {
+            int maxLength = 1;
+            int incrLength = 1;
+            int decrLength = 1;
+            for (int i = 1; i < nums.Length; i++)
+            {
+                if (nums[i] == nums[i - 1])
+                {
+                    maxLength = Math.Max(maxLength, Math.Max(incrLength,decrLength));
+                    incrLength = 1;
+                    decrLength = 1;
+                }
+                else if (nums[i] > nums[i - 1])
+                {
+                    maxLength = Math.Max(maxLength, decrLength);
+                    incrLength++;
+                    decrLength = 1;
+                }
+                else
+                {
+                    maxLength = Math.Max(maxLength, incrLength);
+                    incrLength = 1;
+                    decrLength++;
+                }
+            }
+
+
+            return Math.Max(maxLength, Math.Max(incrLength,decrLength));
+        }
+
         #endregion
 
         #region 3223. Minimum Length of String After Operations

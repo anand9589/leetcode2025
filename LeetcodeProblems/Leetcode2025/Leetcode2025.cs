@@ -1609,6 +1609,39 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1726. Tuple with Same Product
+        public int TupleSameProduct(int[] nums)
+        {
+            Dictionary<int, HashSet<string>> map = new Dictionary<int, HashSet<string>>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                for (int j = 0; j < nums.Length; j++)
+                {
+                    if (i == j) continue;
+                    string s = i < j ? $"{i}:{j}" : $"{j}:{i}";
+                    int product = nums[i] * nums[j];
+
+                    if (!map.ContainsKey(product))
+                    {
+                        map.Add(product, new HashSet<string>());
+                    }
+                    map[product].Add(s);
+                }
+            }
+            int result = 0;
+            foreach (var key in map.Keys)
+            {
+                int i = 1;
+
+                while (i < map[key].Count)
+                {
+                    result += (i * 8);
+                    i++;
+                }
+            }
+            return result;
+        }
+        #endregion
 
         #region 1752. Check if Array Is Sorted and Rotated
         public bool Check(int[] nums)
@@ -1633,7 +1666,7 @@ namespace Leetcode2025
             int curr = nums[i++];
             for (; i < nums.Length; i++)
             {
-                if(curr > nums[i] || nums[i] > nums[0]) return false;
+                if (curr > nums[i] || nums[i] > nums[0]) return false;
             }
 
             return true;
@@ -1735,6 +1768,57 @@ namespace Leetcode2025
             }
 
             return result;
+        }
+        #endregion
+
+        #region 1790. Check if One String Swap Can Make Strings Equal
+        public bool AreAlmostEqual(string s1, string s2)
+        {
+            char c1 = ' ', c2 = ' ';
+            bool maxSwapSet = false;
+
+            for (int i = 0; i < s1.Length; i++)
+            {
+                if (s1[i] != s2[i])
+                {
+
+                    if (c1 == ' ')
+                    {
+                        c1 = s1[i];
+                        c2 = s2[i];
+                    }
+
+                    if (maxSwapSet || c1 != s2[i] || c2 != s1[i]) return false;
+                    maxSwapSet = true;
+                }
+            }
+            if (c1 != ' ' && !maxSwapSet)
+            {
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region 1800. Maximum Ascending Subarray Sum
+        public int MaxAscendingSum(int[] nums)
+        {
+            int maxSum = nums[0];
+            int currSum = nums[0];
+            for (int i = 1; i < nums.Length; i++)
+            {
+                if (nums[i] > nums[i - 1])
+                {
+                    currSum += nums[i];
+                }
+                else
+                {
+                    maxSum = Math.Max(maxSum, currSum);
+                    currSum = nums[i];
+                }
+            }
+
+            return Math.Max(maxSum, currSum);
         }
         #endregion
 
@@ -2836,7 +2920,7 @@ namespace Leetcode2025
             {
                 if (nums[i] == nums[i - 1])
                 {
-                    maxLength = Math.Max(maxLength, Math.Max(incrLength,decrLength));
+                    maxLength = Math.Max(maxLength, Math.Max(incrLength, decrLength));
                     incrLength = 1;
                     decrLength = 1;
                 }
@@ -2855,7 +2939,7 @@ namespace Leetcode2025
             }
 
 
-            return Math.Max(maxLength, Math.Max(incrLength,decrLength));
+            return Math.Max(maxLength, Math.Max(incrLength, decrLength));
         }
 
         #endregion

@@ -235,6 +235,42 @@
         }
         #endregion
 
+
+        #region 1726. Tuple with Same Product
+
+        [TestMethod]
+        public void TupleSameProductTest()
+        {
+            int[] nums = { 2, 3, 4, 6 };
+            var result = leetcode.TupleSameProduct(nums);
+            Assert.AreEqual(8, result);
+        }
+
+        [TestMethod]
+        public void TupleSameProductTest1()
+        {
+            int[] nums = { 1, 2, 4, 5, 10 };
+            var result = leetcode.TupleSameProduct(nums);
+            Assert.AreEqual(16, result);
+        }
+
+        [TestMethod]
+        public void TupleSameProductTest2()
+        {
+            int[] nums = { 2, 3, 4, 6, 8, 12 };
+            var result = leetcode.TupleSameProduct(nums);
+            Assert.AreEqual(40, result);
+        }
+
+        [TestMethod]
+        public void TupleSameProductTest3()
+        {
+            int[] nums = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 };
+            var result = leetcode.TupleSameProduct(nums);
+            Assert.AreEqual(1288, result);
+        }
+        #endregion
+
         #region 1769. Minimum Number of Operations to Move All Balls to Each Box
 
         [TestMethod]

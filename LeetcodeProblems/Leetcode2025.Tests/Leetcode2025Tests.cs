@@ -414,6 +414,18 @@
         }
         #endregion
 
+        #region 3160. Find the Number of Distinct Colors Among the Balls
+        [TestMethod]
+        public void QueryResultsTest()
+        {
+            int limit = 4;
+            string s = "[[0,1],[1,2],[2,2],[3,4],[4,5]]";
+            int[][] queries = getMultiDimensionalArray(s);
+            var res = leetcode.QueryResults(limit, queries);
+        }
+
+        #endregion
+
         #region 3417. Zigzag Grid Traversal With Skip
 
         [TestMethod]

@@ -2944,6 +2944,86 @@ namespace Leetcode2025
 
         #endregion
 
+        #region 3160. Find the Number of Distinct Colors Among the Balls
+        public int[] QueryResults(int limit, int[][] queries)
+        {
+            int[] result = new int[queries.Length];
+            Dictionary<int,int> ballMap = new Dictionary<int,int>();
+            Dictionary<int, int> colorMap = new Dictionary<int, int>();
+            int currentCount = 0;
+            for (int i = 0; i < queries.Length; i++)
+            {
+                int ball = queries[i][0];
+                int color = queries[i][1];
+
+                if (ballMap.ContainsKey(ball))
+                {
+                    int ballOldColor = ballMap[ball];
+                    colorMap[ballOldColor]--;
+                    if (colorMap[ballOldColor] == 0)
+                    {
+
+                        currentCount--;
+                    }
+                }
+
+                ballMap[ball] = color;
+                if (!colorMap.ContainsKey(color) || colorMap[color] == 0)
+                {
+                    colorMap[color] = 1;
+                    currentCount++;
+                }
+                else
+                {
+                    colorMap[color]++;
+                }
+
+                result[i] = currentCount;
+            }
+
+            return result;
+        }
+
+        public int[] QueryResults1(int limit, int[][] queries)
+        {
+            int[] result = new int[queries.Length];
+            int[] balls = new int[limit + 1];
+            Dictionary<int,int> colorMap = new Dictionary<int,int>();
+            int currentCount = 0;
+            for (int i = 0; i < queries.Length; i++)
+            {
+                int ball = queries[i][0];
+                int color = queries[i][1];
+
+                if (balls[ball] != 0)
+                {
+                    int ballOldColor = balls[ball];
+                    colorMap[ballOldColor]--;
+                    if (colorMap[ballOldColor] == 0)
+                    {
+                        currentCount--;
+                    }
+                }
+
+                balls[ball] = color;
+                if (!colorMap.ContainsKey(color) || colorMap[color] == 0)
+                {
+                    colorMap[color] = 1;
+                    currentCount++;
+                }
+                else
+                {
+                    colorMap[color]++;
+                }
+
+                result[i] = currentCount;
+            }
+
+            return result;
+        }
+        
+        #endregion
+
         #region 3223. Minimum Length of String After Operations
         public int MinimumLength(string s)
         {

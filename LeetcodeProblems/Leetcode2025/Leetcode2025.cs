@@ -2948,7 +2948,7 @@ namespace Leetcode2025
         public int[] QueryResults(int limit, int[][] queries)
         {
             int[] result = new int[queries.Length];
-            Dictionary<int,int> ballMap = new Dictionary<int,int>();
+            Dictionary<int, int> ballMap = new Dictionary<int, int>();
             Dictionary<int, int> colorMap = new Dictionary<int, int>();
             int currentCount = 0;
             for (int i = 0; i < queries.Length; i++)
@@ -2988,7 +2988,7 @@ namespace Leetcode2025
         {
             int[] result = new int[queries.Length];
             int[] balls = new int[limit + 1];
-            Dictionary<int,int> colorMap = new Dictionary<int,int>();
+            Dictionary<int, int> colorMap = new Dictionary<int, int>();
             int currentCount = 0;
             for (int i = 0; i < queries.Length; i++)
             {
@@ -3021,7 +3021,7 @@ namespace Leetcode2025
 
             return result;
         }
-        
+
         #endregion
 
         #region 3223. Minimum Length of String After Operations
@@ -3435,5 +3435,58 @@ namespace Leetcode2025
         //{
 
         //}
+    }
+
+    public class NumberContainers
+    {
+        Dictionary<int, PriorityQueue<int, int>> numberIndexMap;
+        Dictionary<int, int> indexNumberMap;
+        public NumberContainers()
+        {
+            numberIndexMap = new Dictionary<int, PriorityQueue<int, int>>();
+            indexNumberMap = new Dictionary<int, int>();
+        }
+
+        public void Change(int index, int number)
+        {
+            if (indexNumberMap.ContainsKey(index))
+            {
+                int curIndex = index;
+                int oldNumber = indexNumberMap[curIndex];
+
+                if (numberIndexMap[oldNumber].Peek() == curIndex)
+                {
+                    numberIndexMap[oldNumber].Dequeue();
+                }
+            }
+
+            indexNumberMap[index] = number;
+
+            if (!numberIndexMap.ContainsKey(number))
+            {
+                numberIndexMap[number] = new PriorityQueue<int, int>();
+            }
+            numberIndexMap[number].Enqueue(index, index);
+        }
+
+        public int Find(int number)
+        {
+            if (numberIndexMap.ContainsKey(number) && numberIndexMap[number].Count > 0)
+            {
+                while (indexNumberMap[numberIndexMap[number].Peek()] != number)
+                {
+                    numberIndexMap[number].Dequeue();
+
+                    if (numberIndexMap[number].Count == 0)
+                    {
+                        return -1;
+                    }
+                }
+
+                return numberIndexMap[number].Peek();
+
+            }
+            return -1;
+        }
     }
 }

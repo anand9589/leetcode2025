@@ -1,4 +1,6 @@
-﻿namespace Leetcode2025.Tests
+﻿using System.Reflection.Metadata.Ecma335;
+
+namespace Leetcode2025.Tests
 {
     [TestClass]
     public sealed class Leetcode2025Tests
@@ -231,7 +233,7 @@
             string s = "[[1,1],[1,1]]";
             int[][] grid = getMultiDimensionalArray(s);
             var result = leetcode.LargestIsland(grid);
-            Assert.AreEqual(4,result);
+            Assert.AreEqual(4, result);
         }
         #endregion
 
@@ -308,6 +310,30 @@
             int[][] grid = getMultiDimensionalArray(s);
             var result = leetcode.GridGame(grid);
             Assert.AreEqual(7, result);
+        }
+        #endregion
+
+        #region 2349. Design a Number Container System
+        private NumberContainers GetNumberContainer()
+        {
+            return new NumberContainers();
+        }
+
+        [TestMethod]
+        public void NumberContainersTest1()
+        {
+            var n = GetNumberContainer();
+            int findIndex = n.Find(10);
+            Assert.AreEqual(-1, findIndex);
+            n.Change(2, 10);
+            n.Change(1, 10);
+            n.Change(3, 10);
+            n.Change(5, 10);
+            findIndex = n.Find(10);
+            Assert.AreEqual(1, findIndex);
+            n.Change(1, 20);
+            findIndex = n.Find(10);
+            Assert.AreEqual(2, findIndex);
         }
         #endregion
 

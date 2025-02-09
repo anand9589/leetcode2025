@@ -2090,6 +2090,24 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2364. Count Number of Bad Pairs
+        public long CountBadPairs(int[] nums)
+        {
+            long badPairs = 0;
+            Dictionary<int,int> diffCount = new Dictionary<int, int>();
+
+            for (int pos = 0; pos < nums.Length; pos++)
+            {
+                int diff = pos - nums[pos];
+                diffCount.TryGetValue(diff, out int goodPairsCount);
+                badPairs += pos - goodPairsCount;
+                diffCount[diff]= goodPairsCount + 1;
+            }
+
+            return badPairs;
+        }
+        #endregion
+
         #region 2381. Shifting Letters II
 
         public string ShiftingLetters_3(string s, int[][] shifts)

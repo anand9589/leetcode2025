@@ -2927,7 +2927,7 @@ namespace Leetcode2025
             return 0;
         }
         #endregion
-
+        
         #region 3105. Longest Strictly Increasing or Strictly Decreasing Subarray
         public int LongestMonotonicSubarray(int[] nums)
         {
@@ -3040,6 +3040,28 @@ namespace Leetcode2025
             return result;
         }
 
+        #endregion
+
+        #region 3174. Clear Digits
+        public string ClearDigits(string s)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append(s[0]);
+            int index = 1;
+            while (index<s.Length)
+            {
+                if (char.IsDigit(s[index]))
+                {
+                    stringBuilder.Remove(stringBuilder.Length - 1, 1);
+                }
+                else
+                {
+                    stringBuilder.Append(s[index]);
+                }
+                index++;
+            }
+            return stringBuilder.ToString();                                                                            
+        } 
         #endregion
 
         #region 3223. Minimum Length of String After Operations

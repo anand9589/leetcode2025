@@ -1243,6 +1243,62 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1079. Letter Tile Possibilities
+        public int NumTilePossibilities(string tiles)
+        {
+            int[] chars = new int[26];
+
+            foreach (char c in tiles)
+            {
+                chars[c - 'A']++;
+            }
+            return NumTilePossibilities(chars);
+        }
+
+        private int NumTilePossibilities(int[] chars)
+        {
+            int totalCount = 0;
+
+            for (int curr = 0; curr < 26; curr++)
+            {
+                if (chars[curr] == 0) continue;
+
+                totalCount++;
+                chars[curr]--;
+                totalCount += NumTilePossibilities(chars);
+                chars[curr]++;
+            }
+
+            return totalCount;
+        }
+
+        public int NumTilePossibilities_1(string tiles)
+        {
+            HashSet<string> set = new HashSet<string>();
+            bool[] used = new bool[tiles.Length];
+
+            NumTilePossibilities_Recursion_1(tiles, set, used, new StringBuilder());
+
+            return set.Count - 1;
+        }
+
+        private void NumTilePossibilities_Recursion_1(string tiles, HashSet<string> set, bool[] used, StringBuilder stringBuilder)
+        {
+            set.Add(stringBuilder.ToString());
+
+            for (int curr = 0; curr < tiles.Length; curr++)
+            {
+                if (!used[curr])
+                {
+                    used[curr] = true;
+                    NumTilePossibilities_Recursion_1(tiles, set, used, stringBuilder.Append(tiles[curr]));
+                    used[curr] = false;
+                    stringBuilder.Remove(stringBuilder.Length - 1, 1);
+                }
+            }
+        }
+        #endregion
+
         #region 1267. Count Servers that Communicate
         public int CountServers1(int[][] grid)
         {
@@ -1609,6 +1665,61 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1718. Construct the Lexicographically Largest Valid Sequence
+        public int[] ConstructDistancedSequence(int n)
+        {
+            int[] result = new int[n * 2 - 1];
+
+            bool[] used = new bool[n + 1];
+
+            ConstructDistancedSequence_BackTrack(0, result, used, n);
+
+
+            return result;
+        }
+
+        private bool ConstructDistancedSequence_BackTrack(int currentIndex, int[] result, bool[] used, int n)
+        {
+            if (currentIndex == result.Length) return true;
+
+            if (result[currentIndex] != 0)
+            {
+                return ConstructDistancedSequence_BackTrack(currentIndex + 1, result, used, n);
+            }
+
+            for (int i = n; i >= 1; i--)
+            {
+                if (used[i]) continue;
+
+                used[i] = true;
+
+                result[currentIndex] = i;
+
+                if (i == 1)
+                {
+                    if (ConstructDistancedSequence_BackTrack(currentIndex + 1, result, used, n))
+                    {
+                        return true;
+                    }
+                }
+                else if (currentIndex + i < result.Length && result[currentIndex + i] == 0)
+                {
+                    result[currentIndex + i] = i;
+                    if (ConstructDistancedSequence_BackTrack(currentIndex + 1, result, used, n))
+                    {
+                        return true;
+                    }
+                    result[currentIndex + i] = 0;
+                }
+
+                result[currentIndex] = 0;
+                used[i] = false;
+            }
+
+            return false;
+        }
+        #endregion
+
         #region 1726. Tuple with Same Product
         public int TupleSameProduct(int[] nums)
         {
@@ -1819,6 +1930,149 @@ namespace Leetcode2025
             }
 
             return Math.Max(maxSum, currSum);
+        }
+        #endregion
+
+        #region 1910. Remove All Occurrences of a Substring
+        public string RemoveOccurrences(string s, string part)
+        {
+            int[] kmpLPS = computeLongestPrefixSuffix(part);
+            Stack<char> charStack = new Stack<char>();
+            int[] patternIndexes = new int[s.Length + 1];
+
+
+            for (
+                int strIndex = 0, patternIndex = 0;
+                strIndex < s.Length;
+                strIndex++
+            )
+            {
+                char currentChar = s[strIndex];
+                charStack.Push(currentChar);
+
+                if (currentChar == part[patternIndex])
+                {
+                    patternIndexes[charStack.Count] = ++patternIndex;
+
+                    if (patternIndex == part.Length)
+                    {
+                        int remainingLength = part.Length;
+                        while (remainingLength != 0)
+                        {
+                            charStack.Pop();
+                            remainingLength--;
+                        }
+
+                        patternIndex = charStack.Count == 0
+                            ? 0
+                            : patternIndexes[charStack.Count];
+                    }
+                }
+                else
+                {
+                    if (patternIndex != 0)
+                    {
+                        strIndex--;
+                        patternIndex = kmpLPS[patternIndex - 1];
+                        charStack.Pop();
+                    }
+                    else
+                    {
+                        patternIndexes[charStack.Count] = 0;
+                    }
+                }
+            }
+
+            StringBuilder result = new StringBuilder();
+            while (charStack.Count > 0)
+            {
+                result.Append(charStack.Pop());
+            }
+
+            char[] arr = result.ToString().ToCharArray().Reverse().ToArray();
+
+            return new string(arr);
+        }
+
+        private int[] computeLongestPrefixSuffix(string pattern)
+        {
+            int[] lps = new int[pattern.Length];
+
+            for (int current = 1, prefixLength = 0; current < pattern.Length;)
+            {
+                if (pattern[current] == pattern[prefixLength])
+                {
+                    lps[current] = ++prefixLength;
+                    current++;
+                }
+                else if (prefixLength != 0)
+                {
+                    prefixLength = lps[prefixLength - 1];
+                }
+                else
+                {
+                    lps[current] = 0;
+                    current++;
+                }
+            }
+            return lps;
+        }
+
+        public string RemoveOccurrences_1(string s, string part)
+        {
+            Stack<(int, int)> stack = new Stack<(int, int)>();
+            StringBuilder sb = new StringBuilder();
+
+            int i = 0;
+            while (i < s.Length)
+            {
+                if (s[i] == part[0])
+                {
+                    //stack.Push(i);
+                    int cnt = 1;
+                    int j = i;
+                    StringBuilder sb2 = new StringBuilder();
+                    sb2.Append(s[i]);
+                    while (j + cnt < s.Length && cnt < part.Length)
+                    {
+                        sb2.Append(s[j + cnt]);
+                        if (s[j + cnt] == part[cnt])
+                        {
+                            cnt++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    if (cnt == part.Length)
+                    {
+                        if (stack.Count > 0)
+                        {
+                            var ss = stack.Pop();
+                            sb.Remove(sb.Length - ss.Item2, ss.Item2);
+                            i = ss.Item1;
+                        }
+                        else
+                        {
+                            i += part.Length;
+                        }
+                    }
+                    else
+                    {
+                        stack.Push((i, cnt));
+                        sb.Append(part.Substring(0, cnt));
+                        i++;
+                    }
+                }
+                else
+                {
+                    sb.Append(s[i]);
+                    i++;
+                }
+            }
+
+            return sb.ToString();
         }
         #endregion
 
@@ -2090,21 +2344,94 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2342. Max Sum of a Pair With Equal Sum of Digits
+        public int MaximumSum(int[] nums)
+        {
+            int result = -1;
+
+            Dictionary<int, int[]> numberMap = new Dictionary<int, int[]>();
+
+            foreach (int n in nums)
+            {
+                int sumOfDigit = sumOFDigit(n);
+
+                if (numberMap.ContainsKey(sumOfDigit))
+                {
+                    if (numberMap[sumOfDigit][0] < n)
+                    {
+                        numberMap[sumOfDigit][1] = numberMap[sumOfDigit][0];
+                        numberMap[sumOfDigit][0] = n;
+                    }
+                    else if (numberMap[sumOfDigit][1] < n)
+                    {
+                        numberMap[sumOfDigit][1] = n;
+                    }
+
+                    result = Math.Max(result, numberMap[sumOfDigit][0] + numberMap[sumOfDigit][1]);
+                }
+                else
+                {
+                    numberMap[sumOfDigit] = new int[] { n, 0 };
+                }
+            }
+
+            return result;
+        }
+        private int sumOFDigit(int number)
+        {
+            int sum = 0;
+
+            while (number > 0)
+            {
+                sum += number % 10;
+                number /= 10;
+            }
+
+            return sum;
+        }
+        #endregion
+
         #region 2364. Count Number of Bad Pairs
         public long CountBadPairs(int[] nums)
         {
             long badPairs = 0;
-            Dictionary<int,int> diffCount = new Dictionary<int, int>();
+            Dictionary<int, int> diffCount = new Dictionary<int, int>();
 
             for (int pos = 0; pos < nums.Length; pos++)
             {
                 int diff = pos - nums[pos];
                 diffCount.TryGetValue(diff, out int goodPairsCount);
                 badPairs += pos - goodPairsCount;
-                diffCount[diff]= goodPairsCount + 1;
+                diffCount[diff] = goodPairsCount + 1;
             }
 
             return badPairs;
+        }
+        #endregion
+
+        #region 2375. Construct Smallest Number From DI String
+        public string SmallestNumber(string pattern)
+        {
+            StringBuilder result = new StringBuilder();
+            Stack<int> numStack = new Stack<int>();
+
+            // Iterate through the pattern
+            for (int index = 0; index <= pattern.Length; index++)
+            {
+                // Push the next number onto the stack
+                numStack.Push(index + 1);
+
+                // If 'I' is encountered or we reach the end, pop all stack elements
+                if (index == pattern.Length || pattern[index] == 'I')
+                {
+                    while (numStack.Count>0)
+                    {
+                        result.Append(numStack.Pop());
+                    }
+                }
+            }
+
+            return result.ToString();
         }
         #endregion
 
@@ -2774,6 +3101,62 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2698. Find the Punishment Number of an Integer
+        public int PunishmentNumber(int n)
+        {
+            int result = 0;
+
+            for (int num = 1; num <= n; num++)
+            {
+                int sq = num * num;
+                string numString = sq.ToString();
+
+                int[][] mem = new int[numString.Length][];
+                for (int i = 0; i < mem.Length; i++)
+                {
+                    mem[i] = new int[num + 1];
+                    Array.Fill(mem[i], -1);
+                }
+
+                if (isPunishmentNumber(0, 0, numString, num, mem))
+                {
+                    result += sq;
+                }
+
+            }
+
+            return result;
+        }
+
+        private bool isPunishmentNumber(int startIndex, int sum, string numString, int target, int[][] mem)
+        {
+            if (startIndex == numString.Length) return sum == target;
+
+            if (sum > target) return false;
+
+            if (mem[startIndex][sum] != -1) return mem[startIndex][sum] == 1;
+
+            bool partitionFound = false;
+
+            for (int currIndex = startIndex; currIndex < numString.Length; currIndex++)
+            {
+                string currString = numString.Substring(startIndex, currIndex - startIndex + 1);
+
+                int addend = int.Parse(currString);
+
+                partitionFound = partitionFound || isPunishmentNumber(currIndex + 1, sum + addend, numString, target, mem);
+
+                if (partitionFound)
+                {
+                    mem[startIndex][sum] = 1;
+                    return true;
+                }
+            }
+            mem[startIndex][sum] = 0;
+            return false;
+        }
+        #endregion
+
         #region 2948. Make Lexicographically Smallest Array by Swapping Elements
         public int[] LexicographicallySmallestArray(int[] nums, int limit)
         {
@@ -2927,7 +3310,37 @@ namespace Leetcode2025
             return 0;
         }
         #endregion
-        
+
+        #region 3066. Minimum Operations to Exceed Threshold Value II
+        public int MinOperations(int[] nums, int k)
+        {
+            int counter = 0;
+
+            PriorityQueue<int, int> pq = new PriorityQueue<int, int>();
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                pq.Enqueue(nums[i], nums[i]);
+            }
+
+            while (pq.Count > 0 && pq.Peek() < k)
+            {
+                int n1 = pq.Dequeue();
+                int n2 = pq.Count > 0 ? pq.Dequeue() : k;
+
+                long newNumber = n1 * 2;
+                newNumber += n2;
+                if (newNumber < k)
+                {
+                    pq.Enqueue((int)newNumber, (int)newNumber);
+                }
+                counter++;
+            }
+
+            return counter;
+        }
+        #endregion
+
         #region 3105. Longest Strictly Increasing or Strictly Decreasing Subarray
         public int LongestMonotonicSubarray(int[] nums)
         {
@@ -3048,7 +3461,7 @@ namespace Leetcode2025
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append(s[0]);
             int index = 1;
-            while (index<s.Length)
+            while (index < s.Length)
             {
                 if (char.IsDigit(s[index]))
                 {
@@ -3060,8 +3473,8 @@ namespace Leetcode2025
                 }
                 index++;
             }
-            return stringBuilder.ToString();                                                                            
-        } 
+            return stringBuilder.ToString();
+        }
         #endregion
 
         #region 3223. Minimum Length of String After Operations
@@ -3529,4 +3942,51 @@ namespace Leetcode2025
             return -1;
         }
     }
+
+
+
+    #region 1352. Product of the Last K Numbers
+    //public class ProductOfNumbers
+    //{
+    //    int size = -1;
+    //    public ProductOfNumbers()
+    //    {
+
+    //    }
+
+    //    public void Add(int num)
+    //    {
+
+    //    }
+
+    //    public int GetProduct(int k)
+    //    {
+
+    //    }
+    //}
+    public class ProductOfNumbers1
+    {
+        List<int> numbers;
+        public ProductOfNumbers1()
+        {
+            numbers = new List<int>();
+        }
+
+        public void Add(int num)
+        {
+            numbers.Add(num);
+        }
+
+        public int GetProduct(int k)
+        {
+            int index = numbers.Count - 1;
+            int product = numbers[index--];
+            while (--k > 0)
+            {
+                product *= numbers[index--];
+            }
+            return product;
+        }
+    }
+    #endregion
 }

@@ -237,6 +237,15 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 1718. Construct the Lexicographically Largest Valid Sequence
+
+        [TestMethod]
+        public void ConstructDistancedSequenceTest()
+        {
+            var result = leetcode.ConstructDistancedSequence(3);
+            
+        }
+        #endregion
 
         #region 1726. Tuple with Same Product
 
@@ -290,6 +299,18 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 1910. Remove All Occurrences of a Substring
+
+        [TestMethod]
+        public void RemoveOccurrencesTest()
+        {
+            string s = "daabcbaabcbc";
+            string part = "abc";
+            var res = leetcode.RemoveOccurrences(s,part);
+            Assert.AreEqual("dab", res);
+        }
+        #endregion
+
         #region 1930. Unique Length-3 Palindromic Subsequences
         [TestMethod]
         public void CountPalindromicSubsequenceTest()
@@ -310,6 +331,18 @@ namespace Leetcode2025.Tests
             int[][] grid = getMultiDimensionalArray(s);
             var result = leetcode.GridGame(grid);
             Assert.AreEqual(7, result);
+        }
+        #endregion
+
+
+        #region 2342. Max Sum of a Pair With Equal Sum of Digits //18,43,36,13,7
+
+        [TestMethod]
+        public void MaximumSumTest()
+        {
+            int[] arr = { 18, 43, 36, 13, 7 };
+            var result = leetcode.MaximumSum(arr);
+            Assert.AreEqual(54, result);
         }
         #endregion
 
@@ -404,6 +437,16 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 2698. Find the Punishment Number of an Integer
+
+        [TestMethod]
+        public void PunishmentNumberTest()
+        {
+            int n = 10;
+            var result = leetcode.PunishmentNumber(n);
+            Assert.AreEqual(182, result);
+        }
+        #endregion
 
         #region 2948. Make Lexicographically Smallest Array by Swapping Elements
 
@@ -437,6 +480,18 @@ namespace Leetcode2025.Tests
             string[] words = { "bb", "bb" };
             var result = leetcode.CountPrefixSuffixPairs(words);
             Assert.AreEqual(1, result);
+        }
+        #endregion
+
+        #region 3066. Minimum Operations to Exceed Threshold Value II
+
+        [TestMethod]
+        public void MinOperationsTest_()
+        {
+            int[] arr = { 1000000000, 999999999, 1000000000, 999999999, 1000000000, 999999999 };
+            int k = 1000000000;
+            var result = leetcode.MinOperations(arr, k);
+            Assert.AreEqual(2,result);
         }
         #endregion
 

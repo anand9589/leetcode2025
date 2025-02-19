@@ -1507,6 +1507,52 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1415. The k-th Lexicographical String of All Happy Strings of Length n
+        public string GetHappyString(int n, int k)
+        {
+            Queue<string> queue = new Queue<string>();
+            queue.Enqueue("a");
+            queue.Enqueue("b"); 
+            queue.Enqueue("c");
+
+            while (queue.Count > 0) {
+                string s = queue.Dequeue();
+
+                if(s.Length < n)
+                {
+                    char last = s[s.Length - 1];
+                    switch (last)
+                    {
+                        case 'a':
+                            queue.Enqueue(s + 'b');
+                            queue.Enqueue(s + 'c');
+                            break;
+                        case 'b':
+                            queue.Enqueue(s + 'a');
+                            queue.Enqueue(s + 'c');
+                            break;
+                        case 'c':
+                            queue.Enqueue(s + 'a');
+                            queue.Enqueue(s + 'b');
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+
+                    k--;
+                    if (k == 0)
+                    {
+                        return s;
+                    }
+                }
+            }
+            return string.Empty;
+        }
+        #endregion
+
         #region 1422. Maximum Score After Splitting a String
         public int MaxScore(string s)
         {

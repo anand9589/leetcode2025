@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
@@ -2158,6 +2159,33 @@ namespace Leetcode2025
             }
             return count;
         }
+        #endregion
+
+        #region 1980. Find Unique Binary String
+        public string FindDifferentBinaryString(string[] nums)
+        {
+            HashSet<string> set = new HashSet<string>(nums);
+            
+            Stack<string> stack = new Stack<string>();
+            stack.Push("0");
+            stack.Push("1");
+
+            while (stack.Count>0)
+            {
+                var pop = stack.Pop();
+
+                if (pop.Length < nums.Length)
+                {
+                    stack.Push(pop + '0');
+                    stack.Push(pop + '1');
+                }
+                else
+                {
+                    if(!set.Contains(pop)) return pop;
+                }
+            }
+            return string.Empty;
+        } 
         #endregion
 
         #region 2017. Grid Game

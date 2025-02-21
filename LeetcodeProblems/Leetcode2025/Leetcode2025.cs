@@ -1513,13 +1513,14 @@ namespace Leetcode2025
         {
             Queue<string> queue = new Queue<string>();
             queue.Enqueue("a");
-            queue.Enqueue("b"); 
+            queue.Enqueue("b");
             queue.Enqueue("c");
 
-            while (queue.Count > 0) {
+            while (queue.Count > 0)
+            {
                 string s = queue.Dequeue();
 
-                if(s.Length < n)
+                if (s.Length < n)
                 {
                     char last = s[s.Length - 1];
                     switch (last)
@@ -2165,12 +2166,12 @@ namespace Leetcode2025
         public string FindDifferentBinaryString(string[] nums)
         {
             HashSet<string> set = new HashSet<string>(nums);
-            
+
             Stack<string> stack = new Stack<string>();
             stack.Push("0");
             stack.Push("1");
 
-            while (stack.Count>0)
+            while (stack.Count > 0)
             {
                 var pop = stack.Pop();
 
@@ -2181,11 +2182,11 @@ namespace Leetcode2025
                 }
                 else
                 {
-                    if(!set.Contains(pop)) return pop;
+                    if (!set.Contains(pop)) return pop;
                 }
             }
             return string.Empty;
-        } 
+        }
         #endregion
 
         #region 2017. Grid Game
@@ -2498,7 +2499,7 @@ namespace Leetcode2025
                 // If 'I' is encountered or we reach the end, pop all stack elements
                 if (index == pattern.Length || pattern[index] == 'I')
                 {
-                    while (numStack.Count>0)
+                    while (numStack.Count > 0)
                     {
                         result.Append(numStack.Pop());
                     }
@@ -4060,6 +4061,45 @@ namespace Leetcode2025
                 product *= numbers[index--];
             }
             return product;
+        }
+    }
+    #endregion
+
+
+    #region 1261. Find Elements in a Contaminated Binary Tree
+    public class FindElements
+    {
+        HashSet<int> numbers;
+
+        public FindElements(TreeNode root)
+        {
+            numbers = new HashSet<int>();
+            root.val = 0;
+
+            recover(root);
+        }
+
+        private void recover(TreeNode root)
+        {
+            int curr = root.val;
+            numbers.Add(curr);
+            curr *= 2;
+            if (root.left != null)
+            {
+                root.left.val = curr + 1;
+                recover(root.left);
+            }
+
+            if (root.right != null)
+            {
+                root.right.val = curr+2;
+                recover(root.right);
+            }
+        }
+
+        public bool Find(int target)
+        {
+            return numbers.Contains(target);
         }
     }
     #endregion

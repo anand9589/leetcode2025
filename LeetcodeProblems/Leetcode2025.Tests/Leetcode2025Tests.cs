@@ -237,6 +237,23 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 1261. Find Elements in a Contaminated Binary Tree
+
+        [TestMethod]
+        public void FindElementsTest()
+        {
+            FindElements findElements = new FindElements(
+                new TreeNode(-1,
+                    null,
+                    new TreeNode(-1, new TreeNode(-1, new TreeNode(-1)))));
+
+            findElements.Find(2);
+            findElements.Find(3);
+            findElements.Find(4);
+            findElements.Find(5);
+        }
+        #endregion
+
         #region 1718. Construct the Lexicographically Largest Valid Sequence
 
         [TestMethod]

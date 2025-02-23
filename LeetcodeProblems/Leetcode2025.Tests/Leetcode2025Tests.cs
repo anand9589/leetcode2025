@@ -237,6 +237,41 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 889. Construct Binary Tree from Preorder and Postorder Traversal
+        [TestMethod]
+        public void ConstructFromPrePostTest()
+        {
+            int[] preOrder = { 2, 4, 5, 1, 3 };
+            int[] postOrder = { 1, 5, 3, 4, 2 };
+            var result = leetcode.ConstructFromPrePost(preOrder, postOrder);
+        }
+        #endregion
+
+
+        #region 1028. Recover a Tree From Preorder Traversal
+
+        [TestMethod]
+        public void RecoverFromPreorderTest()
+        {
+            string traversal = "1-2--3--4-5--6--7";
+            var result = leetcode.RecoverFromPreorder(traversal);
+        }
+
+        [TestMethod]
+        public void RecoverFromPreorderTest1()
+        {
+            string traversal = "1-2--3---4-5--6---7";
+            var result = leetcode.RecoverFromPreorder(traversal);
+        }
+
+        [TestMethod]
+        public void RecoverFromPreorderTest2()
+        {
+            string traversal = "1-401--349---90--88";
+            var result = leetcode.RecoverFromPreorder(traversal);
+        }
+        #endregion
+
         #region 1261. Find Elements in a Contaminated Binary Tree
 
         [TestMethod]

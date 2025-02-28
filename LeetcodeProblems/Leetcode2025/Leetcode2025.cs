@@ -1491,6 +1491,21 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1143. Longest Common Subsequence
+        public int LongestCommonSubsequence(string text1, string text2)
+        {
+            return LongestCommonSubsequence(text1,text2,0,0);
+        }
+
+        private int LongestCommonSubsequence(string text1, string text2, int indexText1, int indexText2)
+        {
+            if(indexText1 == text1.Length || indexText2 == text2.Length) return 0;
+
+            if (text1[indexText1] ==  text2[indexText2]) return 1+ LongestCommonSubsequence(text1,text2,indexText1+1,indexText2+1);
+
+            return Math.Max(LongestCommonSubsequence(text1, text2, indexText1, indexText2 + 1), LongestCommonSubsequence(text1, text2, indexText1 + 1, indexText2));
+        }
+        #endregion
         #region 1267. Count Servers that Communicate
         public int CountServers1(int[][] grid)
         {

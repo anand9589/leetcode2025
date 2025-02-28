@@ -1261,7 +1261,7 @@ namespace Leetcode2025
 
                 if (start1 != end1)
                 {
-                    if (preorder[start1+1] == postorder[end2 - 1])
+                    if (preorder[start1 + 1] == postorder[end2 - 1])
                     {
                         root.left = ConstructFromPrePost(preorder, postorder, start1 + 1, end1, start2, end2 - 1);
                     }
@@ -1901,6 +1901,36 @@ namespace Leetcode2025
             }
 
             return result;
+        }
+        #endregion
+
+        #region 1524. Number of Sub-arrays With Odd Sum
+        public int NumOfSubarrays(int[] arr)
+        {
+            int MOD = 1_000_000_007;
+            int count = 0, prefixSum = 0;
+
+            int oddCount = 0, evenCount = 1;
+
+            foreach (int num in arr)
+            {
+                prefixSum += num;
+
+                if (prefixSum % 2 == 0)
+                {
+                    count += oddCount;
+                    evenCount++;
+                }
+                else
+                {
+                    count += evenCount;
+                    oddCount++;
+                }
+
+                count %= MOD;
+            }
+
+            return count;
         }
         #endregion
 

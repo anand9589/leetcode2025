@@ -1491,6 +1491,46 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1092. Shortest Common Supersequence 
+        public string ShortestCommonSupersequence(string str1, string str2)
+        {
+            int str1Length = str1.Length;
+            int str2Length = str2.Length;
+
+            string[] prevRow = new string[str2Length + 1];
+            for (int col = 0; col <= str2Length; col++)
+            {
+                prevRow[col] = str2.Substring(0, col);
+            }
+
+            for (int row = 1; row <= str1Length; row++)
+            {
+                string[] currRow = new string[str2Length + 1];
+                currRow[0] = str1.Substring(0, row);
+
+                for (int col = 1; col <= str2Length; col++)
+                {
+                    if (str1[row - 1] == str2[col - 1])
+                    {
+                        currRow[col] = prevRow[col - 1] + str1[row - 1];
+                    }
+                    else
+                    {
+                        string pickS1 = prevRow[col];
+                        string pickS2 = currRow[col - 1];
+
+                        currRow[col] = (pickS1.Length < pickS2.Length)
+                            ? pickS1 + str1[row - 1]
+                            : pickS2 + str2[col - 1];
+                    }
+                }
+                prevRow = currRow;
+            }
+
+            return prevRow[str2Length];
+        }
+        #endregion
+
         #region 1143. Longest Common Subsequence
         public int LongestCommonSubsequence(string text1, string text2)
         {
@@ -1506,7 +1546,7 @@ namespace Leetcode2025
                     if (text1[row - 1] == text2[col - 1])
                     {
                         dp[row, col] = 1 + dp[row-1,col-1];
-        }
+                    }
                     else
                     {
                         dp[row, col] = Math.Max(dp[row - 1, col], dp[row, col - 1]);
@@ -2356,7 +2396,7 @@ namespace Leetcode2025
             {
                 if (s[i] == part[0])
                 {
-                    //stack.Push(i);
+                    //q.Push(i);
                     int cnt = 1;
                     int j = i;
                     StringBuilder sb2 = new StringBuilder();
@@ -2773,10 +2813,10 @@ namespace Leetcode2025
             // Iterate through the pattern
             for (int index = 0; index <= pattern.Length; index++)
             {
-                // Push the next number onto the stack
+                // Push the next number onto the q
                 numStack.Push(index + 1);
 
-                // If 'I' is encountered or we reach the end, pop all stack elements
+                // If 'I' is encountered or we reach the end, pop all q elements
                 if (index == pattern.Length || pattern[index] == 'I')
                 {
                     while (numStack.Count > 0)
@@ -3069,22 +3109,23 @@ namespace Leetcode2025
             }
             if (bobPath.Length % 2 == 0)
             {
-                amount[bobPath[n-1]] /= 2;
+                amount[bobPath[n - 1]] /= 2;
             }
             visited = new bool[amount.Length];
 
             int res = int.MinValue;
             visited[0] = true;
-            Queue<(int,int)> q = new Queue<(int,int)>();
-            
+            Queue<(int, int)> q = new Queue<(int, int)>();
+
 
             q.Enqueue((0, amount[0]));
 
-            while (q.Count>0)
+            while (q.Count > 0)
             {
                 var top = q.Dequeue();
                 bool leaf = true;
-                foreach (int neighbor in map[top.Item1]) {
+                foreach (int neighbor in map[top.Item1])
+                {
                     if (!visited[neighbor])
                     {
                         visited[neighbor] = true;
@@ -3093,16 +3134,17 @@ namespace Leetcode2025
                         q.Enqueue((neighbor, amt));
                     }
                 }
-                if (leaf) {
+                if (leaf)
+                {
                     res = Math.Max(res, top.Item2);
                 }
-                 
+
             }
 
             return res;
         }
 
-        private int[] getBobPath(Dictionary<int, List<int>> map,  bool[] visited, int bob)
+        private int[] getBobPath(Dictionary<int, List<int>> map, bool[] visited, int bob)
         {
             Stack<int> stack = new Stack<int>();
             stack.Push(bob);
@@ -3130,7 +3172,7 @@ namespace Leetcode2025
                     }
                 }
                 if (found) { break; }
-                if(leaf) {stack.Pop(); }
+                if (leaf) { stack.Pop(); }
             }
 
             return stack.ToArray();
@@ -4332,10 +4374,208 @@ namespace Leetcode2025
         }
         #endregion
 
-        //public int MaxFrequency(int[] nums, int k)
-        //{
+        #region weekly contest 438
+        public bool HasSameDigits1(string s)
+        {
+            if (s.Length == 2)
+            {
+                return s[0] == s[1];
+            }
 
-        //}
+            char[] chars = new char[s.Length - 1];
+
+            for (int i = 1; i < s.Length; i++)
+            {
+                int n1 = s[i] - '0';
+                int n2 = s[i - 1] - '0';
+
+
+                chars[i - 1] = (char)(((n1 + n2) % 10) + '0');
+
+            }
+
+            return HasSameDigits1(new string(chars));
+        }
+
+        public bool HasSameDigits(string s)
+        {
+            while (s.Length > 1)
+            {
+                bool allSame = true;
+                for (int i = 1; i < s.Length; i++)
+                {
+                    if (s[i] != s[i - 1])
+                    {
+                        allSame = false;
+                        break;
+                    }
+                }
+                if (allSame) return true;
+
+                char[] newS = new char[s.Length - 1];
+                for (int i = 1; i < s.Length; i++)
+                {
+                    newS[i - 1] = (char)(((s[i] - '0' + s[i - 1] - '0') % 10) + '0');
+                }
+
+                s = new string(newS);
+            }
+
+            return true;
+        }
+
+        public long MaxSum(int[][] grid, int[] limits, int k)
+        {
+            if (k == 0) return 0;
+            PriorityQueue<int, int>[] map = new PriorityQueue<int, int>[grid.Length];
+            for (int i = 0; i < grid.Length; i++)
+            {
+                map[i] = new PriorityQueue<int, int>();
+                int maxSize = Math.Min(limits[i], k);
+                if (maxSize > 0)
+                {
+                    for (int j = 0; j < grid[i].Length; j++)
+                    {
+                        int curr = grid[i][j];
+                        if (map[i].Count < maxSize)
+                        {
+                            map[i].Enqueue(curr, curr);
+                        }
+                        else if (map[i].Peek() < curr)
+                        {
+                            map[i].Dequeue();
+                            map[i].Enqueue(curr, curr);
+                        }
+                    }
+                }
+            }
+
+            PriorityQueue<int, int> pq = new PriorityQueue<int, int>();
+
+            for (int i = 0; i < grid.Length; i++)
+            {
+                while (map[i].Count > 0)
+                {
+                    int curr = map[i].Dequeue();
+                    if (pq.Count < k)
+                    {
+                        pq.Enqueue(curr, curr);
+                    }
+                    else if (pq.Peek() < curr)
+                    {
+                        pq.Dequeue();
+                        pq.Enqueue(curr, curr);
+                    }
+                }
+            }
+
+            long result = 0;
+            while (pq.Count > 0)
+            {
+                result += pq.Dequeue();
+            }
+            return result;
+        }
+
+        public int MaxDistance(int side, int[][] points, int k)
+        {
+
+            int left = 0, right = side;
+
+            while (left < right)
+            {
+                int mid = (left + right + 1) / 2;
+                if (CanSelectKPoints(points, k, mid))
+                {
+                    left = mid;
+                }
+                else
+                {
+                    right = mid - 1;
+                }
+            }
+
+            return left;
+        }
+
+        private bool CanSelectKPoints(int[][] points, int k, int minDist)
+        {
+            List<int[]> selected = new List<int[]>();
+
+            foreach (var point in points)
+            {
+                if (selected.Count == 0 || IsValid(selected, point, minDist))
+                {
+                    selected.Add(point);
+                    if (selected.Count == k) return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsValid(List<int[]> selected, int[] candidate, int minDist)
+        {
+            foreach (var p in selected)
+            {
+                int dist = Math.Abs(p[0] - candidate[0]) + Math.Abs(p[1] - candidate[1]);
+                if (dist < minDist) return false;
+            }
+            return true;
+        }
+
+        public int MaxDistance1(int side, int[][] points, int k)
+        {
+            int left = 0, right = side;
+
+            while (left < right)
+            {
+                int mid = (left + right + 1) / 2;
+                if (IsFeasible1(points, k, mid))
+                {
+                    left = mid;
+                }
+                else
+                {
+                    right = mid - 1;
+                }
+            }
+
+            return left;
+        }
+
+        private bool IsFeasible1(int[][] points, int k, int d)
+        {
+            return CanSelectPoints1(points, new List<int[]>(), 0, k, d);
+        }
+
+        private bool CanSelectPoints1(int[][] points, List<int[]> selected, int index, int k, int minDist)
+        {
+            if (selected.Count == k) return true;
+            if (index >= points.Length) return false;
+
+            for (int i = index; i < points.Length; i++)
+            {
+                if (IsValidSelection1(selected, points[i], minDist))
+                {
+                    selected.Add(points[i]);
+                    if (CanSelectPoints1(points, selected, i + 1, k, minDist)) return true;
+                    selected.RemoveAt(selected.Count - 1);
+                }
+            }
+            return false;
+        }
+
+        private bool IsValidSelection1(List<int[]> selected, int[] candidate, int minDist)
+        {
+            foreach (var p in selected)
+            {
+                int dist = Math.Abs(p[0] - candidate[0]) + Math.Abs(p[1] - candidate[1]);
+                if (dist < minDist) return false;
+            }
+            return true;
+        }
+        #endregion
     }
 
     public class NumberContainers

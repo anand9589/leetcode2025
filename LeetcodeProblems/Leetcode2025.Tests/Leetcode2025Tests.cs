@@ -247,6 +247,15 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        [TestMethod]
+        public void MaxSumText()
+        {
+            string s = "[[1,2],[3,4]]";
+            int[][] arr = getMultiDimensionalArray(s);
+            int[] limit = { 1, 2 };
+            int k = 2;
+            var result = leetcode.MaxSum(arr,limit,k);
+        }
 
         #region 1028. Recover a Tree From Preorder Traversal
 
@@ -464,6 +473,46 @@ namespace Leetcode2025.Tests
             var k = leetcode.XorAllNums(nums1, nums2);
         }
 
+        #endregion
+
+
+        #region 2467. Most Profitable Path in a Tree
+
+
+        [TestMethod]
+        public void MostProfitablePathTest()
+        {
+            string s = "[[0,1],[1,2],[1,3],[3,4]]";
+            int[][] edges = getMultiDimensionalArray(s);
+            int bob = 3;
+            int[] amount = { -2, 4, 2, -4, 6 };
+
+            var result = leetcode.MostProfitablePath(edges, bob, amount);
+        }
+
+
+        [TestMethod]
+        public void MostProfitablePathTest1()
+        {
+            string s = "[[0,1]]";
+            int[][] edges = getMultiDimensionalArray(s);
+            int bob = 1;
+            int[] amount = { -7280, 2350 };
+
+            var result = leetcode.MostProfitablePath(edges, bob, amount);
+        }
+
+
+        [TestMethod]
+        public void MostProfitablePathTest2()
+        {
+            string s = "[[0,2],[0,4],[1,3],[1,2]]";
+            int[][] edges = getMultiDimensionalArray(s);
+            int bob = 1;
+            int[] amount = { 3958, -9854, -8334, -9388, 3410 };
+
+            var result = leetcode.MostProfitablePath(edges, bob, amount);
+        }
         #endregion
 
         #region 2658. Maximum Number of Fish in a Grid

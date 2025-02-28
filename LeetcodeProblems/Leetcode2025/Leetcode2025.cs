@@ -2023,6 +2023,25 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1749. Maximum Absolute Sum of Any Subarray
+        public int MaxAbsoluteSum(int[] nums)
+        {
+            int minPrefixSum = 0;
+            int maxrefixSum = 0;
+            int prefixSum = 0;
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                prefixSum += nums[i];
+
+                minPrefixSum = Math.Min(minPrefixSum, prefixSum);
+                maxrefixSum = Math.Max(maxrefixSum, prefixSum);
+            }
+
+            return maxrefixSum - minPrefixSum;
+        }
+        #endregion
+
         #region 1752. Check if Array Is Sorted and Rotated
         public bool Check(int[] nums)
         {

@@ -1210,7 +1210,7 @@ namespace Leetcode2025
         public int LenLongestFibSubseq(int[] arr)
         {
             int n = arr.Length;
-            int[,] dp = new int[n,n];
+            int[,] dp = new int[n, n];
             int maxLen = 0;
 
             for (int curr = 2; curr < n; curr++)
@@ -1232,8 +1232,8 @@ namespace Leetcode2025
                     }
                     else
                     {
-                        dp[end,curr] = dp[start,end] + 1;
-                        maxLen = Math.Max(dp[end,curr], maxLen);
+                        dp[end, curr] = dp[start, end] + 1;
+                        maxLen = Math.Max(dp[end, curr], maxLen);
                         end--;
                         start++;
                     }
@@ -1494,18 +1494,43 @@ namespace Leetcode2025
         #region 1143. Longest Common Subsequence
         public int LongestCommonSubsequence(string text1, string text2)
         {
-            return LongestCommonSubsequence(text1,text2,0,0);
+            int rows = text1.Length;
+            int cols = text2.Length;
+
+            int[,] dp = new int[rows + 1, cols + 1];
+
+            for (int row = 1; row <= rows; row++)
+            {
+                for (int col = 1; col <= cols; col++)
+                {
+                    if (text1[row - 1] == text2[col - 1])
+                    {
+                        dp[row, col] = 1 + dp[row-1,col-1];
+        }
+                    else
+                    {
+                        dp[row, col] = Math.Max(dp[row - 1, col], dp[row, col - 1]);
+                    }
+                }
+            }
+
+            return dp[rows, cols];
+        }
+        public int LongestCommonSubsequence_Recursion(string text1, string text2)
+        {
+            return LongestCommonSubsequence_Recursion(text1, text2, 0, 0);
         }
 
-        private int LongestCommonSubsequence(string text1, string text2, int indexText1, int indexText2)
+        private int LongestCommonSubsequence_Recursion(string text1, string text2, int indexText1, int indexText2)
         {
-            if(indexText1 == text1.Length || indexText2 == text2.Length) return 0;
+            if (indexText1 == text1.Length || indexText2 == text2.Length) return 0;
 
-            if (text1[indexText1] ==  text2[indexText2]) return 1+ LongestCommonSubsequence(text1,text2,indexText1+1,indexText2+1);
+            if (text1[indexText1] == text2[indexText2]) return 1 + LongestCommonSubsequence_Recursion(text1, text2, indexText1 + 1, indexText2 + 1);
 
-            return Math.Max(LongestCommonSubsequence(text1, text2, indexText1, indexText2 + 1), LongestCommonSubsequence(text1, text2, indexText1 + 1, indexText2));
+            return Math.Max(LongestCommonSubsequence_Recursion(text1, text2, indexText1, indexText2 + 1), LongestCommonSubsequence_Recursion(text1, text2, indexText1 + 1, indexText2));
         }
         #endregion
+
         #region 1267. Count Servers that Communicate
         public int CountServers1(int[][] grid)
         {

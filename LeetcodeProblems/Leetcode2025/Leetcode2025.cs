@@ -3004,6 +3004,99 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2467. Most Profitable Path in a Tree
+        public int MostProfitablePath(int[][] edges, int bob, int[] amount)
+        {
+            Dictionary<int, List<int>> map = new Dictionary<int, List<int>>();
+
+            for (int i = 0; i < amount.Length; i++)
+            {
+                map[i] = new List<int>();
+            }
+
+            foreach (int[] edge in edges)
+            {
+                map[edge[0]].Add(edge[1]);
+                map[edge[1]].Add(edge[0]);
+            }
+
+            bool[] visited = new bool[amount.Length];
+            int[] bobPath = getBobPath(map, visited, bob);
+            int n = bobPath.Length / 2;
+            for (int i = n; i < bobPath.Length; i++)
+            {
+                amount[bobPath[i]] = 0;
+            }
+            if (bobPath.Length % 2 == 0)
+            {
+                amount[bobPath[n-1]] /= 2;
+            }
+            visited = new bool[amount.Length];
+
+            int res = int.MinValue;
+            visited[0] = true;
+            Queue<(int,int)> q = new Queue<(int,int)>();
+            
+
+            q.Enqueue((0, amount[0]));
+
+            while (q.Count>0)
+            {
+                var top = q.Dequeue();
+                bool leaf = true;
+                foreach (int neighbor in map[top.Item1]) {
+                    if (!visited[neighbor])
+                    {
+                        visited[neighbor] = true;
+                        leaf = false;
+                        int amt = top.Item2 + amount[neighbor];
+                        q.Enqueue((neighbor, amt));
+                    }
+                }
+                if (leaf) {
+                    res = Math.Max(res, top.Item2);
+                }
+                 
+            }
+
+            return res;
+        }
+
+        private int[] getBobPath(Dictionary<int, List<int>> map,  bool[] visited, int bob)
+        {
+            Stack<int> stack = new Stack<int>();
+            stack.Push(bob);
+            visited[bob] = true;
+            bool found = false;
+            while (!found)
+            {
+                int top = stack.Peek();
+                bool leaf = true;
+                foreach (int neighbor in map[top])
+                {
+                    if (!visited[neighbor])
+                    {
+                        leaf = false;
+                        visited[neighbor] = true;
+                        if (neighbor == 0)
+                        {
+                            found = true;
+                        }
+                        else
+                        {
+                            stack.Push(neighbor);
+                        }
+                        break;
+                    }
+                }
+                if (found) { break; }
+                if(leaf) {stack.Pop(); }
+            }
+
+            return stack.ToArray();
+        }
+        #endregion
+
         #region 2493. Divide Nodes Into the Maximum Number of Groups
         public int MagnificentSets(int n, int[][] edges)
         {

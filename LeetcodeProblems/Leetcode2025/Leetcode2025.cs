@@ -1545,7 +1545,7 @@ namespace Leetcode2025
                 {
                     if (text1[row - 1] == text2[col - 1])
                     {
-                        dp[row, col] = 1 + dp[row-1,col-1];
+                        dp[row, col] = 1 + dp[row - 1, col - 1];
                     }
                     else
                     {
@@ -2250,6 +2250,21 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1780. Check if Number is a Sum of Powers of Three
+        public bool CheckPowersOfThree(int n)
+        {
+            while (n > 0)
+            {
+                if (n % 3 == 2)
+                {
+                    return false;
+                }
+                n /= 3;
+            }
+            return true;
+        } 
+        #endregion
+
         #region 1790. Check if One String Swap Can Make Strings Equal
         public bool AreAlmostEqual(string s1, string s2)
         {
@@ -2701,6 +2716,94 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2161. Partition Array According to Given Pivot
+        public int[] PivotArray(int[] nums, int pivot)
+        {
+            int lIndex = 0;
+            int rIndex = nums.Length - 1;
+            int[] result = new int[nums.Length];
+            for (int i = 0, j = nums.Length - 1; i < nums.Length; i++, j--)
+            {
+                if (nums[i] < pivot)
+                {
+                    result[lIndex++] = nums[i];
+                }
+
+                if (nums[j] > pivot)
+                {
+                    result[rIndex--] = nums[j];
+                }
+            }
+
+            while (lIndex<=rIndex)
+            {
+                result[lIndex] = pivot;
+                lIndex++;
+                rIndex--;
+            }
+
+            return result;
+        }
+        public int[] PivotArray2(int[] nums, int pivot)
+        {
+            int[] result = new int[nums.Length];
+            int pivotCount = 0;
+            Queue<int> queue = new Queue<int>();
+            int indexToInsert = -1;
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i] == pivot)
+                {
+                    pivotCount++;
+                }
+                else if(pivot < nums[i])
+                {
+                    queue.Enqueue(nums[i]);
+                }
+                else
+                {
+                    result[++indexToInsert] = nums[i];
+                }
+            }
+
+            while (pivotCount-->0)
+            {
+                result[++indexToInsert] = pivot;
+            }
+
+            while (queue.Count>0)
+            {
+                result[++indexToInsert] = queue.Dequeue();
+            }
+
+            return result;
+        }
+        public int[] PivotArray1(int[] nums, int pivot)
+        {
+            List<int> result = new List<int>();
+            int indexToInsert = 0;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i] == pivot)
+                {
+                    result.Insert(indexToInsert, pivot);
+                }
+                else if (nums[i] < pivot)
+                {
+                    result.Insert(indexToInsert, nums[i]);
+                    indexToInsert++;
+                }
+                else
+                {
+                    result.Add(nums[i]);
+                }
+            }
+
+            return result.ToArray();
+        }
+        #endregion
+
         #region 2185. Counting Words With a Given Prefix
         public int PrefixCount(string[] words, string pref)
         {
@@ -3081,6 +3184,78 @@ namespace Leetcode2025
             result = GetInt(newNum);
 
             return result;
+        }
+        #endregion
+
+        #region 2460. Apply Operations to an Array
+        public int[] ApplyOperations(int[] nums)
+        {
+            int zero = 0;
+            int i = 0;
+            for (; i < nums.Length - 1; i++)
+            {
+                if (nums[i] == 0)
+                {
+                    zero++;
+                }
+                else if (nums[i] == nums[i + 1])
+                {
+                    nums[i - zero] = nums[i] + nums[i];
+                    nums[i + 1] = 0;
+                    i++;
+                    zero++;
+                }
+                else
+                {
+                    nums[i - zero] = nums[i];
+                    nums[i] = 0;
+                }
+            }
+            if (nums[i] != 0)
+            {
+                nums[i - zero] = nums[i];
+                nums[i] = 0;
+            }
+            return nums;
+        }
+
+        public int[] ApplyOperations1(int[] nums)
+        {
+
+            for (int i = 0; i < nums.Length - 1; i++)
+            {
+                if (nums[i] == nums[i + 1])
+                {
+                    nums[i] = nums[i] + nums[i];
+                    nums[i + 1] = 0;
+                    i++;
+                }
+            }
+
+            int leftZero = 0;
+
+            int k = 0;
+
+            while (k < nums.Length && nums[k] != 0)
+            {
+                k++;
+            }
+
+            if (k < nums.Length)
+            {
+                leftZero = k;
+
+                while (++k < nums.Length)
+                {
+                    if (nums[k] > 0)
+                    {
+                        nums[leftZero++] = nums[k];
+                        nums[k] = 0;
+                    }
+                }
+            }
+
+            return nums;
         }
         #endregion
 
@@ -3588,6 +3763,49 @@ namespace Leetcode2025
                 res ^= i;
             }
             return res == 0;
+        }
+        #endregion
+
+        #region 2570. Merge Two 2D Arrays by Summing Values
+        public int[][] MergeArrays(int[][] nums1, int[][] nums2)
+        {
+            List<int[]> list = new List<int[]>();
+            int index1 = 0;
+            int index2 = 0;
+
+            while (index1 < nums1.Length && index2 < nums2.Length)
+            {
+                if (nums1[index1][0] == nums2[index2][0])
+                {
+                    list.Add(new int[] { nums1[index1][0], nums1[index1][1] + nums2[index2][1] });
+                    index1++;
+                    index2++;
+                }
+                else if (nums1[index1][0] < nums2[index2][0])
+                {
+                    list.Add(nums1[index1]);
+                    index1++;
+                }
+                else
+                {
+                    list.Add(nums2[index2]);
+                    index2++;
+                }
+            }
+
+            while (index1 < nums1.Length)
+            {
+                list.Add(nums1[index1]);
+                index1++;
+            }
+
+            while (index2 < nums2.Length)
+            {
+                list.Add(nums2[index2]);
+                index2++;
+            }
+
+            return list.ToArray();
         }
         #endregion
 
@@ -4630,8 +4848,6 @@ namespace Leetcode2025
             return -1;
         }
     }
-
-
 
     #region 1352. Product of the Last K Numbers
     //public class ProductOfNumbers

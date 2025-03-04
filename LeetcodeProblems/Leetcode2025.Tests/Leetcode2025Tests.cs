@@ -475,6 +475,22 @@ namespace Leetcode2025.Tests
 
         #endregion
 
+        #region 2460. Apply Operations to an Array
+
+        [TestMethod]
+        public void ApplyOperationsTest()
+        {
+            int[] nums = { 1, 2, 2, 2, 2, 1, 1, 0 };
+            var result = leetcode.ApplyOperations(nums);
+        }
+
+        [TestMethod]
+        public void ApplyOperationsTest1()
+        {
+            int[] nums = { 0,1,0,1 };
+            var result = leetcode.ApplyOperations(nums);
+        }
+        #endregion
 
         #region 2467. Most Profitable Path in a Tree
 

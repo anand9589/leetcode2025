@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace Leetcode2025
@@ -1630,6 +1625,34 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1358. Number of Substrings Containing All Three Characters
+        public int NumberOfSubstrings(string s)
+        {
+            int a = -1, b = -1, c = -1;
+            int total = 0;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                switch (s[i])
+                {
+                    case 'a':
+                        a = i;
+                        break;
+                    case 'b':
+                        b = i;
+                        break;
+                    default:
+                        c = i;
+                        break;
+                }
+
+                total += 1 + Math.Min(a, Math.Min(b, c));
+            }
+
+            return total;
+        }
+        #endregion
+
         #region 1368. Minimum Cost to Make at Least One Valid Path in a Grid
 
         public int MinCost(int[][] grid)
@@ -2262,7 +2285,7 @@ namespace Leetcode2025
                 n /= 3;
             }
             return true;
-        } 
+        }
         #endregion
 
         #region 1790. Check if One String Swap Can Make Strings Equal
@@ -2411,7 +2434,7 @@ namespace Leetcode2025
             {
                 if (s[i] == part[0])
                 {
-                    //q.Push(i);
+                    //q.Push(j);
                     int cnt = 1;
                     int j = i;
                     StringBuilder sb2 = new StringBuilder();
@@ -2735,7 +2758,7 @@ namespace Leetcode2025
                 }
             }
 
-            while (lIndex<=rIndex)
+            while (lIndex <= rIndex)
             {
                 result[lIndex] = pivot;
                 lIndex++;
@@ -2757,7 +2780,7 @@ namespace Leetcode2025
                 {
                     pivotCount++;
                 }
-                else if(pivot < nums[i])
+                else if (pivot < nums[i])
                 {
                     queue.Enqueue(nums[i]);
                 }
@@ -2767,12 +2790,12 @@ namespace Leetcode2025
                 }
             }
 
-            while (pivotCount-->0)
+            while (pivotCount-- > 0)
             {
                 result[++indexToInsert] = pivot;
             }
 
-            while (queue.Count>0)
+            while (queue.Count > 0)
             {
                 result[++indexToInsert] = queue.Dequeue();
             }
@@ -2930,6 +2953,44 @@ namespace Leetcode2025
             }
 
             return result.ToString();
+        }
+        #endregion
+
+        #region 2379. Minimum Recolors to Get K Consecutive Black Blocks
+        public int MinimumRecolors(string blocks, int k)
+        {
+            int result = 0;
+            int i = -1;
+            while (++i < k)
+            {
+                if (blocks[i] == 'W')
+                {
+                    result++;
+                }
+            }
+            if (result > 0)
+            {
+                int curr = result;
+
+                while (i < blocks.Length)
+                {
+                    if (blocks[i] != blocks[i - k])
+                    {
+                        if (blocks[i] == 'B')
+                        {
+                            curr--;
+                            result = Math.Min(result, curr);
+                        }
+                        else
+                        {
+                            curr++;
+                        }
+                    }
+                    i++;
+                }
+            }
+
+            return result;
         }
         #endregion
 
@@ -3467,6 +3528,83 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2529. Maximum Count of Positive Integer and Negative Integer
+        public int MaximumCount(int[] nums)
+        {
+            int negCount = 0, posCount = 0;
+
+            int low = 0;
+            int high = nums.Length - 1;
+            if (nums[low] >= 0)
+            {
+                high = getMaximumPOSCount(nums, 0, high);
+            }
+            else if (nums[high] <= 0)
+            {
+                low = getMaximumNEGCount(nums, 0, high);
+            }
+            else
+            {
+                while (low < high)
+                {
+                    int mid = (low + high) / 2;
+
+                    if (nums[mid] == 0)
+                    {
+                        low = low == mid ? mid - 1 : getMaximumNEGCount(nums, low, mid - 1);
+                        high = high == mid ? mid + 1 : getMaximumPOSCount(nums, mid + 1, high);
+                        break;
+                    }
+                    else if (nums[mid] < 0)
+                    {
+                        low = mid + 1;
+                    }
+                    else
+                    {
+                        high = mid - 1;
+                    }
+                }
+
+            }
+
+            while (low >= 0 && nums[low] >= 0)
+            {
+                low--;
+            }
+            negCount = low + 1;
+
+            while (high < nums.Length && nums[high] <= 0)
+            {
+                high++;
+            }
+            posCount = nums.Length - high;
+
+            return Math.Max(posCount, negCount);
+        }
+
+        private int getMaximumPOSCount(int[] nums, int low, int high)
+        {
+            if (nums[high] <= 0) return high;
+            if (low == high || nums[low] > 0) return low;
+
+            int mid = (low + high) / 2;
+            if (nums[mid] == 0) return getMaximumPOSCount(nums, mid + 1, high);
+
+            return getMaximumPOSCount(nums, low, mid - 1);
+        }
+
+        private int getMaximumNEGCount(int[] nums, int low, int high)
+        {
+            if (nums[low] >= 0) return low;
+            if (low == high || nums[high] < 0) return high;
+            int mid = (low + high) / 2;
+
+            if (nums[mid] == 0) return getMaximumNEGCount(nums, low, mid - 1);
+
+            return getMaximumNEGCount(nums, mid + 1, high);
+        }
+        #endregion
+
         #region 2559. Count Vowel Strings in Ranges
         public int[] VowelStrings(string[] words, int[][] queries)
         {
@@ -3498,6 +3636,22 @@ namespace Leetcode2025
             }
 
             return result;
+        }
+        #endregion
+
+        #region 2579. Count Total Number of Colored Cells
+        public long ColoredCells1(int n)
+        {
+            if (n == 1) return 1;
+
+            return ((n - 1) * 4) + ColoredCells1(n - 1);
+        }
+        public long ColoredCells(int n)
+        {
+            // 1 + (4 * 1) + (4*2) + (4*3) + ... + (4*(n-1))
+            // 1 + 4  * (1 + n-1)
+            // calculation of 1 + (n-1) == (n * n-1) / 2
+            return 1 + (long)n * (n - 1) * 2;
         }
         #endregion
 
@@ -3930,6 +4084,38 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2965. Find Missing and Repeated Values
+        public int[] FindMissingAndRepeatedValues(int[][] grid)
+        {
+            int n = grid.Length;
+            int totalNums = n * n;
+            int duplicate = -1;
+            HashSet<int> map = new HashSet<int>();
+            int i = 0;
+            while (++i <= totalNums)
+            {
+                map.Add(i);
+            }
+
+            for (int row = 0; row < n; row++)
+            {
+                for (int col = 0; col < n; col++)
+                {
+                    if (!map.Contains(grid[row][col]))
+                    {
+                        duplicate = grid[row][col];
+                    }
+                    else
+                    {
+                        map.Remove(grid[row][col]);
+                    }
+                }
+            }
+
+            return new int[] { duplicate, map.First() };
+        }
+        #endregion
+
         #region 3042. Count Prefix and Suffix Pairs I
         public int CountPrefixSuffixPairs(string[] words)
         {
@@ -4185,6 +4371,52 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 3208. Alternating Groups II
+        public int NumberOfAlternatingGroups(int[] colors, int k)
+        {
+            int length = colors.Length;
+            int result = 0;
+            int alternatingElementsCount = 1;
+            int lastColor = colors[0];
+
+            for (int index = 1; index < length; index++)
+            {
+                if (colors[index] == lastColor)
+                {
+                    alternatingElementsCount = 1;
+                    lastColor = colors[index];
+                    continue;
+                }
+
+                alternatingElementsCount++;
+
+                if (alternatingElementsCount >= k)
+                {
+                    result++;
+                }
+
+                lastColor = colors[index];
+            }
+
+            for (int index = 0; index < k - 1; index++)
+            {
+                if (colors[index] == lastColor)
+                    break;
+
+                alternatingElementsCount++;
+
+                if (alternatingElementsCount >= k)
+                {
+                    result++;
+                }
+
+                lastColor = colors[index];
+            }
+
+            return result;
+        }
+        #endregion
+
         #region 3223. Minimum Length of String After Operations
         public int MinimumLength(string s)
         {
@@ -4200,6 +4432,294 @@ namespace Leetcode2025
                 }
             }
             return 0;
+        }
+        #endregion
+
+        #region 3306. Count of Substrings Containing Every Vowel and K Consonants II
+        public long CountOfSubstrings2(string word, int k)
+        {
+            return AtLeastK(word, k) - AtLeastK(word, k + 1);
+        }
+
+        private long AtLeastK(string word, int k)
+        {
+            long numValidSubstrings = 0;
+            int start = 0, end = 0;
+            Dictionary<char, int> vowelCount = new Dictionary<char, int>();
+            int consonantCount = 0;
+
+            while (end < word.Length)
+            {
+                char newLetter = word[end];
+
+                if (IsVowel(newLetter))
+                {
+                    if (!vowelCount.ContainsKey(newLetter))
+                    {
+                        vowelCount[newLetter] = 0;
+                    }
+                    vowelCount[newLetter]++;
+                }
+                else
+                {
+                    consonantCount++;
+                }
+
+                while (vowelCount.Count == 5 && consonantCount >= k)
+                {
+                    numValidSubstrings += word.Length - end;
+                    char startLetter = word[start];
+
+                    if (IsVowel(startLetter))
+                    {
+                        vowelCount[startLetter]--;
+                        if (vowelCount[startLetter] == 0)
+                        {
+                            vowelCount.Remove(startLetter);
+                        }
+                    }
+                    else
+                    {
+                        consonantCount--;
+                    }
+
+                    start++;
+                }
+
+                end++;
+            }
+
+            return numValidSubstrings;
+        }
+
+        private bool IsVowel(char c)
+        {
+            return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+        }
+
+        public long CountOfSubstrings(string word, int k)
+        {
+            long result = 0;
+            int c = 0, a = 0, e = 0, i = 0, o = 0, u = 0, index = -1, startIndex = 0;
+            HashSet<char> vowels = new HashSet<char>();
+            while (++index < word.Length)
+            {
+                switch (word[index])
+                {
+                    case 'a':
+                        a++;
+                        vowels.Add('a');
+                        if (c == k && vowels.Count == 5)
+                        {
+                            result++;
+                        }
+                        break;
+                    case 'e':
+                        e++;
+                        vowels.Add('e');
+                        if (c == k && vowels.Count == 5)
+                        {
+                            result++;
+                        }
+                        break;
+                    case 'i':
+                        i++;
+                        vowels.Add('e');
+                        if (c == k && vowels.Count == 5)
+                        {
+                            result++;
+                        }
+                        break;
+                    case 'o':
+                        o++;
+                        vowels.Add('o');
+                        if (c == k && vowels.Count == 5)
+                        {
+                            result++;
+                        }
+                        break;
+                    case 'u':
+                        vowels.Add('u');
+                        u++;
+                        break;
+                    default:
+                        c++;
+                        if (c == k && vowels.Count == 5)
+                        {
+                            result++;
+                        }
+                        else if (c > k)
+                        {
+                            while (c >= k && vowels.Count == 5)
+                            {
+                                switch (word[startIndex])
+                                {
+                                    case 'a':
+                                        a--;
+                                        if (a == 0)
+                                        {
+                                            vowels.Remove('a');
+                                        }
+                                        break;
+
+                                    case 'e':
+                                        e--;
+                                        if (e == 0)
+                                        {
+                                            vowels.Remove('e');
+                                        }
+                                        break;
+                                    case 'i':
+                                        i--;
+                                        if (i == 0)
+                                        {
+                                            vowels.Remove('i');
+                                        }
+                                        break;
+                                    case 'o':
+                                        o--;
+                                        if (o == 0)
+                                        {
+                                            vowels.Remove('o');
+                                        }
+                                        break;
+                                    case 'u':
+                                        u--;
+                                        if (u == 0)
+                                        {
+                                            vowels.Remove('u');
+                                        }
+                                        break;
+                                    default:
+                                        c--;
+                                        if (vowels.Count == 5)
+                                        {
+                                            result++;
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+                }
+
+
+            }
+            if (c == k)
+            {
+                while (c == k && a > 0 && e > 0 && i > 0 && o > 0 && u > 0)
+                {
+                    result++;
+                    switch (word[startIndex])
+                    {
+                        case 'a':
+                            a--;
+                            break;
+                        case 'e':
+                            e--;
+                            break;
+                        case 'i':
+                            i--;
+                            break;
+                        case 'o':
+                            o--;
+                            break;
+                        case 'u':
+                            u--;
+                            break;
+                        default:
+                            c--;
+                            break;
+                    }
+                    startIndex++;
+                }
+            }
+            return result;
+        }
+        #endregion
+
+        #region 3356. Zero Array Transformation II
+
+
+        public int MinZeroArray(int[] nums, int[][] queries)
+        {
+            int n = nums.Length, left = 0, right = queries.Length;
+
+            if (!currentIndexZero(nums, queries, right)) return -1;
+            while (left <= right)
+            {
+                int middle = left + (right - left) / 2;
+                if (currentIndexZero(nums, queries, middle))
+                {
+                    right = middle - 1;
+                }
+                else
+                {
+                    left = middle + 1;
+                }
+            }
+
+            return left;
+        }
+
+        private bool currentIndexZero(int[] nums, int[][] queries, int k)
+        {
+            int n = nums.Length, sum = 0;
+            int[] differenceArray = new int[n + 1];
+
+            // Process query
+            for (int queryIndex = 0; queryIndex < k; queryIndex++)
+            {
+                int left = queries[queryIndex][0], right =
+                    queries[queryIndex][1], val = queries[queryIndex][2];
+
+                // Process start and end of range
+                differenceArray[left] += val;
+                differenceArray[right + 1] -= val;
+            }
+
+            // Check if zero array can be formed
+            for (int numIndex = 0; numIndex < n; numIndex++)
+            {
+                sum += differenceArray[numIndex];
+                if (sum < nums[numIndex]) return false;
+            }
+            return true;
+        }
+
+        public int MinZeroArray_1(int[] nums, int[][] queries)
+        {
+            int res = 0;
+            HashSet<int> set = new HashSet<int>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i] == 0)
+                {
+                    set.Add(i);
+                }
+            }
+            for (int j = 0; j < queries.Length; j++)
+            {
+                if (set.Count == nums.Length)
+                {
+                    return j;
+                }
+
+                int l = queries[j][0];
+                int r = queries[j][1];
+                int v = queries[j][2];
+                for (int i = l; i <= r; i++)
+                {
+                    nums[i] = Math.Max(0, nums[i] - v);
+                    if (nums[i] == 0)
+                    {
+                        set.Add(i);
+                    }
+                }
+            }
+
+
+            return set.Count == nums.Length ? queries.Length : -1;
         }
         #endregion
 
@@ -4446,6 +4966,113 @@ namespace Leetcode2025
             coin += dp[oldRow, oldCol].sum;
 
             dp[currRow, currCol] = (coin, l1, l2);
+        }
+        #endregion
+
+        #region 3477. Fruits Into Baskets II
+        public int NumOfUnplacedFruits(int[] fruits, int[] baskets)
+        {
+            int unplaced = 0;
+            Stack<int> stack = new Stack<int>();
+            for (int i = fruits.Length - 1; i >= 0; i--)
+            {
+                stack.Push(baskets[i]);
+            }
+
+
+            Stack<int> stack1 = new Stack<int>();
+            for (int i = 0; i < fruits.Length; i++)
+            {
+                if (fruits[i] <= stack.Peek())
+                {
+                    stack.Pop();
+                }
+                else
+                {
+                    bool placed = false;
+                    stack1.Push(stack.Pop());
+                    while (stack.Count > 0)
+                    {
+                        if (fruits[i] <= stack.Peek())
+                        {
+                            placed = true;
+                            stack.Pop();
+                            break;
+                        }
+                        else
+                        {
+                            stack1.Push(stack.Pop());
+                        }
+                    }
+
+                    if (!placed)
+                    {
+                        unplaced++;
+                    }
+
+                    while (stack1.Count > 0)
+                    {
+                        stack.Push(stack1.Pop());
+                    }
+
+                }
+            }
+            return unplaced;
+        }
+        #endregion
+
+        #region 3478. Choose K Elements With Maximum Sum
+        public long[] FindMaxSum(int[] nums1, int[] nums2, int k)
+        {
+            PriorityQueue<(int index, int n1, int n2), int> pq = new PriorityQueue<(int index, int n1, int n2), int>();
+
+            for (int i = 0; i < nums1.Length; i++)
+            {
+                pq.Enqueue((i, nums1[i], nums2[i]), nums1[i]);
+            }
+            PriorityQueue<long, long> kpq = new PriorityQueue<long, long>();
+            long currSum = 0;
+
+            var top = pq.Dequeue();
+            currSum = top.n2;
+
+            kpq.Enqueue(currSum, currSum);
+            long[] result = new long[nums1.Length];
+            result[top.index] = 0;
+            int lastPriority = top.n1;
+            long lastSum = 0;
+            while (pq.Count > 0)
+            {
+                var dq = pq.Dequeue();
+                if (lastPriority == dq.n1)
+                {
+                    result[dq.index] = lastSum;
+                }
+                else
+                {
+                    result[dq.index] = currSum;
+                    lastPriority = dq.n1;
+                    lastSum = currSum;
+                }
+
+
+                if (kpq.Count < k)
+                {
+                    currSum += dq.n2;
+                    kpq.Enqueue(dq.n2, dq.n2);
+                }
+                else
+                {
+                    if (kpq.Peek() < dq.n2)
+                    {
+                        currSum -= kpq.Dequeue();
+                        currSum += dq.n2;
+                        kpq.Enqueue(dq.n2, dq.n2);
+                    }
+                }
+            }
+
+            return result;
         }
         #endregion
 

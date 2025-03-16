@@ -5351,29 +5351,25 @@ namespace Leetcode2025
         }
         #endregion
 
-        #region Sum of Variable Length Subarrays
-        public int SubarraySum(int[] nums)
+        #region 3487. Maximum Unique Subarray Sum After Deletion
+        public int MaxSum(int[] nums)
         {
-            int sum = nums[0];
-
-            int[] prefixsum = new int[nums.Length];
-            prefixsum[0] = nums[0];
-            for (int i = 1; i < nums.Length; i++)
+            HashSet<int> added = new HashSet<int>();
+            int result = 0;
+            int no = int.MinValue;
+            for (int i = 0; i < nums.Length; i++)
             {
-                prefixsum[i] = prefixsum[i - 1] + nums[i];
-
-                int startIndex = Math.Max(0, i - nums[i]);
-
-                if (startIndex == 0)
+                if (nums[i] <= 0 || added.Contains(nums[i]))
                 {
-                    sum += prefixsum[i];
+                    no = Math.Max(no, nums[i]);
+                    continue;
                 }
-                else
-                {
-                    sum += (prefixsum[i] - prefixsum[startIndex - 1]);
-                }
+
+                result += nums[i];
+                added.Add(nums[i]);
             }
-            return sum;
+            if (added.Count == 0) return no;
+            return result;
         }
         #endregion
 

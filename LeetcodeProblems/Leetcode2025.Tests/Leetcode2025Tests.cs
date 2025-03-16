@@ -247,6 +247,7 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region MaxSumText
         [TestMethod]
         public void MaxSumText()
         {
@@ -254,8 +255,9 @@ namespace Leetcode2025.Tests
             int[][] arr = getMultiDimensionalArray(s);
             int[] limit = { 1, 2 };
             int k = 2;
-            var result = leetcode.MaxSum(arr,limit,k);
+            var result = leetcode.MaxSum(arr, limit, k);
         }
+        #endregion
 
         #region 1028. Recover a Tree From Preorder Traversal
 
@@ -304,7 +306,7 @@ namespace Leetcode2025.Tests
         public void ConstructDistancedSequenceTest()
         {
             var result = leetcode.ConstructDistancedSequence(3);
-            
+
         }
         #endregion
 
@@ -367,7 +369,7 @@ namespace Leetcode2025.Tests
         {
             string s = "daabcbaabcbc";
             string part = "abc";
-            var res = leetcode.RemoveOccurrences(s,part);
+            var res = leetcode.RemoveOccurrences(s, part);
             Assert.AreEqual("dab", res);
         }
         #endregion
@@ -395,6 +397,36 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 2226. Maximum Candies Allocated to K Children
+
+        [TestMethod]
+        public void MaximumCandiesTest()
+        {
+            int[] candies = { 5, 8, 6 };
+            long k = 3;
+            var result = leetcode.MaximumCandies(candies, k);
+            Assert.AreEqual(5, result);
+        }
+
+
+        [TestMethod]
+        public void MaximumCandiesTest1()
+        {
+            int[] candies = { 2, 5 };
+            long k = 11;
+            var result = leetcode.MaximumCandies(candies, k);
+            Assert.AreEqual(0, result);
+        }
+
+        [TestMethod]
+        public void MaximumCandiesTest2()
+        {
+            int[] candies = { 5, 8, 6 };
+            long k = 4;
+            var result = leetcode.MaximumCandies(candies, k);
+            Assert.AreEqual(4, result);
+        }
+        #endregion
 
         #region 2342. Max Sum of a Pair With Equal Sum of Digits //18,43,36,13,7
 
@@ -500,7 +532,7 @@ namespace Leetcode2025.Tests
         [TestMethod]
         public void ApplyOperationsTest1()
         {
-            int[] nums = { 0,1,0,1 };
+            int[] nums = { 0, 1, 0, 1 };
             var result = leetcode.ApplyOperations(nums);
         }
         #endregion
@@ -585,6 +617,19 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 2594. Minimum Time to Repair Cars
+
+
+        [TestMethod]
+        public void RepairCarsTest()
+        {
+            int[] ranks = { 4, 2, 3, 1 };
+            int cars = 10;
+            var result = leetcode.RepairCars(ranks, cars);
+            Assert.AreEqual(16, result);
+        }
+        #endregion
+
         #region 2658. Maximum Number of Fish in a Grid
 
         [TestMethod]
@@ -662,7 +707,7 @@ namespace Leetcode2025.Tests
             int[] arr = { 1000000000, 999999999, 1000000000, 999999999, 1000000000, 999999999 };
             int k = 1000000000;
             var result = leetcode.MinOperations(arr, k);
-            Assert.AreEqual(2,result);
+            Assert.AreEqual(2, result);
         }
         #endregion
 
@@ -688,7 +733,7 @@ namespace Leetcode2025.Tests
             string word = "ieaouqqieaouqq";
             int k = 1;
             var res = leetcode.CountOfSubstrings(word, k);
-            Assert.AreEqual(3,res);
+            Assert.AreEqual(3, res);
         }
 
 
@@ -710,8 +755,8 @@ namespace Leetcode2025.Tests
             string s = "[[0,2,1],[0,2,1],[1,1,3]]";
             int[][] queries = getMultiDimensionalArray(s);
             int[] nums = { 2, 0, 2 };
-            var res= leetcode.MinZeroArray(nums,queries);
-            Assert.AreEqual(2,res);
+            var res = leetcode.MinZeroArray(nums, queries);
+            Assert.AreEqual(2, res);
         }
 
         [TestMethod]

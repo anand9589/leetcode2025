@@ -2841,6 +2841,104 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2226. Maximum Candies Allocated to K Children
+        public int MaximumCandies(int[] candies, long k)
+        {
+            // Find the maximum number of candies in any pile
+            int maxCandiesInPile = 0;
+            for (int i = 0; i < candies.Length; i++)
+            {
+                maxCandiesInPile = Math.Max(maxCandiesInPile, candies[i]);
+            }
+
+            // Set the initial search range for binary search
+            int left = 0;
+            int right = maxCandiesInPile;
+
+            // Binary search to find the maximum number of candies each child can get
+            while (left < right)
+            {
+                // Calculate the middle value of the current range
+                int middle = (left + right + 1) / 2;
+
+                // Check if it's possible to allocate candies so that each child gets 'middle' candies
+                if (canAllocateCandies(candies, k, middle))
+                {
+                    // If possible, move to the upper half to search for a larger number
+                    left = middle;
+                }
+                else
+                {
+                    // Otherwise, move to the lower half
+                    right = middle - 1;
+                }
+            }
+
+            return left;
+        }
+
+        private bool canAllocateCandies(
+            int[] candies,
+            long k,
+            int numOfCandies
+        )
+        {
+            // Initialize the total number of children that can be served
+            long maxNumOfChildren = 0;
+
+            // Iterate over all piles to calculate how many children each pile can serve
+            for (int pileIndex = 0; pileIndex < candies.Length; pileIndex++)
+            {
+                maxNumOfChildren += candies[pileIndex] / numOfCandies;
+            }
+
+            return maxNumOfChildren >= k;
+        }
+
+        public int MaximumCandies1(int[] candies, long k)
+        {
+            int maxCandies = candies[0];
+            for (int i = 1; i < candies.Length; i++)
+            {
+                maxCandies = Math.Min(maxCandies, candies[i]);
+            }
+
+            if (k == candies.Length) return maxCandies;
+            int low = 0, high = maxCandies;
+
+            maxCandies = 0;
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+
+                if (canShare1(candies, k, mid))
+                {
+                    maxCandies = mid;
+                    low = mid + 1;
+                }
+                else
+                {
+                    high = mid - 1;
+                }
+            }
+            return maxCandies;
+        }
+
+        private bool canShare1(int[] candies, long k, int maxCandies)
+        {
+            if (maxCandies > 0)
+            {
+                int i = -1;
+                while (++i < candies.Length && k > 0)
+                {
+                    int n = candies[i] / maxCandies;
+                    k -= n;
+                }
+            }
+            return k <= 0;
+        }
+        #endregion
+
         #region 2270. Number of Ways to Split Array
         public int WaysToSplitArray(int[] nums)
         {
@@ -3639,6 +3737,50 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2560. House Robber IV
+        public int MinCapability(int[] nums, int k)
+        {
+            int low = nums[0];
+            int high = nums[0];
+            for (int i = 1; i < nums.Length; i++)
+            {
+                low = Math.Min(low, nums[i]);
+                high = Math.Max(high, nums[i]);
+            }
+            int res = -1;
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+
+                if (canMinCapability(nums, k, mid))
+                {
+                    res = mid;
+                    high = mid - 1;
+                }
+                else
+                {
+                    low = mid + 1;
+                }
+            }
+            return res;
+        }
+
+        private bool canMinCapability(int[] nums, int k, int mid)
+        {
+            for (int i = 0; i < nums.Length && k > 0; i++)
+            {
+                if (nums[i] <= mid)
+                {
+                    k--;
+                    i++;
+                }
+            }
+            return k == 0;
+        }
+
+
+        #endregion
+
         #region 2579. Count Total Number of Colored Cells
         public long ColoredCells1(int n)
         {
@@ -3652,6 +3794,139 @@ namespace Leetcode2025
             // 1 + 4  * (1 + n-1)
             // calculation of 1 + (n-1) == (n * n-1) / 2
             return 1 + (long)n * (n - 1) * 2;
+        }
+        #endregion
+
+        #region 2594. Minimum Time to Repair Cars
+        public long RepairCars(int[] ranks, int cars)
+        {
+            int minRank = ranks[0];
+            for (int i = 0; i < ranks.Length; i++)
+            {
+                minRank = Math.Min(ranks[i], minRank);
+            }
+            long result = 0;
+            long low = 1;
+            long high = (long)minRank * (long)cars * (long)cars;
+
+            while (low <= high)
+            {
+                long mid = (low + high) / 2;
+
+                if (canRepair(ranks, cars, mid, out long newMid))
+                {
+                    result = newMid;
+                    high = newMid - 1;
+                }
+                else
+                {
+                    low = mid + 1;
+                }
+            }
+            return result;
+        }
+
+        private bool canRepair(int[] ranks, int cars, long mid, out long newMid)
+        {
+            int repairCars = repair(ranks[0], cars, mid, out newMid);
+            cars -= repairCars;
+            long newMid1 = newMid;
+            for (int i = 1; i < ranks.Length && cars > 0; i++)
+            {
+                repairCars = repair(ranks[i], cars, mid, out newMid1);
+                newMid = Math.Max(newMid, newMid1);
+                cars -= repairCars;
+            }
+
+            return cars <= 0;
+        }
+
+        private int repair(int rank, int cars, long max, out long newMid)
+        {
+            newMid = max;
+            int result = 0;
+            int low = 1;
+            int high = cars;
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+                long timeTaken = (long)rank * (long)mid * (long)mid;
+
+                if (timeTaken > max)
+                {
+                    high = mid - 1;
+                }
+                else
+                {
+                    newMid = timeTaken;
+                    result = mid;
+                    low = mid + 1;
+                }
+            }
+            return (int)result;
+        }
+
+        public long RepairCars1(int[] ranks, int cars)
+        {
+            int minRank = ranks[0];
+            for (int i = 0; i < ranks.Length; i++)
+            {
+                minRank = Math.Min(ranks[i], minRank);
+            }
+            long result = 0;
+            long low = 1;
+            long high = (long)minRank * (long)cars * (long)cars;
+
+            while (low<=high)
+            {
+                long mid = (low + high) / 2;
+
+                if (canRepair1(ranks, cars, mid))
+                {
+                    result = mid;
+                    high = mid-1;
+                }
+                else
+                {
+                    low = mid+1;
+                }
+            }
+            return result;
+        }
+
+        private bool canRepair1(int[] ranks, int cars, long mid)
+        {
+
+            for (int i = 0; i < ranks.Length && cars>0; i++)
+            {
+                int repairCars = repair1(ranks[i], cars, mid);
+                cars -= repairCars;
+            }
+
+            return cars <= 0;
+        }
+
+        private int repair1(int rank, int cars, long max)
+        {
+            int result = 0;
+            int low = 1;
+            int high = cars;
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+                long timeTaken = (long)rank * (long)mid * (long)mid;
+                
+                if (timeTaken > max)
+                {
+                    high = mid - 1;
+                }
+                else
+                {
+                    result = mid;
+                    low = mid + 1;
+                }
+            }
+            return (int)result;
         }
         #endregion
 

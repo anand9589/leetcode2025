@@ -2841,6 +2841,62 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2206. Divide Array Into Equal Pairs
+
+        public bool DivideArray(int[] nums)
+        {
+            bool[] bools = new bool[501];
+            int counter = 0;
+            foreach (var word in nums)
+            {
+                if (bools[word])
+                {
+                    counter -= word;
+                    bools[word] = true;
+                }
+                else
+                {
+                    counter += word;
+                    bools[word] = false;
+                }
+            }           
+
+            return counter==0;
+        }
+
+        public bool DivideArray2(int[] nums)
+        {
+            bool[] bools = new bool[501];
+            foreach (var word in nums) { 
+                bools[word] = !bools[word];
+            }
+
+            for (int i = 1; i < 501; i++)
+            {
+                if (bools[i]) return false;
+            }
+
+            return true;
+        }
+        public bool DivideArray1(int[] nums)
+        {
+            HashSet<int> num = new HashSet<int>();
+
+            foreach (var word in nums) {
+                if (num.Contains(word))
+                {
+                    num.Remove(word);
+                }
+                else
+                {
+                    num.Add(word);
+                }
+            }
+
+            return num.Count == 0;
+        }
+        #endregion
+
         #region 2226. Maximum Candies Allocated to K Children
         public int MaximumCandies(int[] candies, long k)
         {

@@ -224,7 +224,6 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
-
         #region 827. Making A Large Island
 
         [TestMethod]
@@ -384,6 +383,17 @@ namespace Leetcode2025.Tests
 
         #endregion
 
+        #region 1976. Number of Ways to Arrive at Destination
+        [TestMethod]
+        public void CountPathsTest()
+        {
+            int n = 7;
+            int[][] roads = getMultiDimensionalArray("[[0,6,7],[0,1,2],[1,2,3],[1,3,3],[6,3,3],[3,5,1],[6,5,1],[2,5,1],[0,4,5],[4,6,2]]");
+            var result= leetcode.CountPaths(n, roads);
+            Assert.AreEqual(4, result);
+        }
+        #endregion
+
         #region 2017. Grid Game
 
 
@@ -509,6 +519,25 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 2401. Longest Nice Subarray
+
+        [TestMethod]
+        public void LongestNiceSubarrayTest()
+        {
+            int[] nums = { 135745088, 609245787, 16, 2048, 2097152 };
+            var res = leetcode.LongestNiceSubarray(nums);
+            Assert.AreEqual(3,res);
+        }
+
+        [TestMethod]
+        public void LongestNiceSubarrayTest1()
+        {
+            int[] nums = { 84139415, 693324769, 614626365, 497710833, 615598711, 264, 65552, 50331652, 1, 1048576, 16384, 544, 270532608, 151813349, 221976871, 678178917, 845710321, 751376227, 331656525, 739558112, 267703680 };
+            var res = leetcode.LongestNiceSubarray(nums);
+            Assert.AreEqual(8, res);
+        }
+        #endregion
+
         #region 2425. Bitwise XOR of All Pairings
         [TestMethod]
         public void XorAllNumsTest()
@@ -575,7 +604,6 @@ namespace Leetcode2025.Tests
             var result = leetcode.MostProfitablePath(edges, bob, amount);
         }
         #endregion
-
 
         #region 2529. Maximum Count of Positive Integer and Negative Integer
 
@@ -723,6 +751,18 @@ namespace Leetcode2025.Tests
 
         #endregion
 
+        #region 3169. Count Days Without Meetings
+
+
+        [TestMethod]
+        public void CountDaysTest()
+        {
+            int days = 5;
+            int[][] meetings = getMultiDimensionalArray("[[2,4],[1,3]]");
+            var result = leetcode.CountDays(days, meetings);
+            Assert.AreEqual(1, result);
+        }
+        #endregion
 
         #region 3306. Count of Substrings Containing Every Vowel and K Consonants II
 

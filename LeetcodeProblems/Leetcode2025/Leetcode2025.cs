@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Leetcode2025
@@ -2520,6 +2521,212 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1976. Number of Ways to Arrive at Destination
+        public int CountPaths(int n, int[][] roads)
+        {
+            const int mod = 1_000_000_007;
+            List<List<(int, int)>> graph = new List<List<(int, int)>>();
+            for (int i = 0; i < n; i++)
+            {
+                graph.Add(new List<(int, int)>());
+            }
+            foreach (var road in roads)
+            {
+                int startNode = road[0], endNode = road[1], travelTime = road[2];
+                graph[startNode].Add((endNode, travelTime));
+                graph[endNode].Add((startNode, travelTime));
+            }
+
+            var minHeap = new SortedSet<(long, int)>(Comparer<(long, int)>.Create((a, b) =>
+           a.Item1 != b.Item1 ? a.Item1.CompareTo(b.Item1) : a.Item2.CompareTo(b.Item2)));
+            long[] shortestTime = Enumerable.Repeat(long.MaxValue, n).ToArray();
+            int[] pathCount = new int[n];
+            shortestTime[0] = 0;
+            pathCount[0] = 1;
+            minHeap.Add((0, 0));
+
+            while (minHeap.Count > 0)
+            {
+                var (currTime, currNode) = minHeap.Min;
+                minHeap.Remove(minHeap.Min);
+
+                if (currTime > shortestTime[currNode])
+                {
+                    continue;
+                }
+
+                foreach (var (neighborNode, roadTime) in graph[currNode])
+                {
+                    if (currTime + roadTime < shortestTime[neighborNode])
+                    {
+                        shortestTime[neighborNode] = currTime + roadTime;
+                        pathCount[neighborNode] = pathCount[currNode];
+                        minHeap.Add((shortestTime[neighborNode], neighborNode));
+                    }
+                    else if (currTime + roadTime == shortestTime[neighborNode])
+                    {
+                        pathCount[neighborNode] = (pathCount[neighborNode] + pathCount[currNode]) % mod;
+                    }
+                }
+            }
+
+            return pathCount[n - 1];
+        }
+        public int CountPaths3(int n, int[][] roads)
+        {
+            int result = 0;
+            Dictionary<int, Dictionary<int, int>> map = new Dictionary<int, Dictionary<int, int>>();
+            for (int i = 0; i < n; i++)
+            {
+                map.Add(i, new Dictionary<int, int>());
+            }
+
+            foreach (var road in roads)
+            {
+                map[road[0]][road[1]] = road[2];
+                map[road[1]][road[0]] = road[2];
+            }
+            int minCostToReach = int.MaxValue;
+            Queue<(int d, int w)> q = new Queue<(int d, int w)>();
+            foreach (var key in map[0].Keys)
+            {
+                q.Enqueue((key, map[0][key]));
+            }
+            bool[] visited = new bool[n];
+            visited[0] = true;
+            while (q.Count > 0)
+            {
+                var dq = q.Dequeue();
+                if (dq.w > minCostToReach) continue;
+                if (dq.d == n - 1)
+                {
+                    if (minCostToReach > dq.w)
+                    {
+                        result = 1;
+                        minCostToReach = dq.w;
+                    }
+                    else
+                    {
+                        result++;
+                    }
+                    continue;
+                }
+
+                foreach (var neighbor in map[dq.d].Keys)
+                {
+                    if (!visited[neighbor] && dq.w + map[dq.d][neighbor] <= minCostToReach)
+                    {
+                        q.Enqueue((neighbor, dq.w + map[dq.d][neighbor]));
+                    }
+                }
+                visited[dq.d] = true;
+            }
+
+            return result;
+        }
+        public int CountPaths2(int n, int[][] roads)
+        {
+            int result = 0;
+            Dictionary<int, Dictionary<int, int>> map = new Dictionary<int, Dictionary<int, int>>();
+            for (int i = 0; i < n; i++)
+            {
+                map.Add(i, new Dictionary<int, int>());
+            }
+
+            foreach (var road in roads)
+            {
+                map[road[0]][road[1]] = road[2];
+                map[road[1]][road[0]] = road[2];
+            }
+            int minCostToReach = int.MaxValue;
+            PriorityQueue<(int d, int w), int> pq = new PriorityQueue<(int d, int w), int>();
+            foreach (var key in map[0].Keys)
+            {
+                pq.Enqueue((key, map[0][key]), map[0][key]);
+            }
+            bool[] visited = new bool[n];
+            visited[0] = true;
+            while (pq.Count > 0)
+            {
+                var dq = pq.Dequeue();
+                if (dq.w > minCostToReach) break;
+                if (dq.d == n - 1)
+                {
+                    if (minCostToReach > dq.w)
+                    {
+                        result = 1;
+                        minCostToReach = dq.w;
+                    }
+                    else
+                    {
+                        result++;
+                    }
+                    continue;
+                }
+
+                foreach (var neighbor in map[dq.d].Keys)
+                {
+                    if (!visited[neighbor])
+                    {
+                        pq.Enqueue((neighbor, dq.w + map[dq.d][neighbor]), dq.w + map[dq.d][neighbor]);
+                    }
+                }
+                visited[dq.d] = true;
+            }
+
+            return result;
+        }
+        public int CountPaths1(int n, int[][] roads)
+        {
+            int result = 0;
+            Dictionary<int, Dictionary<int,int>> map = new Dictionary<int, Dictionary<int, int>>();
+            for (int i = 0; i < n; i++)
+            {
+                map.Add(i, new Dictionary<int, int>());
+            }
+
+            foreach (var road in roads)
+            {
+                map[road[0]][road[1]] = road[2];
+                map[road[1]][road[0]] = road[2];
+            }
+            int minCostToReach = int.MaxValue;
+            Queue<(int d, int w, int l)> q = new Queue<(int d, int w, int l)>();
+            foreach(var key in map[0].Keys)
+            {
+                q.Enqueue((key, map[0][key], 1));
+            }
+            bool[] visited = new bool[n];
+            visited[0] = true;
+            while (q.Count > 0) 
+            {
+                var dq = q.Dequeue();
+                if (visited[dq.d] || dq.w > minCostToReach) continue;
+                if(dq.d == n - 1)
+                {
+                    if (minCostToReach > dq.w)
+                    {
+                        result = 1;
+                        minCostToReach = dq.w;
+                    }
+                    else
+                    {
+                        result++;
+                    }
+                    continue;
+                }
+
+                foreach (var neighbor in map[dq.d].Keys)
+                {
+                    q.Enqueue((neighbor, dq.w + map[dq.d][neighbor], dq.l + 1));
+                }
+                visited[dq.d] = true;
+            }
+
+            return result;
+        }
+        #endregion
+
         #region 1980. Find Unique Binary String
         public string FindDifferentBinaryString(string[] nums)
         {
@@ -2641,6 +2848,63 @@ namespace Leetcode2025
                 dp[1, i] = grid[1][i] + Math.Max(dp[0, i], dp[1, i - 1]);
             }
             return dp[1, cols - 1];
+        }
+        #endregion
+
+        #region 2115. Find All Possible Recipes from Given Supplies
+        public IList<string> FindAllRecipes(string[] recipes, IList<IList<string>> ingredients, string[] supplies)
+        {
+            IList<string> list = new List<string>();
+
+            Queue<int> q = new Queue<int>();
+
+            Dictionary<string, List<string>> map = new Dictionary<string, List<string>>();
+
+            for (int i = 0; i < recipes.Length; i++)
+            {
+                q.Enqueue(i);
+                map[recipes[i]] = new List<string>(ingredients[i]);
+            }
+
+            HashSet<string> set = new HashSet<string>(supplies);
+            bool newRecepeFound = true;
+
+            while (newRecepeFound)
+            {
+                Queue<int> q1 = new Queue<int>();
+                newRecepeFound = false;
+                while (q.Count > 0)
+                {
+                    int index = q.Dequeue();
+                    int count = ingredients[index].Count;
+
+                    foreach (string s in ingredients[index])
+                    {
+                        if (set.Contains(s))
+                        {
+                            count--;
+                        }
+                    }
+
+                    if (count == 0)
+                    {
+                        newRecepeFound = true;
+                        set.Add(recipes[index]);
+                        list.Add(recipes[index]);
+                    }
+                    else
+                    {
+                        q1.Enqueue(index);
+                    }
+                }
+
+                if (newRecepeFound)
+                {
+                    q = new Queue<int>(q1);
+                }
+            }
+
+            return list;
         }
         #endregion
 
@@ -2859,15 +3123,16 @@ namespace Leetcode2025
                     counter += word;
                     bools[word] = false;
                 }
-            }           
+            }
 
-            return counter==0;
+            return counter == 0;
         }
 
         public bool DivideArray2(int[] nums)
         {
             bool[] bools = new bool[501];
-            foreach (var word in nums) { 
+            foreach (var word in nums)
+            {
                 bools[word] = !bools[word];
             }
 
@@ -2882,7 +3147,8 @@ namespace Leetcode2025
         {
             HashSet<int> num = new HashSet<int>();
 
-            foreach (var word in nums) {
+            foreach (var word in nums)
+            {
                 if (num.Contains(word))
                 {
                     num.Remove(word);
@@ -3288,6 +3554,86 @@ namespace Leetcode2025
                     }
                 }
             }
+        }
+        #endregion
+
+        #region 2401. Longest Nice Subarray
+        public int LongestNiceSubarray(int[] nums)
+        {
+            int startIndex = 0;
+            int endIndex = 0;
+            int currSum = 0;
+            int xorsum = 0;
+            int result = 0;
+            while (endIndex < nums.Length)
+            {
+                currSum += nums[endIndex];
+                xorsum ^= nums[endIndex];
+
+                while (xorsum != currSum)
+                {
+                    currSum -= nums[startIndex];
+                    xorsum ^= nums[startIndex];
+                    startIndex++;
+                }
+                result = Math.Max(result, endIndex - startIndex + 1);
+                endIndex++;
+            }
+            return result;
+
+        }
+        public int LongestNiceSubarray1(int[] nums)
+        {
+            int result = 1;
+            int startIndex = 0;
+            int index = 1;
+            bool[] bools = new bool[32];
+            fallInSubArray1(bools, Convert.ToString(nums[0], 2));
+            int currCount = 1;
+            while (index < nums.Length)
+            {
+                int n = nums[index];
+
+                string s = Convert.ToString(n, 2);
+
+                if (fallInSubArray1(bools, s))
+                {
+
+                }
+                else
+                {
+                    result = Math.Max(result, currCount);
+                    currCount = 1;
+                    bools = new bool[32];
+                    fallInSubArray1(bools, s);
+                }
+                index++;
+            }
+
+
+            return Math.Max(result, currCount);
+        }
+
+        private bool fallInSubArray1(bool[] bools, string s)
+        {
+            bool result = true;
+
+            int diff = 32 - s.Length;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] == '1')
+                {
+                    if (bools[diff + i])
+                    {
+                        result = false;
+                        break;
+                    }
+                    bools[diff + i] = true;
+                }
+            }
+
+            return result;
         }
         #endregion
 
@@ -3933,18 +4279,18 @@ namespace Leetcode2025
             long low = 1;
             long high = (long)minRank * (long)cars * (long)cars;
 
-            while (low<=high)
+            while (low <= high)
             {
                 long mid = (low + high) / 2;
 
                 if (canRepair1(ranks, cars, mid))
                 {
                     result = mid;
-                    high = mid-1;
+                    high = mid - 1;
                 }
                 else
                 {
-                    low = mid+1;
+                    low = mid + 1;
                 }
             }
             return result;
@@ -3953,7 +4299,7 @@ namespace Leetcode2025
         private bool canRepair1(int[] ranks, int cars, long mid)
         {
 
-            for (int i = 0; i < ranks.Length && cars>0; i++)
+            for (int i = 0; i < ranks.Length && cars > 0; i++)
             {
                 int repairCars = repair1(ranks[i], cars, mid);
                 cars -= repairCars;
@@ -3971,7 +4317,7 @@ namespace Leetcode2025
             {
                 int mid = (low + high) / 2;
                 long timeTaken = (long)rank * (long)mid * (long)mid;
-                
+
                 if (timeTaken > max)
                 {
                     high = mid - 1;
@@ -4600,6 +4946,108 @@ namespace Leetcode2025
 
         #endregion
 
+        #region 3108. Minimum Cost Walk in Weighted Graph
+        public int[] MinimumCost(int n, int[][] edges, int[][] query)
+        {
+            List<List<int[]>> adjList = new List<List<int[]>>(n);
+            for (int i = 0; i < n; i++)
+            {
+                adjList.Add(new List<int[]>(2));
+            }
+            foreach (var edge in edges)
+            {
+                adjList[edge[0]].Add(new int[] { edge[1], edge[2] });
+                adjList[edge[1]].Add(new int[] { edge[0], edge[2] });
+            }
+            bool[] visited = new bool[n];
+            int[] components = new int[n];
+            List<int> componentCost = new List<int>(n);
+
+            int componentId = 0;
+
+            // Perform BFS for each unvisited node to identify components and calculate their costs
+            for (int node = 0; node < n; node++)
+            {
+                // If the node hasn't been visited, it's a new component
+                if (!visited[node])
+                {
+                    // Get the component cost and mark all nodes in the component
+                    componentCost.Add(
+                        GetComponentCost(
+                            node,
+                    adjList,
+                            visited,
+                            components,
+                            componentId
+                        )
+                    );
+                    // Increment the component ID for the next component
+                    componentId++;
+                }
+            }
+
+            int[] answer = new int[query.Length];
+            for (int i = 0; i < query.Length; i++)
+            {
+                int start = query[i][0];
+                int end = query[i][1];
+
+                if (components[start] == components[end])
+                {
+                    // If they are in the same component, return the precomputed cost for the component
+                    answer[i] = componentCost[components[start]];
+                }
+                else
+                {
+                    // If they are in different components, return -1
+                    answer[i] = -1;
+                }
+            }
+
+            return answer;
+        }
+        private int GetComponentCost(
+        int source,
+        List<List<int[]>> adjList,
+        bool[] visited,
+        int[] components,
+        int componentId
+    )
+        {
+            Queue<int> nodesQueue = new Queue<int>();
+
+            // Initialize the component cost to the number that has only 1s in its binary representation
+            int componentCost = int.MaxValue;
+
+            nodesQueue.Enqueue(source);
+            visited[source] = true;
+
+            // Perform BFS to explore the component and calculate the cost
+            while (nodesQueue.Count > 0)
+            {
+                int node = nodesQueue.Dequeue();
+
+                // Mark the node as part of the current component
+                components[node] = componentId;
+
+                // Explore all neighbors of the current node
+                foreach (var neighbor in adjList[node])
+                {
+                    int weight = neighbor[1];
+                    // Update the component cost by performing a bitwise AND of the edge weights
+                    componentCost &= weight;
+
+                    // If the neighbor hasn't been visited, mark it as visited and add it to the queue
+                    if (visited[neighbor[0]]) continue;
+                    visited[neighbor[0]] = true;
+                    nodesQueue.Enqueue(neighbor[0]);
+                }
+            }
+
+            return componentCost;
+        }
+        #endregion
+
         #region 3160. Find the Number of Distinct Colors Among the Balls
         public int[] QueryResults(int limit, int[][] queries)
         {
@@ -4680,6 +5128,71 @@ namespace Leetcode2025
 
         #endregion
 
+        #region 3169. Count Days Without Meetings
+        public int CountDays(int days, int[][] meetings)
+        {
+            
+            Array.Sort(meetings, (x, y) => x[0] - y[0]);
+            List<(int start, int end)> meetidays = new List<(int, int)>();
+
+
+            int i = 0;
+            while (i<meetings.Length)
+            {
+                int start = meetings[i][0];
+                int end = meetings[i][1];
+                int j = i;
+
+                while (++j<meetings.Length)
+                {
+                    int newStart = meetings[j][0];
+                    int newEnd = meetings[j][1];
+                    if (newStart > end)
+                    {
+                        break;
+                    }
+
+                    if(newStart<=end && newEnd <= end)
+                    {
+                        continue;
+                    }
+
+                    end = Math.Max(end, newEnd);
+                }
+                meetidays.Add((start, end));
+
+                i = j;
+            }
+
+
+            int count = 0;
+
+            foreach (var item in meetidays)
+            {
+                count += (1 + item.end - item.start);
+            }
+
+
+            return days - count;
+        }
+        public int CountDays1(int days, int[][] meetings)
+        {
+            HashSet<int> daySet = new HashSet<int>();
+            for (int i = 1; i <= days; i++) { 
+                daySet.Add(i);
+            }
+
+            foreach (int[] meeting   in meetings) {
+                for (int i = meeting[0]; i <= meeting[1]; i++)
+                {
+                    daySet.Remove(i);
+                }
+            }
+
+            return daySet.Count;
+        }
+        #endregion
+
         #region 3174. Clear Digits
         public string ClearDigits(string s)
         {
@@ -4699,6 +5212,27 @@ namespace Leetcode2025
                 index++;
             }
             return stringBuilder.ToString();
+        }
+        #endregion
+
+        #region 3191. Minimum Operations to Make Binary Array Elements Equal to One I
+        public int MinOperations(int[] nums)
+        {
+            int count = 0;
+            for (int i = 2; i < nums.Length; i++)
+            {
+                if (nums[i - 2] == 0)
+                {
+                    count++;
+                    nums[i - 2] = nums[i - 2] ^ 1;
+                    nums[i - 1] = nums[i - 1] ^ 1;
+                    nums[i] = nums[i] ^ 1;
+                }
+            }
+            int sum = 0;
+            foreach (int num in nums) sum += num;
+            if (sum == nums.Length) return count;
+            return -1;
         }
         #endregion
 
@@ -5426,6 +5960,15 @@ namespace Leetcode2025
             }
             if (added.Count == 0) return no;
             return result;
+        }
+        #endregion
+
+        #region 3492. Maximum Containers on a Ship
+        public int MaxContainers(int n, int w, int maxWeight)
+        {
+            int k = maxWeight / w;
+
+            return Math.Min(k, n*n);
         }
         #endregion
 

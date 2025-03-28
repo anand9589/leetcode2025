@@ -538,6 +538,19 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+
+        #region 2503. Maximum Number of Points From Grid Queries
+
+
+        [TestMethod]
+        public void MaxPointsTest()
+        {
+            int[][] grid = getMultiDimensionalArray("[1,2,3],[2,5,7],[3,5,1]]");
+            int[] queries = { 5, 6, 2 };
+            var result = leetcode.MaxPoints(grid, queries);
+        }
+        #endregion
+
         #region 2425. Bitwise XOR of All Pairings
         [TestMethod]
         public void XorAllNumsTest()

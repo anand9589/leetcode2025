@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -2679,7 +2680,7 @@ namespace Leetcode2025
         public int CountPaths1(int n, int[][] roads)
         {
             int result = 0;
-            Dictionary<int, Dictionary<int,int>> map = new Dictionary<int, Dictionary<int, int>>();
+            Dictionary<int, Dictionary<int, int>> map = new Dictionary<int, Dictionary<int, int>>();
             for (int i = 0; i < n; i++)
             {
                 map.Add(i, new Dictionary<int, int>());
@@ -2692,17 +2693,17 @@ namespace Leetcode2025
             }
             int minCostToReach = int.MaxValue;
             Queue<(int d, int w, int l)> q = new Queue<(int d, int w, int l)>();
-            foreach(var key in map[0].Keys)
+            foreach (var key in map[0].Keys)
             {
                 q.Enqueue((key, map[0][key], 1));
             }
             bool[] visited = new bool[n];
             visited[0] = true;
-            while (q.Count > 0) 
+            while (q.Count > 0)
             {
                 var dq = q.Dequeue();
                 if (visited[dq.d] || dq.w > minCostToReach) continue;
-                if(dq.d == n - 1)
+                if (dq.d == n - 1)
                 {
                     if (minCostToReach > dq.w)
                     {
@@ -2848,6 +2849,54 @@ namespace Leetcode2025
                 dp[1, i] = grid[1][i] + Math.Max(dp[0, i], dp[1, i - 1]);
             }
             return dp[1, cols - 1];
+        }
+        #endregion
+
+        #region 2033. Minimum Operations to Make a Uni-Value Grid
+        public int MinOperations(int[][] grid, int x)
+        {
+            int m = grid.Length;
+            int n = grid[0].Length;
+            int[] nums = new int[m * n];
+            int rem = grid[0][0] % x;
+            int i = -1;
+            for (int row = 0; row < m; row++)
+            {
+                for (int col = 0; col < n; col++)
+                {
+                    if (grid[row][col] % x != rem) return -1;
+
+                    nums[++i] = grid[row][col];
+                }
+            }
+
+            Array.Sort(nums);
+
+            int mid = nums.Length / 2;
+            int median = nums[mid];
+
+            if (nums.Length % 2 == 0)
+            {
+                median += nums[mid - 1];
+                median /= 2;
+
+                if (median % x != rem)
+                {
+                    median = nums[mid];
+                }
+            }
+
+            int result = 0;
+
+            for (i = 0; i < nums.Length; i++)
+            {
+                int diff = Math.Abs(median - nums[i]);
+
+                result += (diff / x);
+            }
+
+            return result;
+
         }
         #endregion
 
@@ -4028,6 +4077,151 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2503. Maximum Number of Points From Grid Queries
+        public int[] MaxPoints(int[][] grid, int[] queries)
+        {
+            int[] result = new int[queries.Length];
+            Dictionary<int, List<int>> queryMap = new Dictionary<int, List<int>>();
+            for (int i = 0; i < queries.Length; i++)
+            {
+                if (!queryMap.ContainsKey(queries[i]))
+                {
+                    queryMap[queries[i]] = new List<int>();
+                }
+                queryMap[queries[i]].Add(i);
+            }
+            Array.Sort(queries);
+            bool[,] visited = new bool[grid.Length, grid[0].Length];
+            PriorityQueue<(int row, int col), int> pq = new PriorityQueue<(int row, int col), int>();
+            pq.Enqueue((0, 0), grid[0][0]);
+            visited[0, 0] = true;
+            int lastCount = 0;
+            foreach (var query in queries)
+            {
+                if (pq.Count > 0)
+                {
+
+                    var peek = pq.Peek();
+                    int row = peek.row;
+                    int col = peek.col;
+
+                    if (grid[row][col] < query)
+                    {
+                        while (pq.Count > 0 && grid[row][col] < query)
+                        {
+                            lastCount++;
+                            (row, col) = pq.Dequeue();
+
+                            if(row-1>=0)
+                            {
+                                process(grid, visited, pq, row - 1, col);
+                            }
+
+                            if (col - 1 >= 0)
+                            {
+                                process(grid, visited, pq, row, col - 1);
+                            }
+
+                            if (row + 1 < grid.Length)
+                            {
+                                process(grid, visited, pq, row + 1, col);
+                            }
+
+                            if (col + 1 < grid[row].Length)
+                            {
+                                process(grid, visited, pq, row, col + 1);
+                            }
+
+                            if (pq.Count == 0) break;
+
+                            (row, col) = pq.Peek();
+                        }
+
+                    }
+
+                }
+                foreach (var item in queryMap[query])
+                {
+                    result[item] = lastCount;
+                }
+            }
+
+            return result;
+        }
+
+        private void process(int[][] grid, bool[,] visited, PriorityQueue<(int row, int col), int> pq, int row, int col)
+        {
+            if (!visited[row, col])
+            {
+
+                visited[row, col] = true;
+                pq.Enqueue((row, col), grid[row][col]);
+            }
+        }
+        public int[] MaxPoints1(int[][] grid, int[] queries)
+        {
+            int[] result = new int[queries.Length];
+            Dictionary<int, List<int>> queryMap = new Dictionary<int, List<int>>();
+            for (int i = 0; i < queries.Length; i++)
+            {
+                if (!queryMap.ContainsKey(queries[i]))
+                {
+                    queryMap[queries[i]] = new List<int>();
+                }
+                queryMap[queries[i]].Add(i);
+            }
+            Array.Sort(queries);
+            bool[,] visited = new bool[grid.Length, grid[0].Length];
+            PriorityQueue<(int row, int col), int> pq = new PriorityQueue<(int row, int col), int>();
+            pq.Enqueue((0, 0), grid[0][0]);
+            visited[0, 0] = true;
+            int lastCount = 0;
+            foreach (var query in queries)
+            {
+                if (pq.Count > 0)
+                {
+
+                    var peek = pq.Peek();
+                    int row = peek.row;
+                    int col = peek.col;
+
+                    if (grid[row][col] < query)
+                    {
+                        while (pq.Count > 0 && grid[row][col] < query)
+                        {
+                            lastCount++;
+                            (row, col) = pq.Dequeue();
+                            process1(grid, visited, pq, row - 1, col);
+                            process1(grid, visited, pq, row + 1, col);
+                            process1(grid, visited, pq, row, col - 1);
+                            process1(grid, visited, pq, row, col + 1);
+
+                            if (pq.Count == 0) break;
+
+                            (row, col) = pq.Peek();
+                        }
+
+                    }
+
+                }
+                foreach (var item in queryMap[query])
+                {
+                    result[item] = lastCount;
+                }
+            }
+
+            return result;
+        }
+
+        private void process1(int[][] grid, bool[,] visited, PriorityQueue<(int row, int col), int> pq, int row, int col)
+        {
+            if (row < 0 || col < 0 || row >= grid.Length || col >= grid[row].Length || visited[row, col]) return;
+
+            visited[row, col] = true;
+            pq.Enqueue((row, col), grid[row][col]);
+        }
+        #endregion
+
         #region 2529. Maximum Count of Positive Integer and Negative Integer
         public int MaximumCount(int[] nums)
         {
@@ -5131,19 +5325,19 @@ namespace Leetcode2025
         #region 3169. Count Days Without Meetings
         public int CountDays(int days, int[][] meetings)
         {
-            
+
             Array.Sort(meetings, (x, y) => x[0] - y[0]);
             List<(int start, int end)> meetidays = new List<(int, int)>();
 
 
             int i = 0;
-            while (i<meetings.Length)
+            while (i < meetings.Length)
             {
                 int start = meetings[i][0];
                 int end = meetings[i][1];
                 int j = i;
 
-                while (++j<meetings.Length)
+                while (++j < meetings.Length)
                 {
                     int newStart = meetings[j][0];
                     int newEnd = meetings[j][1];
@@ -5152,7 +5346,7 @@ namespace Leetcode2025
                         break;
                     }
 
-                    if(newStart<=end && newEnd <= end)
+                    if (newStart <= end && newEnd <= end)
                     {
                         continue;
                     }
@@ -5178,11 +5372,13 @@ namespace Leetcode2025
         public int CountDays1(int days, int[][] meetings)
         {
             HashSet<int> daySet = new HashSet<int>();
-            for (int i = 1; i <= days; i++) { 
+            for (int i = 1; i <= days; i++)
+            {
                 daySet.Add(i);
             }
 
-            foreach (int[] meeting   in meetings) {
+            foreach (int[] meeting in meetings)
+            {
                 for (int i = meeting[0]; i <= meeting[1]; i++)
                 {
                     daySet.Remove(i);
@@ -5588,6 +5784,66 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 3394. Check if Grid can be Cut into Sections
+        public bool CheckValidCuts(int n, int[][] rectangles)
+        {
+            return !(!checkCuts(rectangles, 0) && !checkCuts(rectangles, 1));
+        }
+
+        private bool checkCuts(int[][] rectangles, int v)
+        {
+            int gapCount = 0;
+            Array.Sort(rectangles, (a, b) => a[v] - b[v]);
+            int furthestEnd = rectangles[0][v + 2];
+
+            for (int i = 1; i < rectangles.Length; i++)
+            {
+                int[] rect = rectangles[i];
+                if (furthestEnd <= rect[v])
+                {
+                    gapCount++;
+                }
+                furthestEnd = Math.Max(furthestEnd, rect[v + 2]);
+            }
+            return gapCount >= 2;
+        }
+
+        public bool CheckValidCuts1(int n, int[][] rectangles)
+        {
+            HashSet<int> setVertical = new HashSet<int>();
+            HashSet<int> setHorizontal = new HashSet<int>();
+
+            for (int i = 1; i < n; i++)
+            {
+                setHorizontal.Add(i);
+                setVertical.Add(i);
+            }
+
+            foreach (int[] rectangle in rectangles)
+            {
+                if (setVertical.Count >= 2)
+                {
+                    for (int i = rectangle[0] + 1; i < rectangle[2]; i++)
+                    {
+                        setVertical.Remove(i);
+                    }
+                }
+
+                if (setHorizontal.Count >= 2)
+                {
+                    for (int i = rectangle[1] + 1; i < rectangle[3]; i++)
+                    {
+                        setHorizontal.Remove(i);
+                    }
+                }
+
+                if (setHorizontal.Count < 2 && setVertical.Count < 2) break;
+            }
+
+            return setVertical.Count >= 2 || setHorizontal.Count >= 2;
+        }
+        #endregion
+
         #region 3417. Zigzag Grid Traversal With Skip
         public IList<int> ZigzagTraversal(int[][] grid)
         {
@@ -5968,7 +6224,7 @@ namespace Leetcode2025
         {
             int k = maxWeight / w;
 
-            return Math.Min(k, n*n);
+            return Math.Min(k, n * n);
         }
         #endregion
 

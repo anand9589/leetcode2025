@@ -1072,6 +1072,33 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 763. Partition Labels
+        public IList<int> PartitionLabels(string s)
+        {
+            Dictionary<char, int>lastIndexMap = new Dictionary<char, int>();
+            for (int j = 0; j < s.Length; j++)
+            {
+                lastIndexMap[s[j]] = j;
+            }
+            IList<int> result = new List<int>();
+
+            int startIndex = 0;
+            int lastIndex = 0;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                lastIndex = Math.Max(lastIndex, lastIndexMap[s[i]]);
+                if (i == lastIndex)
+                {
+                    result.Add(lastIndex-startIndex+1);
+                    startIndex = i + 1;
+                }
+            }
+            return result;
+        }
+        #endregion
+
+
         #region 802. Find Eventual Safe States
         public IList<int> EventualSafeNodes(int[][] graph)
         {
@@ -3411,7 +3438,7 @@ namespace Leetcode2025
                 // Push the next number onto the q
                 numStack.Push(index + 1);
 
-                // If 'I' is encountered or we reach the end, pop all q elements
+                // If 'I' is encountered or we reach the lastIndex, pop all q elements
                 if (index == pattern.Length || pattern[index] == 'I')
                 {
                     while (numStack.Count > 0)
@@ -3475,18 +3502,18 @@ namespace Leetcode2025
             {
                 if (shift[2] == 1)
                 { // If direction is forward (1)
-                    diffArray[shift[0]]++; // Increment at the start wordIndex
+                    diffArray[shift[0]]++; // Increment at the startIndex wordIndex
                     if (shift[1] + 1 < n)
                     {
-                        diffArray[shift[1] + 1]--; // Decrement at the end+1 wordIndex
+                        diffArray[shift[1] + 1]--; // Decrement at the lastIndex+1 wordIndex
                     }
                 }
                 else
                 { // If direction is backward (0)
-                    diffArray[shift[0]]--; // Decrement at the start wordIndex
+                    diffArray[shift[0]]--; // Decrement at the startIndex wordIndex
                     if (shift[1] + 1 < n)
                     {
-                        diffArray[shift[1] + 1]++; // Increment at the end+1 wordIndex
+                        diffArray[shift[1] + 1]++; // Increment at the lastIndex+1 wordIndex
                     }
                 }
             }
@@ -4890,6 +4917,114 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2818. Apply Operations to Maximize Score
+        private const int MOD = 1000000007;
+        public int MaximumScore(IList<int> nums, int k)
+        {
+            int n = nums.Count;
+            List<int> primeScores = new List<int>(new int[n]);
+
+            // Calculate the prime score for each number in nums
+            for (int index = 0; index < n; index++)
+            {
+                int num = nums[index];
+
+                // Check for prime factors from 2 to sqrt(n)
+                for (int factor = 2; factor * factor <= num; factor++)
+                {
+                    if (num % factor == 0)
+                    {
+                        // Increment prime score for each prime factor
+                        primeScores[index]++;
+
+                        // Remove all occurrences of the prime factor from num
+                        while (num % factor == 0)
+                            num /= factor;
+                    }
+                }
+
+                // If num is still greater than or equal to 2, it's a prime factor
+                if (num >= 2)
+                    primeScores[index]++;
+            }
+
+            // Initialize next and previous dominant index arrays
+            int[] nextDominant = new int[n];
+            int[] prevDominant = new int[n];
+            Array.Fill(nextDominant, n);
+            Array.Fill(prevDominant, -1);
+
+            // Stack to store indices for monotonic decreasing prime score
+            Stack<int> decreasingPrimeScoreStack = new Stack<int>();
+
+            // Calculate the next and previous dominant indices for each number
+            for (int index = 0; index < n; index++)
+            {
+                while (decreasingPrimeScoreStack.Count > 0 &&
+                       primeScores[decreasingPrimeScoreStack.Peek()] < primeScores[index])
+                {
+                    int topIndex = decreasingPrimeScoreStack.Pop();
+                    nextDominant[topIndex] = index;
+                }
+
+                if (decreasingPrimeScoreStack.Count > 0)
+                    prevDominant[index] = decreasingPrimeScoreStack.Peek();
+
+                decreasingPrimeScoreStack.Push(index);
+            }
+
+            // Calculate the number of subarrays in which each element is dominant
+            long[] numOfSubarrays = new long[n];
+            for (int index = 0; index < n; index++)
+            {
+                numOfSubarrays[index] = (long)(nextDominant[index] - index) * (index - prevDominant[index]);
+            }
+
+            // Priority queue to process elements in decreasing order of their value
+            PriorityQueue<(int value, int index), (int, int)> processingQueue =
+                new PriorityQueue<(int, int), (int, int)>();
+
+            for (int index = 0; index < n; index++)
+            {
+                processingQueue.Enqueue((nums[index], index), (-nums[index], index));
+            }
+
+            long score = 1;
+
+            // Process elements while there are operations left
+            while (k > 0)
+            {
+                var (num, index) = processingQueue.Dequeue();
+
+                // Calculate the number of operations to apply on the current element
+                long operations = Math.Min(k, numOfSubarrays[index]);
+
+                // Update the score by raising the element to the power of operations
+                score = (score * Power(num, operations)) % MOD;
+
+                // Reduce the remaining operations count
+                k -= (int)operations;
+            }
+
+            return (int)score;
+        }
+        private long Power(long baseNum, long exponent)
+        {
+            long res = 1;
+
+            while (exponent > 0)
+            {
+                if (exponent % 2 == 1)
+                    res = (res * baseNum) % MOD;
+
+                baseNum = (baseNum * baseNum) % MOD;
+                exponent /= 2;
+            }
+
+            return res;
+        }
+        #endregion
+
         #region 2948. Make Lexicographically Smallest Array by Swapping Elements
         public int[] LexicographicallySmallestArray(int[] nums, int limit)
         {
@@ -5734,7 +5869,7 @@ namespace Leetcode2025
                 int left = queries[queryIndex][0], right =
                     queries[queryIndex][1], val = queries[queryIndex][2];
 
-                // Process start and end of range
+                // Process startIndex and lastIndex of range
                 differenceArray[left] += val;
                 differenceArray[right + 1] -= val;
             }

@@ -224,6 +224,30 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 763. Partition Labels
+
+        [TestMethod]
+        public void PartitionLabelsTest()
+        {
+            string s = "eccbbbbdec";
+            var result = leetcode.PartitionLabels(s);
+        }
+
+        [TestMethod]
+        public void PartitionLabelsTest1()
+        {
+            string s = "ababcbacadefegdehijhklij";
+            var result = leetcode.PartitionLabels(s);
+        }
+
+        [TestMethod]
+        public void PartitionLabelsTest2()
+        {
+            string s = "abc";
+            var result = leetcode.PartitionLabels(s);
+        }
+        #endregion
+
         #region 827. Making A Large Island
 
         [TestMethod]

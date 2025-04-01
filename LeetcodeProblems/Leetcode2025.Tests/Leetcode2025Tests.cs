@@ -431,6 +431,17 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 2140. Solving Questions With Brainpower
+
+        [TestMethod]
+        public void MostPointsTest()
+        {
+            int[][] questions = getMultiDimensionalArray("[[3,2],[4,3],[4,4],[2,5]]");
+            var result = leetcode.MostPoints(questions);
+            Assert.AreEqual(5, result);
+        } 
+        #endregion
+
         #region 2226. Maximum Candies Allocated to K Children
 
         [TestMethod]
@@ -639,6 +650,19 @@ namespace Leetcode2025.Tests
             int[] amount = { 3958, -9854, -8334, -9388, 3410 };
 
             var result = leetcode.MostProfitablePath(edges, bob, amount);
+        }
+        #endregion
+
+
+        #region 2551. Put Marbles in Bags
+
+        [TestMethod]
+        public void PutMarblesTest()
+        {
+            int[] weights = { 1, 3, 5, 1 };
+            int k = 2;
+            var result = leetcode.PutMarbles(weights, k);
+            Assert.AreEqual(4, result);
         }
         #endregion
 

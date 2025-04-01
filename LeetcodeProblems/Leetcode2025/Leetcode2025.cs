@@ -1098,7 +1098,6 @@ namespace Leetcode2025
         }
         #endregion
 
-
         #region 802. Find Eventual Safe States
         public IList<int> EventualSafeNodes(int[][] graph)
         {
@@ -3079,6 +3078,30 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2140. Solving Questions With Brainpower
+        public long MostPoints(int[][] questions)
+        {
+            long[] dp = new long[questions.Length];
+
+            int index = questions.Length - 1;
+
+            dp[index] = questions[index][0];
+
+            while (--index>=0)
+            {
+                int k = questions[index][1];
+                long val = questions[index][0];
+                if(index + k+1 < questions.Length)
+                {
+                    val += dp[index + k+1];
+                }
+                dp[index] = Math.Max(val, dp[index+1]);
+            }
+
+            return dp[0];
+        }
+        #endregion
+
         #region 2161. Partition Array According to Given Pivot
         public int[] PivotArray(int[] nums, int pivot)
         {
@@ -4323,6 +4346,34 @@ namespace Leetcode2025
             if (nums[mid] == 0) return getMaximumNEGCount(nums, low, mid - 1);
 
             return getMaximumNEGCount(nums, mid + 1, high);
+        }
+        #endregion
+
+        #region 2551. Put Marbles in Bags
+        public long PutMarbles(int[] weights, int k)
+        {
+            PriorityQueue<int,int> minHeap = new PriorityQueue<int,int>();
+            PriorityQueue<int, int> maxHeap = new PriorityQueue<int, int>(Comparer<int>.Create((x, y) => y - x));
+
+            for (int i = 0; i < weights.Length-1; i++)
+            {
+                int sum = weights[i] + weights[i + 1];
+                minHeap.Enqueue(sum, sum);
+                maxHeap.Enqueue(sum, sum);
+
+                if(minHeap.Count > k) minHeap.Dequeue();
+                if(maxHeap.Count > k) maxHeap.Dequeue();
+            }
+
+            long minScore = 0, maxScore=0;
+
+            while (minHeap.Count>0)
+            {
+                maxScore += minHeap.Dequeue();
+                minScore += maxHeap.Dequeue();
+            }
+
+            return maxScore - minScore;
         }
         #endregion
 

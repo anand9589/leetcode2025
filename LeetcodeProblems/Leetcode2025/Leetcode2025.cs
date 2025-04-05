@@ -1554,6 +1554,28 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1123. Lowest Common Ancestor of Deepest Leaves
+        public TreeNode LcaDeepestLeaves(TreeNode root)
+        {
+            return dfs(root).lca;
+        }
+
+        private (int depth, TreeNode lca) dfs (TreeNode root)
+        {
+            if (root == null)
+            {
+                return (0, null);
+            }
+
+            var left = dfs(root.left);
+            var right = dfs(root.right);
+
+            if (left.depth > right.depth) { return (left.depth + 1, left.lca); }
+            else if (left.depth < right.depth) { return (right.depth + 1, right.lca); }
+            else { return (left.depth + 1, root); }
+        }
+        #endregion
+
         #region 1143. Longest Common Subsequence
         public int LongestCommonSubsequence(string text1, string text2)
         {
@@ -2364,6 +2386,20 @@ namespace Leetcode2025
             }
 
             return Math.Max(maxSum, currSum);
+        }
+        #endregion
+
+        #region 1863. Sum of All Subset XOR Totals
+        public int SubsetXORSum(int[] nums)
+        {
+            int result = 0;
+            // Capture each bit that is set in any of the elements
+            foreach (int num in nums)
+            {
+                result |= num;
+            }
+            // Multiply by the number of subset XOR totals that will have each bit set
+            return result << (nums.Length - 1);
         }
         #endregion
 
@@ -5074,6 +5110,56 @@ namespace Leetcode2025
 
             return res;
         }
+        #endregion
+
+        #region 2873. Maximum Value of an Ordered Triplet I
+        public long MaximumTripletValue(int[] nums)
+        {
+            long result = 0;
+            int n = nums.Length;
+            //long[] rMax = new long[n];
+            //long[] lMax = new long[n];
+            long leftMax = nums[0], rightMax = nums[n-1];
+            for (int i = 1; i < n-1; i++)
+            {
+                result = Math.Max(result, (leftMax - nums[i]) * rightMax);
+                //lMax[i] = leftMax;
+                leftMax = Math.Max(leftMax, nums[i]);
+
+                //rMax[n-1-i] = rightMax;
+                rightMax = Math.Max(rightMax, nums[n-1-i]);
+            }
+
+            //for (int i = 1; i < n-1; i++)
+            //{
+            //    if (lMax[i] > nums[i])
+            //    {
+            //        result = Math.Max(result, (lMax[i] - nums[i]) * rMax[i]);
+            //    }
+            //}
+
+            return result;
+        }
+        public long MaximumTripletValue1(int[] nums)
+        {
+            long result = 0;
+            for (int i = 0; i < nums.Length-2; i++)
+            {
+                for (int j = i+1; j < nums.Length-1; j++)
+                {
+                    for (int k = j+1; k < nums.Length; k++)
+                    {
+                        result = Math.Max(result, ((nums[i] - nums[j]) * nums[k]));
+                    }
+                }
+            }
+            return result;
+        }
+
+        //private long MaximumTripletValue(int[] nums, int index)
+        //{
+
+        //}
         #endregion
 
         #region 2948. Make Lexicographically Smallest Array by Swapping Elements

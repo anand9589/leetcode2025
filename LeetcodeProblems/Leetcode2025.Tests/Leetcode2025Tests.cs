@@ -753,6 +753,29 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+
+
+        #region 2873. Maximum Value of an Ordered Triplet I
+
+
+        [TestMethod]
+        public void MaximumTripletValueTest()
+        {
+            int[] nums = { 1000000, 1, 1000000 };
+            var result = leetcode.MaximumTripletValue(nums);
+            Assert.AreEqual(result, 999999000000);
+        }
+
+
+        [TestMethod]
+        public void MaximumTripletValueTest1()
+        {
+            int[] nums = { 8, 6, 3, 13, 2, 12, 19, 5, 19, 6, 10, 11, 9 };
+            var result = leetcode.MaximumTripletValue(nums);
+            Assert.AreEqual(result, 266);
+        }
+        #endregion
+
         #region 2948. Make Lexicographically Smallest Array by Swapping Elements
 
         [TestMethod]

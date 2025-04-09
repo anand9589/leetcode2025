@@ -598,6 +598,47 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 368. Largest Divisible Subset
+        public IList<int> LargestDivisibleSubset(int[] nums)
+        {
+
+            Array.Sort(nums);
+            int n = nums.Length;
+            int[] dp = new int[n];
+            int[] prev = new int[n];
+            Array.Fill(dp, 1);
+            Array.Fill(prev, -1);
+
+            int maxIdx = 0;
+
+            for (int i = 1; i < n; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    if (nums[i] % nums[j] == 0 && dp[j] + 1 > dp[i])
+                    {
+                        dp[i] = dp[j] + 1;
+                        prev[i] = j;
+                    }
+                }
+
+                if (dp[i] > dp[maxIdx])
+                {
+                    maxIdx = i;
+                }
+            }
+
+            List<int> result = new List<int>();
+            while (maxIdx != -1)
+            {
+                result.Add(nums[maxIdx]);
+                maxIdx = prev[maxIdx];
+            }
+
+            return result;
+        }
+        #endregion
+
         #region 407. Trapping Rain Water II
         public int TrapRainWater(int[][] heightMap)
         {
@@ -1075,7 +1116,7 @@ namespace Leetcode2025
         #region 763. Partition Labels
         public IList<int> PartitionLabels(string s)
         {
-            Dictionary<char, int>lastIndexMap = new Dictionary<char, int>();
+            Dictionary<char, int> lastIndexMap = new Dictionary<char, int>();
             for (int j = 0; j < s.Length; j++)
             {
                 lastIndexMap[s[j]] = j;
@@ -1090,7 +1131,7 @@ namespace Leetcode2025
                 lastIndex = Math.Max(lastIndex, lastIndexMap[s[i]]);
                 if (i == lastIndex)
                 {
-                    result.Add(lastIndex-startIndex+1);
+                    result.Add(lastIndex - startIndex + 1);
                     startIndex = i + 1;
                 }
             }
@@ -1560,7 +1601,7 @@ namespace Leetcode2025
             return dfs(root).lca;
         }
 
-        private (int depth, TreeNode lca) dfs (TreeNode root)
+        private (int depth, TreeNode lca) dfs(TreeNode root)
         {
             if (root == null)
             {
@@ -3123,15 +3164,15 @@ namespace Leetcode2025
 
             dp[index] = questions[index][0];
 
-            while (--index>=0)
+            while (--index >= 0)
             {
                 int k = questions[index][1];
                 long val = questions[index][0];
-                if(index + k+1 < questions.Length)
+                if (index + k + 1 < questions.Length)
                 {
-                    val += dp[index + k+1];
+                    val += dp[index + k + 1];
                 }
-                dp[index] = Math.Max(val, dp[index+1]);
+                dp[index] = Math.Max(val, dp[index + 1]);
             }
 
             return dp[0];
@@ -4198,7 +4239,7 @@ namespace Leetcode2025
                             lastCount++;
                             (row, col) = pq.Dequeue();
 
-                            if(row-1>=0)
+                            if (row - 1 >= 0)
                             {
                                 process(grid, visited, pq, row - 1, col);
                             }
@@ -4388,22 +4429,22 @@ namespace Leetcode2025
         #region 2551. Put Marbles in Bags
         public long PutMarbles(int[] weights, int k)
         {
-            PriorityQueue<int,int> minHeap = new PriorityQueue<int,int>();
+            PriorityQueue<int, int> minHeap = new PriorityQueue<int, int>();
             PriorityQueue<int, int> maxHeap = new PriorityQueue<int, int>(Comparer<int>.Create((x, y) => y - x));
 
-            for (int i = 0; i < weights.Length-1; i++)
+            for (int i = 0; i < weights.Length - 1; i++)
             {
                 int sum = weights[i] + weights[i + 1];
                 minHeap.Enqueue(sum, sum);
                 maxHeap.Enqueue(sum, sum);
 
-                if(minHeap.Count > k) minHeap.Dequeue();
-                if(maxHeap.Count > k) maxHeap.Dequeue();
+                if (minHeap.Count > k) minHeap.Dequeue();
+                if (maxHeap.Count > k) maxHeap.Dequeue();
             }
 
-            long minScore = 0, maxScore=0;
+            long minScore = 0, maxScore = 0;
 
-            while (minHeap.Count>0)
+            while (minHeap.Count > 0)
             {
                 maxScore += minHeap.Dequeue();
                 minScore += maxHeap.Dequeue();
@@ -5119,15 +5160,15 @@ namespace Leetcode2025
             int n = nums.Length;
             //long[] rMax = new long[n];
             //long[] lMax = new long[n];
-            long leftMax = nums[0], rightMax = nums[n-1];
-            for (int i = 1; i < n-1; i++)
+            long leftMax = nums[0], rightMax = nums[n - 1];
+            for (int i = 1; i < n - 1; i++)
             {
                 result = Math.Max(result, (leftMax - nums[i]) * rightMax);
                 //lMax[i] = leftMax;
                 leftMax = Math.Max(leftMax, nums[i]);
 
                 //rMax[n-1-i] = rightMax;
-                rightMax = Math.Max(rightMax, nums[n-1-i]);
+                rightMax = Math.Max(rightMax, nums[n - 1 - i]);
             }
 
             //for (int i = 1; i < n-1; i++)
@@ -5143,11 +5184,11 @@ namespace Leetcode2025
         public long MaximumTripletValue1(int[] nums)
         {
             long result = 0;
-            for (int i = 0; i < nums.Length-2; i++)
+            for (int i = 0; i < nums.Length - 2; i++)
             {
-                for (int j = i+1; j < nums.Length-1; j++)
+                for (int j = i + 1; j < nums.Length - 1; j++)
                 {
-                    for (int k = j+1; k < nums.Length; k++)
+                    for (int k = j + 1; k < nums.Length; k++)
                     {
                         result = Math.Max(result, ((nums[i] - nums[j]) * nums[k]));
                     }
@@ -5349,7 +5390,7 @@ namespace Leetcode2025
         #endregion
 
         #region 3066. Minimum Operations to Exceed Threshold Value II
-        public int MinOperations(int[] nums, int k)
+        public int MinOperations3066(int[] nums, int k)
         {
             int counter = 0;
 
@@ -6056,6 +6097,24 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 3375. Minimum Operations to Make Array Values Equal to K
+        public int MinOperations(int[] nums, int k)
+        {
+            HashSet<int> set = new HashSet<int>();
+
+            foreach (var item in nums)
+            {
+                if (item ==k) continue;
+
+                if (item < k) return -1;
+
+                set.Add(item);
+            }
+
+            return set.Count;
+        }
+        #endregion
+
         #region 3394. Check if Grid can be Cut into Sections
         public bool CheckValidCuts(int n, int[][] rectangles)
         {
@@ -6113,6 +6172,62 @@ namespace Leetcode2025
             }
 
             return setVertical.Count >= 2 || setHorizontal.Count >= 2;
+        }
+        #endregion
+
+        #region 3396. Minimum Number of Operations to Make Elements in Array Distinct
+        public int MinimumOperations1(int[] nums)
+        {
+            int result = 0;
+            Dictionary<int, int> map = new Dictionary<int, int>();
+            int indexToRemoved = 0;
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                int key = nums[i];
+                if (map.ContainsKey(key))
+                {
+                    int index = map[key];
+
+                    while (indexToRemoved <= index)
+                    {
+                        for (int j = 0; j < 3 && indexToRemoved + j < nums.Length; j++)
+                        {
+                            int keyToRemove = nums[indexToRemoved + j];
+                            map.Remove(keyToRemove);
+                        }
+                        indexToRemoved += 3;
+                        result++;
+                    }
+                    if (indexToRemoved > i)
+                    {
+                        i = indexToRemoved - 1;
+                    }
+                    else
+                    {
+                        map.Add(key, i);
+                    }
+                }
+                else
+                {
+                    map.Add(key, i);
+                }
+            }
+            return result;
+        }
+
+        public int MinimumOperations(int[] nums)
+        {
+            bool[] seen = new bool[101];
+            for (int i = nums.Length - 1; i >= 0; i--)
+            {
+                if (seen[nums[i]])
+                {
+                    return i / 3 + 1;
+                }
+                seen[nums[i]] = true;
+            }
+            return 0;
         }
         #endregion
 

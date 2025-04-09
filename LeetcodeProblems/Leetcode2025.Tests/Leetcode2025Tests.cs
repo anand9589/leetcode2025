@@ -894,6 +894,37 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+
+        #region 3396. Minimum Number of Operations to Make Elements in Array Distinct
+
+
+        [TestMethod]
+        public void MinimumOperationsTest()
+        {
+            int[] nums = { 1, 2, 3, 4, 2, 3, 3, 5, 7 };
+            var result = leetcode.MinimumOperations(nums);
+            Assert.AreEqual(2, result);
+        }
+
+
+        [TestMethod]
+        public void MinimumOperationsTest1()
+        {
+            int[] nums = { 4, 5, 6, 4, 4 };
+            var result = leetcode.MinimumOperations(nums);
+            Assert.AreEqual(2, result);
+        }
+
+
+        [TestMethod]
+        public void MinimumOperationsTest2()
+        {
+            int[] nums = { 10, 12, 12, 6, 6 };
+            var result = leetcode.MinimumOperations(nums);
+            Assert.AreEqual(2, result);
+        }
+        #endregion
+
         #region 3417. Zigzag Grid Traversal With Skip
 
         [TestMethod]

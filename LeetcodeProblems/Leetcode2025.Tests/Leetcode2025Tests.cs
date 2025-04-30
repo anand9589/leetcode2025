@@ -473,6 +473,17 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 2338. Count the Number of Ideal Arrays
+        [TestMethod]
+        public void IdealArraysTest()
+        {
+            int n = 2;
+            int maxValue = 5;
+            var result = leetcode.IdealArrays(n, maxValue);
+            Assert.AreEqual(10, result);
+        }
+        #endregion
+
         #region 2342. Max Sum of a Pair With Equal Sum of Digits //18,43,36,13,7
 
         [TestMethod]

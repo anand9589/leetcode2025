@@ -1716,6 +1716,21 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1295. Find Numbers with Even Number of Digits
+        public int FindNumbers(int[] nums)
+        {
+            int count = 0;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if ((nums[i]>=10 && nums[i]<=99)|| (nums[i] >= 1000 && nums[i] <= 9999) || nums[i] == 100000)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+        #endregion
+
         #region 1358. Number of Substrings Containing All Three Characters
         public int NumberOfSubstrings(string s)
         {
@@ -2122,6 +2137,41 @@ namespace Leetcode2025
                 }
 
                 count %= MOD;
+            }
+
+            return count;
+        }
+        #endregion
+
+        #region 1534. Count Good Triplets
+        public int CountGoodTriplets(int[] arr, int a, int b, int c)
+        {
+            int count = 0;
+
+            for (int i = 0; i < arr.Length - 2; i++)
+            {
+                for (int j = i + 1; j < arr.Length - 1; j++)
+                {
+                    int diffA = Math.Abs(arr[i] - arr[j]);
+
+                    if (diffA <= a)
+                    {
+                        for (int k = j + 1; k < arr.Length; k++)
+                        {
+                            int diffB = Math.Abs(arr[j] - arr[k]);
+
+                            if(diffB<= b)
+                            {
+                                int diffC = Math.Abs(arr[k] - arr[i]);
+
+                                if(diffC <= c)
+                                {
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             return count;
@@ -3458,6 +3508,36 @@ namespace Leetcode2025
             }
 
             return count;
+        }
+        #endregion
+
+        #region 2338. Count the Number of Ideal Arrays
+        int IdealArraysCount = 0;
+        public int IdealArrays(int n, int maxValue)
+        {
+            for (int i = 1; i <= maxValue; i++)
+            {
+                IdealArraysHelper(n - 1, maxValue, i);
+
+            }
+            return IdealArraysCount;
+        }
+
+        public void IdealArraysHelper(int n, int maxValue, int previousValue)
+        {
+            if (n == 0)
+            {
+                IdealArraysCount++;
+                return;
+            }
+
+            for (int i = previousValue; i <= maxValue; i++)
+            {
+                if (i % previousValue == 0)
+                {
+                    IdealArraysHelper(n - 1, maxValue, i);
+                }
+            }
         }
         #endregion
 
@@ -6104,7 +6184,7 @@ namespace Leetcode2025
 
             foreach (var item in nums)
             {
-                if (item ==k) continue;
+                if (item == k) continue;
 
                 if (item < k) return -1;
 

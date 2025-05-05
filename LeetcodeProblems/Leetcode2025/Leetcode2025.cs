@@ -1139,6 +1139,55 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 790. Domino and Tromino Tiling
+        int[,] dpNumTilings;
+        int modNumTilings = 1000000007;
+        public int NumTilings(int n)
+        {
+            dpNumTilings = new int[n+1, n+1];
+            for (int i = 0;i<=n;i++)
+            {
+                for (int j = 0; j <= n; j++)
+                {
+                    dpNumTilings[i, j] = -1;
+                }
+            }
+            return (int)NumTilings(n, n);
+        }
+        public int NumTilings(int r1, int r2)
+        {
+            if (r1 == 0 && r2 == 0)
+            {
+                
+                return 1;
+            }
+            if (r1 <= 0 || r2 <= 0) return 0;
+            if (dpNumTilings[r1, r2] != -1) {
+                return dpNumTilings[r1, r2];
+            }
+            long count = 0;
+            if (r1 == r2)
+            {
+                count += NumTilings(r1 - 1, r2 - 1);
+                count += NumTilings(r1 - 2, r2 - 2);
+                count += NumTilings(r1 - 1, r2 - 2);
+                count += NumTilings(r1 - 2, r2 - 1);
+            }
+            else if (r1 > r2)
+            {
+                count += NumTilings(r1 - 2, r2);
+                count += NumTilings(r1 - 2, r2 - 1);
+            }
+            else
+            {
+                count += NumTilings(r1, r2 - 2);
+                count += NumTilings(r1 - 1, r2 - 2);
+            }
+
+            return dpNumTilings[r1, r2] = (int)(count % modNumTilings); 
+        }
+        #endregion
+
         #region 802. Find Eventual Safe States
         public IList<int> EventualSafeNodes(int[][] graph)
         {
@@ -1401,6 +1450,65 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1007. Minimum Domino Rotations For Equal Row
+        public int MinDominoRotations(int[] tops, int[] bottoms)
+        {
+            int rotations = Math.Min(Check(tops[0], tops, bottoms),
+                                     Check(bottoms[0], tops, bottoms));
+
+            return rotations == int.MaxValue ? -1 : rotations;
+        }
+        private int Check(int target, int[] tops, int[] bottoms)
+        {
+            int rotationsTop = 0;
+            int rotationsBottom = 0;
+
+            for (int i = 0; i < tops.Length; i++)
+            {
+                if (tops[i] != target && bottoms[i] != target)
+                {
+                    return int.MaxValue; // Cannot make all values equal to target
+                }
+                else if (tops[i] != target)
+                {
+                    rotationsTop++;
+                }
+                else if (bottoms[i] != target)
+                {
+                    rotationsBottom++;
+                }
+            }
+
+            return Math.Min(rotationsTop, rotationsBottom);
+        }
+        public int MinDominoRotations1(int[] tops, int[] bottoms)
+        {
+            int[] t = new int[7];
+            int[] b = new int[7];
+
+            for (int i = 0; i < tops.Length; i++)
+            {
+                int topElement = tops[i];
+                int bottomElement = bottoms[i];
+
+                t[topElement]++;
+                b[bottomElement]++;
+            }
+            int result = int.MaxValue;
+            for (int i = 1; i <= 6; i++)
+            {
+                if (t[i] + b[i] >= tops.Length)
+                {
+                    int curr = t[i] + b[i];
+
+
+                    result = Math.Min(result, Math.Min(t[i], b[i]));
+                }
+            }
+            return result == int.MaxValue ? -1 : result;
+        }
+        #endregion
+
         #region 1028. Recover a Tree From Preorder Traversal
         public TreeNode RecoverFromPreorder(string traversal)
         {
@@ -1617,6 +1725,30 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1128. Number of Equivalent Domino Pairs
+        public int NumEquivDominoPairs(int[][] dominoes)
+        {
+            int result = 0;
+            int[] arr = new int[100];
+            foreach (var domino in dominoes)
+            {
+                int num = 0;
+                if (domino[0] < domino[1])
+                {
+                    num = domino[0] * 10 + domino[1];
+                }
+                else
+                {
+                    num = domino[1] * 10 + domino[0];
+                }
+                result += arr[num];
+                arr[num]++;
+            }
+
+            return result;
+        }
+        #endregion
+
         #region 1143. Longest Common Subsequence
         public int LongestCommonSubsequence(string text1, string text2)
         {
@@ -1722,7 +1854,7 @@ namespace Leetcode2025
             int count = 0;
             for (int i = 0; i < nums.Length; i++)
             {
-                if ((nums[i]>=10 && nums[i]<=99)|| (nums[i] >= 1000 && nums[i] <= 9999) || nums[i] == 100000)
+                if ((nums[i] >= 10 && nums[i] <= 99) || (nums[i] >= 1000 && nums[i] <= 9999) || nums[i] == 100000)
                 {
                     count++;
                 }
@@ -2160,11 +2292,11 @@ namespace Leetcode2025
                         {
                             int diffB = Math.Abs(arr[j] - arr[k]);
 
-                            if(diffB<= b)
+                            if (diffB <= b)
                             {
                                 int diffC = Math.Abs(arr[k] - arr[i]);
 
-                                if(diffC <= c)
+                                if (diffC <= c)
                                 {
                                     count++;
                                 }
@@ -3050,6 +3182,126 @@ namespace Leetcode2025
 
             return result;
 
+        }
+        #endregion
+
+        #region 2071. Maximum Number of Tasks You Can Assign
+        public int MaxTaskAssign(int[] tasks, int[] workers, int pills, int strength)
+        {
+            Array.Sort(tasks);
+            Array.Sort(workers);
+
+            int n = tasks.Length, m = workers.Length;
+            int left = 1, right = Math.Min(n, m), ans = 0;
+
+            while (left <= right)
+            {
+                int mid = (left + right) / 2;
+                if (Check(tasks, workers, pills, strength, mid))
+                {
+                    ans = mid;
+                    left = mid + 1;
+                }
+                else
+                {
+                    right = mid - 1;
+                }
+            }
+
+            return ans;
+        }
+        private bool Check(int[] tasks, int[] workers, int pills, int strength, int mid)
+        {
+            int p = pills;
+            var ws = new SortedDictionary<int, int>();
+
+            // Add the 'mid' strongest workers to the multiset
+            for (int i = workers.Length - mid; i < workers.Length; ++i)
+            {
+                if (!ws.ContainsKey(workers[i]))
+                    ws[workers[i]] = 0;
+                ws[workers[i]]++;
+            }
+
+            for (int i = mid - 1; i >= 0; --i)
+            {
+                // Try assigning without a pill
+                var lastKey = GetLastKey(ws);
+                if (lastKey != null && lastKey >= tasks[i])
+                {
+                    DecrementKey(ws, lastKey.Value);
+                }
+                else
+                {
+                    if (p == 0)
+                        return false;
+
+                    int needed = tasks[i] - strength;
+                    var ceilingKey = GetCeilingKey(ws, needed);
+                    if (ceilingKey == null)
+                        return false;
+
+                    DecrementKey(ws, ceilingKey.Value);
+                    p--;
+                }
+            }
+
+            return true;
+        }
+
+        // Utility to find largest key in SortedDictionary
+        private int? GetLastKey(SortedDictionary<int, int> dict)
+        {
+            if (dict.Count == 0) return null;
+            var enumerator = dict.Keys.GetEnumerator();
+            while (enumerator.MoveNext()) ;
+            return enumerator.Current;
+        }
+
+        // Utility to find the smallest key >= target (ceiling)
+        private int? GetCeilingKey(SortedDictionary<int, int> dict, int target)
+        {
+            foreach (var key in dict.Keys)
+            {
+                if (key >= target)
+                    return key;
+            }
+            return null;
+        }
+
+        // Decrease count of a key, and remove if count is 0
+        private void DecrementKey(SortedDictionary<int, int> dict, int key)
+        {
+            if (--dict[key] == 0)
+                dict.Remove(key);
+        }
+
+        public int MaxTaskAssign1(int[] tasks, int[] workers, int pills, int strength)
+        {
+            Array.Sort(tasks, (a, b) => b - a);
+            Array.Sort(workers, (a, b) => b - a);
+
+            int assignedTasks = 0;
+            int workerIndex = 0;
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                if (tasks[i] <= workers[workerIndex])
+                {
+                    workerIndex++;
+                    assignedTasks++;
+                }
+                else if (pills > 0)
+                {
+                    if (tasks[i] <= workers[workerIndex] + strength)
+                    {
+                        workerIndex++;
+                        assignedTasks++;
+                        pills--;
+                    }
+                }
+            }
+
+            return assignedTasks;
         }
         #endregion
 
@@ -5122,6 +5374,66 @@ namespace Leetcode2025
             }
             mem[startIndex][sum] = 0;
             return false;
+        }
+        #endregion
+
+        #region 2799. Count Complete Subarrays in an Array
+        public int CountCompleteSubarrays(int[] nums)
+        {
+            Dictionary<int, int> map = new Dictionary<int, int>();
+            foreach (var n in nums)
+            {
+                if (!map.ContainsKey(n))
+                {
+                    map.Add(n, 0);
+                }
+                map[n]++;
+            }
+            int uniqueElement = map.Keys.Count;
+            if (uniqueElement == 1)
+            {
+                return (nums.Length * (nums.Length + 1)) / 2;
+            }
+            HashSet<int> visited = new HashSet<int>();
+
+            int startIndex = 0;
+            int endIndex = 1;
+
+            visited.Add(nums[startIndex]);
+            while (visited.Count < uniqueElement)
+            {
+                visited.Add(nums[endIndex++]);
+            }
+
+            endIndex--;
+            int result = 0;
+
+            while (startIndex < endIndex)
+            {
+                result += nums.Length - endIndex;
+                int k = nums[startIndex];
+
+                map[k]--;
+
+                if (map[k] == 0)
+                {
+                    map.Remove(k);
+
+                    while (endIndex < nums.Length)
+                    {
+                        if (nums[endIndex] == k)
+                        {
+                            map.Add(k, 1);
+                            break;
+                        }
+                        endIndex++;
+                    }
+
+                }
+                startIndex++;
+            }
+
+            return result;
         }
         #endregion
 

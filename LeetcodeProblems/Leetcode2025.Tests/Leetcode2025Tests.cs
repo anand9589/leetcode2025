@@ -248,6 +248,34 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+
+        #region 790. Domino and Tromino Tiling
+
+        [TestMethod]
+        public void NumTilingsTest()
+        {
+            Assert.AreEqual(24, leetcode.NumTilings(5));
+        }
+
+        [TestMethod]
+        public void NumTilingsTest1()
+        {
+            Assert.AreEqual(5, leetcode.NumTilings(3));
+        }
+
+        [TestMethod]
+        public void NumTilingsTest2()
+        {
+            Assert.AreEqual(11, leetcode.NumTilings(4));
+        }
+
+        [TestMethod]
+        public void NumTilingsTest3()
+        {
+            Assert.AreEqual(312342182, leetcode.NumTilings(30));
+        }
+        #endregion
+
         #region 827. Making A Large Island
 
         [TestMethod]
@@ -279,6 +307,20 @@ namespace Leetcode2025.Tests
             int[] limit = { 1, 2 };
             int k = 2;
             var result = leetcode.MaxSum(arr, limit, k);
+        }
+        #endregion
+
+
+        #region 1007. Minimum Domino Rotations For Equal Row
+
+        [TestMethod]
+        public void MinDominoRotationsTest()
+        {
+            int[] tops = { 2, 1, 2, 4, 2, 2 };
+            int[] bottoms = { 5, 2, 6, 2, 3, 2 };
+
+            var result = leetcode.MinDominoRotations(tops, bottoms);
+            Assert.AreEqual(2, result);
         }
         #endregion
 
@@ -431,6 +473,21 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+
+        #region 2071. Maximum Number of Tasks You Can Assign
+
+        [TestMethod]
+        public void MaxTaskAssignTest()
+        {
+            int[] tasks = { 5, 9, 8, 5, 9 }; //9 9 8 5 5
+            int[] workers = { 1, 6, 4, 2, 6 };//6 6 4 2 1
+            int pills = 1;
+            int strength = 5;
+
+            var result = leetcode.MaxTaskAssign(tasks, workers, pills, strength);
+            Assert.AreEqual(3, result);
+        }
+        #endregion
         #region 2140. Solving Questions With Brainpower
 
         [TestMethod]
@@ -765,6 +822,25 @@ namespace Leetcode2025.Tests
         #endregion
 
 
+        #region 2799. Count Complete Subarrays in an Array
+
+
+        [TestMethod]
+        public void CountCompleteSubarraysTest()
+        {
+            int[] nums = { 1, 3, 1, 2, 2 };
+            var result = leetcode.CountCompleteSubarrays    (nums);
+            Assert.AreEqual(4, result);
+        }
+
+        [TestMethod]
+        public void CountCompleteSubarraysTest1()
+        {
+            int[] nums = { 5,5,5,5 };
+            var result = leetcode.CountCompleteSubarrays(nums);
+            Assert.AreEqual(10, result);
+        }
+        #endregion
 
         #region 2873. Maximum Value of an Ordered Triplet I
 

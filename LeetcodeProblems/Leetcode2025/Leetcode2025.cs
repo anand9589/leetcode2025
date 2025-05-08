@@ -1144,8 +1144,8 @@ namespace Leetcode2025
         int modNumTilings = 1000000007;
         public int NumTilings(int n)
         {
-            dpNumTilings = new int[n+1, n+1];
-            for (int i = 0;i<=n;i++)
+            dpNumTilings = new int[n + 1, n + 1];
+            for (int i = 0; i <= n; i++)
             {
                 for (int j = 0; j <= n; j++)
                 {
@@ -1158,11 +1158,12 @@ namespace Leetcode2025
         {
             if (r1 == 0 && r2 == 0)
             {
-                
+
                 return 1;
             }
             if (r1 <= 0 || r2 <= 0) return 0;
-            if (dpNumTilings[r1, r2] != -1) {
+            if (dpNumTilings[r1, r2] != -1)
+            {
                 return dpNumTilings[r1, r2];
             }
             long count = 0;
@@ -1184,7 +1185,7 @@ namespace Leetcode2025
                 count += NumTilings(r1 - 1, r2 - 2);
             }
 
-            return dpNumTilings[r1, r2] = (int)(count % modNumTilings); 
+            return dpNumTilings[r1, r2] = (int)(count % modNumTilings);
         }
         #endregion
 
@@ -2766,6 +2767,21 @@ namespace Leetcode2025
             }
 
             return sb.ToString();
+        }
+        #endregion
+
+        #region 1920. Build Array from Permutation
+        
+        public int[] BuildArray1(int[] nums)
+        {
+            int[] result = new int[nums.Length];
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                result[i] = nums[nums[i]];
+            }
+
+            return result;
         }
         #endregion
 
@@ -5556,18 +5572,18 @@ namespace Leetcode2025
             for (int i = 1; i < n - 1; i++)
             {
                 result = Math.Max(result, (leftMax - nums[i]) * rightMax);
-                //lMax[i] = leftMax;
+                //lMax[row] = leftMax;
                 leftMax = Math.Max(leftMax, nums[i]);
 
-                //rMax[n-1-i] = rightMax;
+                //rMax[n-1-row] = rightMax;
                 rightMax = Math.Max(rightMax, nums[n - 1 - i]);
             }
 
-            //for (int i = 1; i < n-1; i++)
+            //for (int row = 1; row < n-1; row++)
             //{
-            //    if (lMax[i] > nums[i])
+            //    if (lMax[row] > nums[row])
             //    {
-            //        result = Math.Max(result, (lMax[i] - nums[i]) * rMax[i]);
+            //        result = Math.Max(result, (lMax[row] - nums[row]) * rMax[row]);
             //    }
             //}
 
@@ -6401,6 +6417,56 @@ namespace Leetcode2025
                 }
             }
             return result;
+        }
+        #endregion
+
+        #region 3341. Find Minimum Time to Reach Last Room I
+        public int MinTimeToReach(int[][] moveTime)
+        {
+            int rows = moveTime.Length;
+            int cols = moveTime[0].Length;
+            int row, col, weight;
+            PriorityQueue<(int row, int col, int weight), int> pq = new PriorityQueue<(int row, int col, int weight), int>();
+
+            pq.Enqueue((0, 0, 0), 0);
+            bool[,] visited = new bool[rows, cols];
+            visited[0, 0] = true;
+
+
+            while (pq.Count > 0)
+            {
+                (row, col, weight) = pq.Dequeue();
+
+                if (row == rows - 1 && col == cols - 1)
+                {
+                    return weight;
+                }
+
+                weight++;
+
+                tryEnqueue(pq, moveTime, visited, row + 1, col, weight);
+                tryEnqueue(pq, moveTime, visited, row - 1, col, weight);
+                tryEnqueue(pq, moveTime, visited, row, col + 1, weight);
+                tryEnqueue(pq, moveTime, visited, row, col - 1, weight);
+            }
+
+
+
+            return 0;
+        }
+
+        private void tryEnqueue(PriorityQueue<(int row, int col, int weight), int> pq, int[][] moveTime, bool[,] visited, int row, int col, int weight)
+        {
+            if (row < 0 || col < 0 || row >= moveTime.Length || col >= moveTime[row].Length || visited[row, col]) return;
+
+            visited[row, col] = true;
+            
+            if(weight > moveTime[row][col] + 1)
+            {
+                weight = moveTime[row][col];
+            }
+
+            pq.Enqueue((row, col, weight), weight);
         }
         #endregion
 

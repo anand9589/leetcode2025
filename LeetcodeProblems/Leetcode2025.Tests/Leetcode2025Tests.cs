@@ -958,6 +958,23 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+
+        #region 3341. Find Minimum Time to Reach Last Room I
+
+
+        [TestMethod]
+        public void MinTimeToReachTest()
+        {
+            int[][] moveTime = new int[][]
+            {
+                new int[]{0,4 },
+                new int[]{4,4 }
+            };
+
+            Assert.AreEqual(6, leetcode.MinTimeToReach(moveTime));
+        }
+        #endregion
+
         #region 3356. Zero Array Transformation II
 
         [TestMethod]

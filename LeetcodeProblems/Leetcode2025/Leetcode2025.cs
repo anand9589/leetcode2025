@@ -2771,7 +2771,7 @@ namespace Leetcode2025
         #endregion
 
         #region 1920. Build Array from Permutation
-        
+
         public int[] BuildArray1(int[] nums)
         {
             int[] result = new int[nums.Length];
@@ -5611,6 +5611,73 @@ namespace Leetcode2025
         //}
         #endregion
 
+        #region 2918. Minimum Equal Sum of Two Arrays After Replacing Zeros
+        public long MinSum(int[] nums1, int[] nums2)
+        {
+            long sum1 = 0, sum2 = 0;
+            int zero1 = 0, zero2 = 0;
+            int index = 0;
+            for (; index < Math.Min(nums1.Length, nums2.Length); index++)
+            {
+                if (nums1[index] == 0)
+                {
+                    zero1++;
+                    sum1++;
+                }
+                else
+                {
+                    sum1 += nums1[index];
+                }
+                if (nums2[index] == 0)
+                {
+                    zero2++;
+                    sum2++;
+                }
+                else
+                {
+                    sum2 += nums2[index];
+                }
+            }
+
+            while (index < nums1.Length)
+            {
+                int k = nums1[index++];
+
+                if (k == 0)
+                {
+                    zero1++;
+                    sum1++;
+                }
+                else
+                {
+                    sum1 += k;
+                }
+            }
+
+            while (index < nums2.Length)
+            {
+                int k = nums2[index++];
+
+                if (k == 0)
+                {
+                    zero2++;
+                    sum2++;
+                }
+                else
+                {
+                    sum2 += k;
+                }
+            }
+
+            if ((zero1 == 0 && sum2 > sum1) || (zero2 == 0 && sum1 > sum2))
+            {
+                return -1;
+            }
+
+            return Math.Max(sum1, sum2);
+        }
+        #endregion
+
         #region 2948. Make Lexicographically Smallest Array by Swapping Elements
         public int[] LexicographicallySmallestArray(int[] nums, int limit)
         {
@@ -6421,7 +6488,7 @@ namespace Leetcode2025
         #endregion
 
         #region 3341. Find Minimum Time to Reach Last Room I
-        public int MinTimeToReach(int[][] moveTime)
+        public int MinTimeToReach3341(int[][] moveTime)
         {
             int rows = moveTime.Length;
             int cols = moveTime[0].Length;
@@ -6444,10 +6511,10 @@ namespace Leetcode2025
 
                 weight++;
 
-                tryEnqueue(pq, moveTime, visited, row + 1, col, weight);
-                tryEnqueue(pq, moveTime, visited, row - 1, col, weight);
-                tryEnqueue(pq, moveTime, visited, row, col + 1, weight);
-                tryEnqueue(pq, moveTime, visited, row, col - 1, weight);
+                tryEnqueue1(pq, moveTime, visited, row + 1, col, weight);
+                tryEnqueue1(pq, moveTime, visited, row - 1, col, weight);
+                tryEnqueue1(pq, moveTime, visited, row, col + 1, weight);
+                tryEnqueue1(pq, moveTime, visited, row, col - 1, weight);
             }
 
 
@@ -6455,18 +6522,78 @@ namespace Leetcode2025
             return 0;
         }
 
-        private void tryEnqueue(PriorityQueue<(int row, int col, int weight), int> pq, int[][] moveTime, bool[,] visited, int row, int col, int weight)
+        private void tryEnqueue1(PriorityQueue<(int row, int col, int weight), int> pq, int[][] moveTime, bool[,] visited, int row, int col, int weight)
         {
             if (row < 0 || col < 0 || row >= moveTime.Length || col >= moveTime[row].Length || visited[row, col]) return;
 
             visited[row, col] = true;
-            
-            if(weight > moveTime[row][col] + 1)
+
+            if (weight > moveTime[row][col] + 1)
             {
                 weight = moveTime[row][col];
             }
 
             pq.Enqueue((row, col, weight), weight);
+        }
+        #endregion
+
+
+        #region 3342. Find Minimum Time to Reach Last Room II
+        public int MinTimeToReach(int[][] moveTime)
+        {
+            int rows = moveTime.Length;
+            int cols = moveTime[0].Length;
+            int row, col, weight;
+            bool twoSecFlag = false;
+            PriorityQueue<(int row, int col, int weight, bool twoSecFlag), int> pq = new PriorityQueue<(int row, int col, int weight, bool twoSecFlag), int>();
+
+            pq.Enqueue((0, 0, 0, twoSecFlag), 0);
+            bool[,] visited1 = new bool[rows, cols];
+            bool[,] visited2 = new bool[rows, cols];
+            visited1[0, 0] = true;
+            visited2[0, 0] = true;
+            bool sec2Flag = false;
+            while (pq.Count > 0)
+            {
+
+                (row, col, weight, twoSecFlag) = pq.Dequeue();
+
+                if (row == rows - 1 && col == cols - 1)
+                {
+                    return weight;
+                }
+
+                weight++;
+                if (sec2Flag)
+                {
+                    weight++;
+                }
+                sec2Flag = !sec2Flag;
+                tryEnqueue(pq, moveTime, sec2Flag ? visited2 : visited1, row + 1, col, weight, sec2Flag);
+                tryEnqueue(pq, moveTime, sec2Flag ? visited2 : visited1, row - 1, col, weight, sec2Flag);
+                tryEnqueue(pq, moveTime, sec2Flag ? visited2 : visited1, row, col + 1, weight, sec2Flag);
+                tryEnqueue(pq, moveTime, sec2Flag ? visited2 : visited1, row, col - 1, weight, sec2Flag);
+
+            }
+
+
+
+            return 0;
+        }
+
+        private void tryEnqueue(PriorityQueue<(int row, int col, int weight, bool twoSecFlag), int> pq, int[][] moveTime, bool[,] visited, int row, int col, int weight, bool twoSecFlag)
+        {
+            if (row < 0 || col < 0 || row >= moveTime.Length || col >= moveTime[row].Length || visited[row, col]) return;
+
+            visited[row, col] = true;
+            int incr = twoSecFlag ? 2 : 1;
+
+            if (weight <= moveTime[row][col] + incr)
+            {
+                weight = moveTime[row][col];
+            }
+
+            pq.Enqueue((row, col, weight, twoSecFlag), weight);
         }
         #endregion
 

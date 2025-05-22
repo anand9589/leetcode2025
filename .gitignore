@@ -10,3 +10,5 @@
 /LeetcodeProblems/Leetcode2025/bin/
 /LeetcodeProblems/Leetcode2025.Tests/bin/
 /LeetcodeProblems/.vs/ProjectEvaluation
+/LeetcodeProblems/*/obj
+/LeetcodeProblems/*/bin

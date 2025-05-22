@@ -36,6 +36,18 @@ namespace Leetcode2025.Tests
         {
         }
 
+        #region 73. Set Matrix Zeroes
+        //[[0, 1, 2, 0],[3, 4, 5, 2],[1, 3, 1, 5]]
+
+        [TestMethod]
+        public void SetZeroesTest()
+        {
+            int[][] ints = getMultiDimensionalArray("[[0, 1, 2, 0],[3, 4, 5, 2],[1, 3, 1, 5]]");
+            leetcode.SetZeroes(ints);
+        }
+
+        #endregion
+
         #region 153. Find Minimum in Rotated Sorted Array
         [TestMethod]
         public void FindMinTest()

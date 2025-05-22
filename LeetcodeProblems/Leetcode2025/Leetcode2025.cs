@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
@@ -7,6 +8,124 @@ namespace Leetcode2025
 {
     public class Leetcode2025
     {
+        #region 73. Set Matrix Zeroes
+        public void SetZeroes(int[][] matrix)
+        {
+            bool zeroCol = false, zeroRow = false;
+
+            int rows = matrix.Length;
+            int cols = matrix[0].Length;
+            int row = -1, col = -1;
+            while (++row < rows)
+            {
+                if (matrix[row][0] == 0)
+                {
+                    zeroCol = true;
+                    break;
+                }
+            }
+
+            while (++col < cols)
+            {
+                if (matrix[0][col] == 0)
+                {
+                    zeroRow = true;
+                    break;
+                }
+            }
+
+            for (row = 0; row < rows; row++)
+            {
+                for (col = 0; col < cols; col++)
+                {
+                    if (row == 0 && col == 0) continue;
+                    if (matrix[row][col] == 0)
+                    {
+                        matrix[0][col] = 0;
+                        matrix[row][0] = 0;
+                    }
+                }
+            }
+
+            for (row = 1; row < rows; row++)
+            {
+                if (matrix[row][0] == 0)
+                {
+                    for (col = 1; col < cols; col++)
+                    {
+                        matrix[row][col] = 0;
+                    }
+                }
+            }
+
+            for (col = 1; col < cols; col++)
+            {
+                if (matrix[0][col] == 0)
+                {
+                    for (row = 1; row < rows; row++)
+                    {
+                        matrix[row][col] = 0;
+                    }
+                }
+            }
+
+            if (zeroCol)
+            {
+                for (row = 0; row < rows; row++)
+                {
+                    matrix[row][0] = 0;
+                }
+            }
+
+            if (zeroRow)
+            {
+                for (col = 0; col < cols; col++)
+                {
+                    matrix[0][col] = 0;
+                }
+            }
+        }
+        public void SetZeroes1(int[][] matrix)
+        {
+            bool[] rows = new bool[matrix.Length];
+            bool[] cols = new bool[matrix[0].Length];
+
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                for (int j = 0; j < matrix[i].Length; j++)
+                {
+                    if (matrix[i][j] == 0)
+                    {
+                        rows[i] = true;
+                        cols[j] = true;
+                    }
+                }
+            }
+
+            for (int i = 0; i < rows.Length; i++)
+            {
+                if (rows[i])
+                {
+                    for (int j = 0; j < matrix[i].Length; j++)
+                    {
+                        matrix[i][j] = 0;
+                    }
+                }
+            }
+
+            for (int i = 0; i < cols.Length; i++)
+            {
+                if (cols[i])
+                {
+                    for (int j = 0; j < matrix.Length; j++)
+                    {
+                        matrix[j][i] = 0;
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region 128. Longest Consecutive Sequence
         public int LongestConsecutive(int[] nums)
         {
@@ -2308,6 +2427,26 @@ namespace Leetcode2025
             }
 
             return count;
+        }
+        #endregion
+
+        #region 1550. Three Consecutive Odds
+        public bool ThreeConsecutiveOdds(int[] arr)
+        {
+            int index = 0;
+
+            while (index + 2 < arr.Length)
+            {
+                if (arr[index] % 2 == 1)
+                {
+                    index++;
+                    if (arr[index] % 2 == 1)
+                        index++;
+                    if (arr[index] % 2 == 1) return true;
+                }
+                index++;
+            }
+            return false;
         }
         #endregion
 
@@ -5611,6 +5750,57 @@ namespace Leetcode2025
         //}
         #endregion
 
+        #region 2900. Longest Unequal Adjacent Groups Subsequence I
+        public IList<string> GetLongestSubsequence(string[] words, int[] groups)
+        {
+            HashSet<string> set0 = new HashSet<string>();
+            HashSet<string> set1 = new HashSet<string>();
+            for (int i = 0; i < words.Length; i++)
+            {
+                if (groups[i] == 1)
+                {
+                    set1.Add(words[i]);
+
+                }
+                else
+                {
+                    set0.Add(words[i]);
+                }
+            }
+            if (set0.Count == 0) return new List<string>() { set1.First() };
+            if (set1.Count == 0) return new List<string>() { set0.First() };
+            IList<string> result = new List<string>();
+            string[] arr, arr1;
+
+            if (set1.Count > set0.Count)
+            {
+                arr = set1.ToArray();
+                arr1 = set0.ToArray();
+            }
+            else
+            {
+                arr = set0.ToArray();
+                arr1 = set1.ToArray();
+            }
+            int index = 0;
+            while (index < arr.Length)
+            {
+                result.Add(arr[index]);
+                if (index < arr1.Length)
+                {
+                    result.Add(arr[index]);
+                }
+                else
+                {
+                    break;
+                }
+                index++;
+            }
+            return result;
+
+        }
+        #endregion
+
         #region 2918. Minimum Equal Sum of Two Arrays After Replacing Zeros
         public long MinSum(int[] nums1, int[] nums2)
         {
@@ -5772,6 +5962,38 @@ namespace Leetcode2025
             }
 
             return new int[] { duplicate, map.First() };
+        }
+        #endregion
+
+        #region 3024. Type of Triangle
+        public string TriangleType(int[] nums)
+        {
+
+            if (nums[0] >= nums[1] + nums[2] || nums[1] >= nums[0] + nums[2] || nums[2] >= nums[1] + nums[0])
+            {
+                return "none";
+            }
+            if (nums[0] == nums[1])
+            {
+                return getTriangleName(nums[1], nums[2]);
+            }
+            else if (nums[1] == nums[2])
+            {
+                return getTriangleName(nums[0], nums[1]);
+            }
+            else if (nums[0] == nums[2])
+            {
+                return getTriangleName(nums[1], nums[2]);
+            }
+
+            return "scalene";
+        }
+
+        private static string getTriangleName(int sideB, int sideC)
+        {
+            if (sideB == sideC) return "equilateral";
+
+            return "isosceles";
         }
         #endregion
 
@@ -6537,7 +6759,6 @@ namespace Leetcode2025
         }
         #endregion
 
-
         #region 3342. Find Minimum Time to Reach Last Room II
         public int MinTimeToReach(int[][] moveTime)
         {
@@ -6594,6 +6815,53 @@ namespace Leetcode2025
             }
 
             pq.Enqueue((row, col, weight, twoSecFlag), weight);
+        }
+        #endregion
+
+        #region 3355. Zero Array Transformation I
+        public bool IsZeroArray(int[] nums, int[][] queries)
+        {
+            int[] diff = new int[nums.Length + 1];
+
+            foreach (var query in queries)
+            {
+                diff[query[0]]++;
+                diff[query[1] + 1]--;
+            }
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+
+                if (diff[i] < nums[i]) return false;
+            }
+
+            return true;
+        }
+        public bool IsZeroArray1(int[] nums, int[][] queries)
+        {
+            int zeroCount = 0;
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i] == 0) zeroCount++;
+            }
+
+
+            int index = -1;
+
+            while (++index < queries.Length && zeroCount < nums.Length)
+            {
+                for (int k = queries[index][0]; k <= queries[index][1]; k++)
+                {
+                    if (nums[k] == 0) continue;
+
+                    nums[k]--;
+                    if (nums[k] == 0) zeroCount++;
+                }
+            }
+
+
+            return zeroCount == nums.Length;
         }
         #endregion
 
@@ -7519,6 +7787,121 @@ namespace Leetcode2025
             return true;
         }
         #endregion
+
+
+        #region Weeklu 449
+        #region Q1. Minimum Deletions for At Most K Distinct Characters
+
+        public int MinDeletion(string s, int k)
+        {
+            Dictionary<char, int> map = new Dictionary<char, int>();
+
+            foreach (char c in s)
+            {
+                if (!map.ContainsKey(c))
+                {
+                    map[c] = 0;
+                }
+                map[c]++;
+            }
+            if (map.Count == k) return 0;
+
+            int[] arr = map.Values.OrderBy(x => x).ToArray();
+            int result = 0;
+
+            for (int i = 0; i < arr.Length - k; i++)
+            {
+                result += arr[i];
+            }
+
+
+
+            return result;
+        }
+        #endregion
+
+        #region Q2. Equal Sum Grid Partition I
+        public bool CanPartitionGrid(int[][] grid)
+        {
+            int rows = grid.Length;
+            int cols = grid[0].Length;
+            long[] rowsum = new long[rows];
+            long[] colsum = new long[cols];
+
+            int row = 0;
+            int col = 0;
+            long lastRowSum = 0;
+            for (; row < rows; row++)
+            {
+                long currrowsum = 0;
+                for (; col < cols; col++)
+                {
+                    currrowsum += grid[row][col];
+                }
+                rowsum[row] = lastRowSum + currrowsum;
+                lastRowSum = rowsum[row];
+            }
+
+            long lastColSum = 0;
+            for (col = 0; col < cols; col++)
+            {
+                long currColSum = 0;
+                for (row = 0; row < rows; row++)
+                {
+                    currColSum += grid[row][col];
+                }
+                colsum[col] = lastColSum + currColSum;
+                lastColSum = colsum[col];
+            }
+
+            int low = 0;
+            int high = rows - 2;
+            long maxSum = rowsum[high + 1];
+            if (maxSum % 2 == 0)
+            {
+                maxSum /= 2;
+                while (low <= high)
+                {
+                    int mid = (low + high) / 2;
+                    if (rowsum[mid] == maxSum) return true;
+
+                    if (rowsum[mid] > maxSum)
+                    {
+                        high = mid - 1;
+                    }
+                    else
+                    {
+                        low = mid + 1;
+                    }
+                }
+            }
+            low = 0;
+            high = cols - 1;
+            maxSum = colsum[high];
+            if (maxSum % 2 == 0)
+            {
+                high--;
+                maxSum /= 2;
+                while (low <= high)
+                {
+                    int mid = (low + high) / 2;
+                    if (colsum[mid] == maxSum) return true;
+
+                    if (colsum[mid] > maxSum)
+                    {
+                        high = mid - 1;
+                    }
+                    else
+                    {
+                        low = mid + 1;
+                    }
+                }
+            }
+
+            return false;
+        }
+        #endregion
+        #endregion
     }
 
     public class NumberContainers
@@ -7657,4 +8040,5 @@ namespace Leetcode2025
         }
     }
     #endregion
+
 }

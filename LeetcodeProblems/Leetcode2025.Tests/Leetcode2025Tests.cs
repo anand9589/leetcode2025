@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using Common;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Leetcode2025.Tests
 {
@@ -18,16 +19,7 @@ namespace Leetcode2025.Tests
         #region Input Read
         private int[][] getMultiDimensionalArray(string str)
         {
-            str = str.Trim('[');
-            str = str.Trim(']');
-            string[] strings = str.Split("],[");
-            int[][] result = new int[strings.Length][];
-            for (int i = 0; i < strings.Length; i++)
-            {
-                result[i] = Array.ConvertAll(strings[i].Split(","), int.Parse);
-            }
-
-            return result;
+            return Helper.GetMultiDimensionalArrayBasedOnString(str);
         }
         #endregion
 

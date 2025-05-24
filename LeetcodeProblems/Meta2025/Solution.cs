@@ -7,6 +7,152 @@ namespace Meta2025
     {
 
         /// <summary>
+        /// Merge Sort
+        /// TC O(NlogN)
+        /// SC O(N)
+        /// </summary>
+        /// <param name="arr"></param>
+        public void MergeSort(int[] arr)
+        {
+            MergeSort(arr, 0, arr.Length - 1);
+        }
+        /// <summary>
+        /// TC O(logN)
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="endIndex"></param>
+        public void MergeSort(int[] arr, int startIndex, int endIndex)
+        {
+            if (startIndex == endIndex) return;
+
+            if (startIndex == endIndex - 1)
+            {
+                if (arr[startIndex] > arr[endIndex])
+                {
+                    arr.Swap(startIndex, endIndex);
+                }
+                return;
+            }
+
+            int midIndex = (startIndex + endIndex) / 2;
+            MergeSort(arr, startIndex, midIndex);
+            MergeSort(arr, midIndex + 1, endIndex);
+            Merge(arr, startIndex, midIndex, endIndex);
+        }
+        /// <summary>
+        /// TC O(N)
+        /// SC O(N)
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="midIndex"></param>
+        /// <param name="endIndex"></param>
+        public void Merge(int[] arr, int startIndex, int midIndex, int endIndex)
+        {
+
+            if (arr[midIndex] > arr[midIndex + 1])
+            {
+                int[] arr1 = new int[midIndex - startIndex + 1];
+                int[] arr2 = new int[endIndex - midIndex];
+                int index = -1;
+
+                while (++index < arr1.Length && index < arr2.Length)
+                {
+                    arr1[index] = arr[startIndex + index];
+                    arr2[index] = arr[midIndex + index + 1];
+                }
+
+                while (index < arr1.Length)
+                {
+                    arr1[index] = arr[startIndex + index];
+                    index++;
+                }
+                while (index < arr2.Length)
+                {
+                    arr2[index] = arr[midIndex + index + 1];
+                    index++;
+                    index++;
+                }
+
+                int index1 = 0;
+                int index2 = 0;
+
+                while (index1 < arr1.Length && index2 < arr2.Length)
+                {
+                    if (arr1[index1] < arr2[index2])
+                    {
+                        arr[startIndex] = arr1[index1];
+                        index1++;
+                    }
+                    else
+                    {
+                        arr[startIndex] = arr2[index2];
+                        index2++;
+                    }
+                    startIndex++;
+                }
+
+                while (index1<arr1.Length)
+                {
+                    arr[startIndex++] = arr1[index1++];
+                }
+
+                while (index2 < arr2.Length)
+                {
+                    arr[startIndex++] = arr2[index2++];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Insertion Sort
+        /// TC O(N^2)
+        /// SP O(1)
+        /// </summary>
+        /// <param name="arr"></param>
+        public void InsertionSort(int[] arr)
+        {
+            for (int i = 1; i < arr.Length; i++)
+            {
+                int curr = arr[i];
+
+                int j = i - 1;
+                while (j >= 0 && arr[j] > curr)
+                {
+                    arr.Swap(j, j + 1);
+                    j--;
+                }
+                arr[j + 1] = curr;
+            }
+        }
+
+
+        /// <summary>
+        /// Bubble Sort
+        /// TC O(N^2)
+        /// SP O(1)
+        /// </summary>
+        /// <param name="arr"></param>
+        public void BubbleSort(int[] arr)
+        {
+            bool needToSort = true;
+
+            while (needToSort)
+            {
+                needToSort = false;
+                for (int i = 1; i < arr.Length; i++)
+                {
+                    if (arr[i] < arr[i - 1])
+                    {
+                        arr.Swap(i, i - 1);
+                        needToSort = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Selection Sort
         /// Time Complexity O(N^2)
         /// Space Complexity O(1)

@@ -26,6 +26,39 @@ public class Meta2025Tests
     }
 
     [TestMethod]
+    public void MergeSortTest()
+    {
+        int[] a = Helper.GenerateArray(-100000, 1000000, 1000);
+
+        Assert.IsFalse(Helper.IsSortedArray(a));
+        solution.MergeSort(a);
+
+        Assert.IsTrue(Helper.IsSortedArray(a));
+    }
+
+    [TestMethod]
+    public void InsertionSortTest()
+    {
+        int[] a = Helper.GenerateArray(-100000, 1000000, 1000);
+
+        Assert.IsFalse(Helper.IsSortedArray(a));
+        solution.InsertionSort(a);
+
+        Assert.IsTrue(Helper.IsSortedArray(a));
+    }
+
+    [TestMethod]
+    public void BubbleSortTest()
+    {
+        int[] a = Helper.GenerateArray(-100000, 1000000, 1000);
+
+        Assert.IsFalse(Helper.IsSortedArray(a));
+        solution.BubbleSort(a);
+
+        Assert.IsTrue(Helper.IsSortedArray(a));
+    }
+
+    [TestMethod]
     public void SelectionSortTest()
     {
         int[] a = Helper.GenerateArray(-100000,1000000,1000);

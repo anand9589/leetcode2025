@@ -5,6 +5,187 @@ namespace Meta2025
 {
     public class Solution
     {
+        /// <summary>
+        /// m = l1.length, n = l2.length
+        /// Time Complexity O Max(m,n)
+        /// Space Complexity O Max(m,n)
+        /// </summary>
+        /// <param name="l1"></param>
+        /// <param name="l2"></param>
+        /// <returns></returns>
+
+        public ListNode AddTwoNumbers(ListNode l1, ListNode l2)
+        {
+            int carry = 0;
+            ListNode dummy = new ListNode(-1, null);
+
+            ListNode temp = dummy;
+
+            while (l1 != null && l2 != null)
+            {
+                int n = l1.val + l2.val + carry;
+                if (n > 9) carry = 1;
+                temp.next = new ListNode(n % 10);
+                temp = temp.next;
+                l1 = l1.next;
+                l2 = l2.next;
+            }
+
+            while (l1 != null)
+            {
+                int n = l1.val +  carry;
+                if (n > 9) carry = 1;
+                temp.next = new ListNode(n % 10);
+                temp = temp.next;
+                l1=l1.next;
+            }
+
+            while ( l2 != null)
+            {
+                int n = l2.val + carry;
+                if (n > 9) carry = 1;
+                temp.next = new ListNode(n % 10);
+                temp = temp.next;
+                l2=l2.next;
+            }
+            if (carry == 1)
+            {
+                temp.next = new ListNode(1);
+            }
+
+            return dummy.next;
+        }
+
+        /// <summary>
+        /// TC : O(N)
+        /// SC : O(N)
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public int[] TwoSum(int[] nums, int target)
+        {
+            Dictionary<int, int> keys = new Dictionary<int, int>();
+            keys.Add(nums[0], 0);
+            for (int i = 1; i < nums.Length; i++)
+            {
+                int key = nums[i];
+                int reqKey = target - key;
+                if (keys.ContainsKey(reqKey))
+                {
+                    return new int[] { i, keys[reqKey] };
+                }
+                keys[key] = i;
+            }
+            return new int[] { -1, -1 };
+        }
+
+        public bool BinarySearch(int[] arr, int key)
+        {
+            if (arr.Length == 0) return false;
+            int low = 0, high = arr.Length - 1;
+
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+                if (arr[mid] == key) return true;
+                if (arr[mid] < key) low = mid + 1;
+                else high = mid - 1;
+            }
+
+            return false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arr"></param>
+        public void HeapSort(int[] arr)
+        {
+            HeapSort(arr, arr.Length - 1);
+        }
+
+        public void HeapSort(int[] arr, int endIndex)
+        {
+            while (endIndex > 0)
+            {
+                heapify(arr, 0, endIndex);
+                arr.Swap(0, endIndex);
+                endIndex--;
+            }
+        }
+
+        private void heapify(int[] arr, int index, int endIndex)
+        {
+            int left = 2 * index + 1;
+
+            if (left > endIndex) return;
+
+            int right = left + 1;
+            if (right > endIndex)
+            {
+                if (arr[left] > arr[index])
+                {
+                    arr.Swap(left, index);
+                }
+                return;
+            }
+            heapify(arr, left, endIndex);
+            heapify(arr, right, endIndex);
+            if (arr[left] < arr[right])
+            {
+                left = right;
+            }
+
+            if (arr[left] > arr[index])
+            {
+                arr.Swap(left, index);
+            }
+
+
+            //HeapSort(arr, endIndex - 1);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arr"></param>
+        public void QuickSort(int[] arr)
+        {
+            QuickSort(arr, 0, arr.Length - 1);
+        }
+        /// <summary>
+        /// TC O(N^2)
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="endIndex"></param>
+        public void QuickSort(int[] arr, int startIndex, int endIndex)
+        {
+            if (startIndex >= endIndex) return;
+            if (startIndex == endIndex - 1)
+            {
+                if (arr[startIndex] > arr[endIndex])
+                {
+                    arr.Swap(startIndex, endIndex);
+                }
+                return;
+            }
+
+            int pivot = arr[endIndex];
+            int pivotIndex = startIndex;
+            for (int i = startIndex; i < endIndex; i++)
+            {
+                if (arr[i] <= pivot)
+                {
+                    arr.Swap(i, pivotIndex);
+                    pivotIndex++;
+                }
+            }
+            arr.Swap(pivotIndex, endIndex);
+
+            QuickSort(arr, startIndex, pivotIndex - 1);
+            QuickSort(arr, pivotIndex + 1, endIndex);
+        }
 
         /// <summary>
         /// Merge Sort
@@ -93,7 +274,7 @@ namespace Meta2025
                     startIndex++;
                 }
 
-                while (index1<arr1.Length)
+                while (index1 < arr1.Length)
                 {
                     arr[startIndex++] = arr1[index1++];
                 }

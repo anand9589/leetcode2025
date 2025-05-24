@@ -53,5 +53,19 @@
             }
             return true;
         }
+
+        public static ListNode GenerateListNode(int[] array)
+        {
+            ListNode node = new ListNode(-1, null);
+
+            ListNode temp = node;
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                temp.next = new ListNode(array[i]);
+                temp = temp.next;
+            }
+            return node.next;
+        }
     }
 }

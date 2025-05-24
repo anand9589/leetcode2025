@@ -20,9 +20,73 @@ public class Meta2025Tests
         return Helper.GetMultiDimensionalArrayBasedOnString(str);
     }
     #endregion
+
     [TestMethod]
     public void Test()
     {
+    }
+    [TestMethod]
+    public void AddTwoNumbersTest()
+    {
+        int[] arr1 = Helper.GenerateArray(0, 9, 3);
+        int[] arr2 = Helper.GenerateArray(0, 9, 3);
+        ListNode list1 = Helper.GenerateListNode(arr1);
+        ListNode list2 = Helper.GenerateListNode(arr2);
+
+        ListNode list3 = solution.AddTwoNumbers(list1,list2);
+    }
+
+    [TestMethod]
+    public void ListNodeTest()
+    {
+        int[] arr = Helper.GenerateArray(0, 9, 5);
+        ListNode node = Helper.GenerateListNode(arr);
+    }
+
+
+    [TestMethod]
+    public void BinarySearchTest()
+    {
+        int[] arr = Helper.GenerateArray();
+        int key = arr[5000];
+        //Random random = new Random();
+        //int key = random.Next(int.MinValue, int.MaxValue);
+
+        Array.Sort(arr);
+
+
+        int x = Array.BinarySearch(arr, key);
+        
+        if (x < 0)
+        {
+            Assert.IsFalse(solution.BinarySearch(arr, key));
+        }
+        else
+        {
+            Assert.IsTrue(solution.BinarySearch(arr, key));
+        }
+       
+    }
+    [TestMethod]
+    public void HeapSortTest()
+    {
+        int[] a = Helper.GenerateArray(-100000, 1000000, 1000);
+
+        Assert.IsFalse(Helper.IsSortedArray(a));
+        solution.HeapSort(a);
+
+        Assert.IsTrue(Helper.IsSortedArray(a));
+    }
+
+    [TestMethod]
+    public void QuickSortTest()
+    {
+        int[] a = Helper.GenerateArray(-100000, 1000000, 1000);
+
+        Assert.IsFalse(Helper.IsSortedArray(a));
+        solution.QuickSort(a);
+
+        Assert.IsTrue(Helper.IsSortedArray(a));
     }
 
     [TestMethod]

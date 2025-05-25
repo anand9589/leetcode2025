@@ -1,5 +1,6 @@
 using Common;
 using Meta2025;
+using System.Diagnostics;
 
 namespace Leetcode2025.Tests;
 
@@ -25,6 +26,210 @@ public class Meta2025Tests
     public void Test()
     {
     }
+
+    [TestMethod]
+    public void LongestPalindromeTest1()
+    {
+        string[] words = { "lc", "cl", "gg", "gg", "gg", "gg", "gg", "gg", "gg", "gg" };
+        var result = solution.LongestPalindrome(words);
+        Assert.AreEqual(6, result);
+    }
+
+    [TestMethod]
+    public void LongestPalindromeTest()
+    {
+        string[] words = { "lc", "cl", "gg" };
+        var result = solution.LongestPalindrome(words);
+        Assert.AreEqual(6, result);
+    }
+
+    [TestMethod]
+    public void FindMedianSortedArraysTest7()
+    {
+        int[] arr2 = { 2, 3, 9, 19, 19 };
+        int[] arr1 = { 2, 4, 5, 7, 13 };
+
+        //int[] arr = arr1.Concat(arr2).ToArray();
+
+        //Array.Sort(arr);
+
+        //double expected = arr[12];
+
+        //Array.Sort(arr1);
+        //Array.Sort(arr2);
+
+        double actual = solution.FindMedianSortedArrays(arr1, arr2);
+
+        Assert.AreEqual(6, actual);
+    }
+
+    [TestMethod]
+    public void FindMedianSortedArraysTest6()
+    {
+        int[] arr2 = { 2 };
+        int[] arr1 = { 1, 3 };
+
+        //int[] arr = arr1.Concat(arr2).ToArray();
+
+        //Array.Sort(arr);
+
+        //double expected = arr[12];
+
+        //Array.Sort(arr1);
+        //Array.Sort(arr2);
+
+        double actual = solution.FindMedianSortedArrays(arr1, arr2);
+
+        Assert.AreEqual(2.0000, actual);
+    }
+
+    [TestMethod]
+    public void FindMedianSortedArraysTest5()
+    {
+        int[] arr2 = { 2 };
+        int[] arr1 = { 1, 3 };
+
+        //int[] arr = arr1.Concat(arr2).ToArray();
+
+        //Array.Sort(arr);
+
+        //double expected = arr[12];
+
+        //Array.Sort(arr1);
+        //Array.Sort(arr2);
+
+        double actual = solution.FindMedianSortedArrays(arr1, arr2);
+
+        Assert.AreEqual(2.0000, actual);
+    }
+    [TestMethod]
+    public void FindMedianSortedArraysTest4()
+    {
+        int[] arr2 = { 11, 14, 18, 21, 27 };
+        int[] arr1 = { };
+
+        //int[] arr = arr1.Concat(arr2).ToArray();
+
+        //Array.Sort(arr);
+
+        //double expected = arr[12];
+
+        //Array.Sort(arr1);
+        //Array.Sort(arr2);
+
+        double actual = solution.FindMedianSortedArrays(arr1, arr2);
+
+        Assert.AreEqual(18, actual);
+    }
+
+    [TestMethod]
+    public void FindMedianSortedArraysTest3()
+    {
+        int[] arr2 = { 11, 14, 18, 21, 27 };
+        int[] arr1 = { 13, 16, 19, 21 };
+
+        //int[] arr = arr1.Concat(arr2).ToArray();
+
+        //Array.Sort(arr);
+
+        //double expected = arr[12];
+
+        //Array.Sort(arr1);
+        //Array.Sort(arr2);
+
+        double actual = solution.FindMedianSortedArrays(arr1, arr2);
+
+        Assert.AreEqual(18, actual);
+    }
+
+    [TestMethod]
+    public void FindMedianSortedArraysTest2()
+    {
+        int[] arr2 = Helper.GenerateArray(0, 20, 5);
+        int[] arr1 = Helper.GenerateArray(0, 20, 5);
+
+        int[] arr = arr1.Concat(arr2).ToArray();
+
+        Array.Sort(arr);
+
+
+        Array.Sort(arr1);
+        Array.Sort(arr2);
+        Debug.WriteLine(string.Join(' ', arr1));
+        Debug.WriteLine(string.Join(' ', arr2));
+        Debug.WriteLine(string.Join(' ', arr));
+
+
+        double expected = (double)(arr[4] + arr[5]) / 2;
+        Debug.WriteLine(expected);
+        double actual = solution.FindMedianSortedArrays(arr1, arr2);
+        Debug.WriteLine(actual);
+        Assert.AreEqual(expected, actual);
+    }
+    [TestMethod]
+    public void FindMedianSortedArraysTest1()
+    {
+        int[] arr2 = { 3, 4 };
+        int[] arr1 = { 1, 2 };
+
+        //int[] arr = arr1.Concat(arr2).ToArray();
+
+        //Array.Sort(arr);
+
+        //double expected = arr[12];
+
+        //Array.Sort(arr1);
+        //Array.Sort(arr2);
+
+        double actual = solution.FindMedianSortedArrays(arr1, arr2);
+
+        Assert.AreEqual(2.5000, actual);
+    }
+
+    [TestMethod]
+    public void FindMedianSortedArraysTest()
+    {
+        int[] arr2 = Helper.GenerateArray(-50, 50, 5);
+        int[] arr1 = Helper.GenerateArray(51, 80, 10);
+
+        int[] arr = arr1.Concat(arr2).ToArray();
+
+        Array.Sort(arr);
+
+        double expected = arr[7];
+
+        Array.Sort(arr1);
+        Array.Sort(arr2);
+
+        double actual = solution.FindMedianSortedArrays(arr1, arr2);
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void LengthOfLongestSubstringTest2()
+    {
+        string s = "abba";
+        var result = solution.LengthOfLongestSubstring(s);
+        Assert.AreEqual(2, result);
+    }
+
+    [TestMethod]
+    public void LengthOfLongestSubstringTest1()
+    {
+        string s = "aab";
+        var result = solution.LengthOfLongestSubstring(s);
+        Assert.AreEqual(2, result);
+    }
+
+    [TestMethod]
+    public void LengthOfLongestSubstringTest()
+    {
+        string s = "abcabcbb";
+        var result = solution.LengthOfLongestSubstring(s);
+        Assert.AreEqual(3, result);
+    }
+
     [TestMethod]
     public void AddTwoNumbersTest()
     {
@@ -33,7 +238,7 @@ public class Meta2025Tests
         ListNode list1 = Helper.GenerateListNode(arr1);
         ListNode list2 = Helper.GenerateListNode(arr2);
 
-        ListNode list3 = solution.AddTwoNumbers(list1,list2);
+        ListNode list3 = solution.AddTwoNumbers(list1, list2);
     }
 
     [TestMethod]
@@ -56,7 +261,7 @@ public class Meta2025Tests
 
 
         int x = Array.BinarySearch(arr, key);
-        
+
         if (x < 0)
         {
             Assert.IsFalse(solution.BinarySearch(arr, key));
@@ -65,7 +270,7 @@ public class Meta2025Tests
         {
             Assert.IsTrue(solution.BinarySearch(arr, key));
         }
-       
+
     }
     [TestMethod]
     public void HeapSortTest()
@@ -125,7 +330,7 @@ public class Meta2025Tests
     [TestMethod]
     public void SelectionSortTest()
     {
-        int[] a = Helper.GenerateArray(-100000,1000000,1000);
+        int[] a = Helper.GenerateArray(-100000, 1000000, 1000);
 
         Assert.IsFalse(Helper.IsSortedArray(a));
         solution.SelectionSort(a);
@@ -146,7 +351,7 @@ public class Meta2025Tests
     [TestMethod]
     public void MaxRemovalTest6()
     {
-        int[] nums = { 0,0,3 };
+        int[] nums = { 0, 0, 3 };
         int[][] queries = getMultiDimensionalArray("[[0,2],[1,1],[0,0],[0,0]]");
 
         var actual = solution.MaxRemoval(nums, queries);
@@ -166,7 +371,7 @@ public class Meta2025Tests
     [TestMethod]
     public void MaxRemovalTest4()
     {
-        int[] nums = { 1,2 };
+        int[] nums = { 1, 2 };
         int[][] queries = getMultiDimensionalArray("[[1,1],[0,0],[1,1],[1,1],[0,1],[0,0]]");
 
         var actual = solution.MaxRemoval(nums, queries);
@@ -176,7 +381,7 @@ public class Meta2025Tests
     [TestMethod]
     public void MaxRemovalTest3()
     {
-        int[] nums = {2,0,2 };
+        int[] nums = { 2, 0, 2 };
         int[][] queries = getMultiDimensionalArray("[[0,2],[0,2],[1,1]]");
 
         var actual = solution.MaxRemoval(nums, queries);
@@ -225,7 +430,7 @@ public class Meta2025Tests
     public void MinZeroArrayTest2()
     {
         int[] nums = { 4, 3, 2, 1 };
-        int[][] queries = { new int[] { 1,3,2 }, new int[] { 0, 2, 1 } };
+        int[][] queries = { new int[] { 1, 3, 2 }, new int[] { 0, 2, 1 } };
 
         Assert.IsTrue(solution.MinZeroArray(nums, queries).Equals(-1));
     }
@@ -233,7 +438,7 @@ public class Meta2025Tests
     [TestMethod]
     public void MinZeroArrayTest3()
     {
-        int[] nums = { 0,10 };
+        int[] nums = { 0, 10 };
         int[][] queries = getMultiDimensionalArray("[[0,1,2],[0,0,2],[0,1,2],[1,1,4],[0,1,3],[1,1,4],[0,1,2],[0,1,2],[0,1,2],[0,0,2],[1,1,2],[0,0,2],[0,0,3],[1,1,3],[0,0,5]]");
 
         Assert.IsTrue(solution.MinZeroArray(nums, queries).Equals(5));

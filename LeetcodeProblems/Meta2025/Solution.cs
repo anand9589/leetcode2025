@@ -1,10 +1,395 @@
 ﻿
 using Common;
+using System.Net.Http.Headers;
 
 namespace Meta2025
 {
     public class Solution
     {
+        public int LongestPalindrome(string[] words)
+        {
+            Dictionary<string, int> wordCount = new Dictionary<string, int>();
+            Dictionary<string, int> singlecharWordCount = new Dictionary<string, int>();
+            Dictionary<string, string> reMapping = new Dictionary<string, string>();
+            foreach (string word in words)
+            {
+                if (word[0] == word[1])
+                {
+                    if (singlecharWordCount.ContainsKey(word))
+                    {
+                        singlecharWordCount[word]++;
+                    }
+                    else
+                    {
+                        singlecharWordCount.Add(word, 1);
+                    }
+                }
+                else
+                {
+                    if (wordCount.ContainsKey(word))
+                    {
+                        wordCount[word]++;
+                    }
+                    else
+                    {
+                        wordCount.Add(word, 1);
+
+                        string rw = new string(new char[] { word[1], word[0] });
+                        if (reMapping.ContainsKey(rw))
+                        {
+                            reMapping[rw] = word;
+                        }
+                        else
+                        {
+                            reMapping.Add(word, "");
+                        }
+                    }
+                }
+            }
+            int count = 0;
+            foreach (var rem in reMapping.Keys)
+            {
+                if (!string.IsNullOrEmpty(reMapping[rem]))
+                {
+                    int minFreq = Math.Min(wordCount[rem], wordCount[reMapping[rem]]);
+                    count = count + (minFreq * 4);
+                }
+            }
+            bool oddFreq = false;
+            foreach (var key in singlecharWordCount.Keys)
+            {
+                
+                if (singlecharWordCount[key] % 2 == 1)
+                {
+                    oddFreq = true;
+                    count = count + ((singlecharWordCount[key] - 1) * 2);
+                }
+                else
+                {
+                    count = count + (singlecharWordCount[key] * 2);
+                }
+            }
+            return count + (oddFreq ? 2 : 0);
+
+        }
+        public double FindMedianSortedArrays(int[] nums1, int[] nums2)
+        {
+            int m = nums1.Length, n = nums2.Length;
+
+            if (m == 0 && n == 0) return 0;
+
+            if (m == 0)
+            {
+                return median(nums2);
+            }
+
+            if (n == 0)
+            {
+                return median(nums1);
+            }
+            int l1 = 0, l2 = 0, h1 = m - 1, h2 = n - 1;
+            int skippedCount = (m + n) / 2;
+
+            if ((m + n) % 2 == 0)
+            {
+                skippedCount--;
+            }
+            return FindMedianSortedArrays(nums1, nums2, l1, h1, l2, h2, skippedCount);
+        }
+
+        private double FindMedianSortedArrays(int[] arr1, int[] arr2, int l1, int h1, int l2, int h2, int skippedCount)
+        {
+
+            if (l1 <= h1 && l2 <= h2 && (l1 + l2) < skippedCount)
+            {
+                int mid1 = (l1 + h1) / 2;
+                int mid2 = (l2 + h2) / 2;
+
+                if (arr1[mid1] < arr2[mid2])
+                {
+                    return FindMedianSortedArrays(arr1, arr2, mid1 + 1, h1, l2, h2, skippedCount);
+                }
+                else
+                {
+                    return FindMedianSortedArrays(arr1, arr2, l1, h1, mid2 + 1, h2, skippedCount);
+                }
+            }
+            else if (l1 == arr1.Length)
+            {
+                if (l2 == 0)
+                {
+                    skippedCount -= l1;
+                }
+
+                double sum = arr2[skippedCount];
+                if ((arr1.Length + arr2.Length) % 2 == 0)
+                {
+                    sum += arr2[++skippedCount];
+                    sum /= 2;
+                }
+                return sum;
+            }
+            else if (l2 == arr2.Length)
+            {
+                if (l1 == 0)
+                {
+                    skippedCount -= l2;
+                }
+
+                double sum = arr1[skippedCount];
+                if ((arr1.Length + arr2.Length) % 2 == 0)
+                {
+                    sum += arr1[++skippedCount];
+                    sum /= 2;
+                }
+                return sum;
+            }
+            else if ((l1 + l2) == skippedCount)
+            {
+                double sum = 0;
+                if (arr1[l1] < arr2[l2])
+                {
+                    sum += arr1[l1++];
+                }
+                else
+                {
+                    sum += arr2[l2++];
+                }
+
+                if ((arr1.Length + arr2.Length) % 2 == 0)
+                {
+                    if (l1 == arr1.Length)
+                    {
+                        sum += arr2[l2];
+                    }
+                    else if (l2 == arr2.Length)
+                    {
+                        sum += arr1[l1];
+                    }
+                    else
+                    {
+                        sum += Math.Min(arr2[l2], arr1[l1]);
+                    }
+                    sum /= 2;
+                }
+                return sum;
+            }
+            else
+            {
+                return 0.0;
+            }
+        }
+
+        public double FindMedianSortedArrays2(int[] nums1, int[] nums2)
+        {
+            int m = nums1.Length, n = nums2.Length;
+
+            if (m == 0 && n == 0) return 0;
+
+            if (m == 0)
+            {
+                return median(nums2);
+            }
+
+            if (n == 0)
+            {
+                return median(nums1);
+            }
+
+            double sum = 0;
+            int low1 = 0, low2 = 0, high1 = m - 1, high2 = n - 1;
+
+            int procsessed = 0;
+            int eleminateCount = (m + n) / 2;
+
+            int mid1 = (high1 + low1) / 2;
+            int mid2 = (high2 + low2) / 2;
+
+            if ((m + n) % 2 == 0)
+            {
+                eleminateCount--;
+            }
+
+            while (low1 <= high1 && low2 <= high2 && procsessed < eleminateCount)
+            {
+                if (nums1[mid1] < nums2[mid2])
+                {
+                    procsessed = low2 + mid1;
+                    low1 = mid1 + 1;
+                    mid1 = (low1 + high1) / 2;
+                }
+                else
+                {
+                    procsessed = low1 + mid2;
+                    low2 = mid2 + 1;
+                    mid2 = (low2 + high2) / 2;
+                }
+            }
+            if (procsessed == eleminateCount)
+            {
+                if (nums1[low1] < nums2[low2])
+                {
+                    sum = nums1[low1];
+                    low1++;
+                }
+                else
+                {
+                    sum = nums2[low2];
+                    low2++;
+                }
+
+                if ((m + n) % 2 == 0)
+                {
+                    if (low1 == m)
+                    {
+                        sum += nums2[low2];
+                    }
+                    else if (low2 == n)
+                    {
+                        sum += nums1[low1];
+                    }
+                    else
+                    {
+                        sum += Math.Min(nums1[low1], nums2[low2]);
+                    }
+
+                    sum /= 2;
+                }
+                return sum;
+
+            }
+            if (low2 == n)
+            {
+                return median(nums1, m, n, eleminateCount);
+            }
+
+            if (low1 == m)
+            {
+                return median(nums2, n, m, eleminateCount);
+            }
+
+            while (procsessed > eleminateCount)
+            {
+                if (nums1[low1] > nums2[low2])
+                {
+                    low1--;
+                }
+                else
+                {
+                    low2--;
+                }
+                procsessed--;
+            }
+
+
+            return sum;
+        }
+
+        private static double median(int[] arr, int m, int n, int skipped)
+        {
+            double sum = arr[skipped - n];
+            if ((m + n) % 2 == 0)
+            {
+                sum += arr[skipped - n + 1];
+                sum /= 2;
+            }
+
+            return sum;
+        }
+
+        private static double median(int[] arr)
+        {
+            double sum = arr[arr.Length / 2];
+            if (arr.Length % 2 == 0)
+            {
+                sum += (double)arr[(arr.Length / 2) - 1];
+                sum /= 2;
+            }
+            return sum;
+        }
+
+        /// <summary>
+        /// TC O(Max(m,n)+1)
+        /// SC O(Max(m,n))
+        /// </summary>
+        /// <param name="nums1"></param>
+        /// <param name="nums2"></param>
+        /// <returns></returns>
+        ///
+        public double FindMedianSortedArrays1(int[] nums1, int[] nums2)
+        {
+            int[] arr = new int[nums1.Length + nums2.Length];
+            int index1 = 0;
+            int index2 = 0;
+            int processed = 0;
+            int elementIndex = (nums1.Length + nums2.Length) / 2;
+            while (index1 < nums1.Length && index2 < nums2.Length && processed <= elementIndex)
+            {
+                if (nums1[index1] < nums2[index2])
+                {
+                    arr[processed] = nums1[index1++];
+                }
+                else
+                {
+                    arr[processed] = nums2[index2++];
+                }
+                processed++;
+            }
+
+            while (index1 < nums1.Length && processed <= elementIndex)
+            {
+                arr[processed++] = nums1[index1++];
+            }
+            while (index2 < nums2.Length && processed <= elementIndex)
+            {
+                arr[processed++] = nums2[index2++];
+            }
+
+            if (processed >= elementIndex)
+            {
+                double sum = arr[--processed];
+                if ((nums1.Length + nums2.Length) % 2 == 0)
+                {
+                    sum += arr[--processed];
+                    return sum / 2;
+                }
+                return sum;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// TC O(N)
+        /// SC O(26)
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public int LengthOfLongestSubstring(string s)
+        {
+            if (s.Length == 0) return 0;
+            int result = 1;
+            Dictionary<char, int> map = new Dictionary<char, int>();
+            map[s[0]] = 0;
+            int si = 0;
+            for (int index = 1; index < s.Length; index++)
+            {
+                char c = s[index];
+                if (map.ContainsKey(c) && si <= map[c])
+                {
+
+                    result = Math.Max(result, index - si);
+
+                    si = map[c] + 1;
+
+                }
+                map[c] = index;
+            }
+
+            result = Math.Max(result, s.Length - si);
+
+            return result;
+        }
+
         /// <summary>
         /// m = l1.length, n = l2.length
         /// Time Complexity O Max(m,n)
@@ -33,20 +418,20 @@ namespace Meta2025
 
             while (l1 != null)
             {
-                int n = l1.val +  carry;
+                int n = l1.val + carry;
                 if (n > 9) carry = 1;
                 temp.next = new ListNode(n % 10);
                 temp = temp.next;
-                l1=l1.next;
+                l1 = l1.next;
             }
 
-            while ( l2 != null)
+            while (l2 != null)
             {
                 int n = l2.val + carry;
                 if (n > 9) carry = 1;
                 temp.next = new ListNode(n % 10);
                 temp = temp.next;
-                l2=l2.next;
+                l2 = l2.next;
             }
             if (carry == 1)
             {
@@ -606,7 +991,7 @@ namespace Meta2025
                         }
                     }
 
-                    //if (k == nums.Length && diff)
+                    //if (k == arr.Length && diff)
                     //    return i + 1;
                 }
 

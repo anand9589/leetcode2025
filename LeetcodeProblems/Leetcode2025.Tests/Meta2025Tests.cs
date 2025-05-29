@@ -28,6 +28,198 @@ public class Meta2025Tests
     }
 
     [TestMethod]
+    public void FirstMissingPositiveTest()
+    {
+        int[] arr = { 1, 2, 0, 4, 3, 3, 6, 5, 5, 9 };
+        var res = solution.FirstMissingPositive(arr);
+        Assert.AreEqual(7, res);
+    }
+
+    [TestMethod]
+    public void NextPermutationTest()
+    {
+        int[] arr = { 1, 2, 3 };
+        solution.NextPermutation(arr);
+    }
+
+    [TestMethod]
+    public void NextPermutationTest5()
+    {
+        int[] arr = { 2, 3, 1 };
+        solution.NextPermutation(arr);
+    }
+    [TestMethod]
+    public void NextPermutationTest1()
+    {
+        int[] arr = { 3, 2, 1 };
+        solution.NextPermutation(arr);
+    }
+
+    [TestMethod]
+    public void NextPermutationTest2()
+    {
+        int[] arr = { 1, 5, 1 };
+        solution.NextPermutation(arr);
+    }
+
+    [TestMethod]
+    public void NextPermutationTest3()
+    {
+        int[] arr = Helper.GenerateArray(1, 88, 8);
+        Debug.WriteLine(string.Join(", ", arr));
+        solution.NextPermutation(arr);
+        Debug.WriteLine(string.Join(", ", arr));
+    }
+
+    [TestMethod]
+    public void NextPermutationTest4()
+    {
+        int[] arr = { 6, 9, 8 };
+        //Debug.WriteLine(string.Join(", ", arr));
+        solution.NextPermutation(arr);
+        //Debug.WriteLine(string.Join(", ", arr));
+    }
+    [TestMethod]
+    public void StrStrTest1()
+    {
+        string haystack = "sadsadbut";
+        string needle = "sadbut";
+        var actual = solution.StrStr(haystack, needle);
+        Assert.AreEqual(3, actual);
+    }
+    [TestMethod]
+    public void StrStrTest()
+    {
+        string haystack = "sadbutsad";
+        string needle = "sad";
+        var actual = solution.StrStr(haystack, needle);
+        Assert.AreEqual(0, actual);
+    }
+
+
+
+    [TestMethod]
+    public void ReverseKGroupT()
+    {
+        int[] arr = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        ListNode node = Helper.GenerateListNode(arr);
+        solution.ReverseKGroup(node, 3);
+    }
+
+    [TestMethod]
+    public void ReverseNodes()
+    {
+        int[] arr = { 1, 2, 3, 4, 5 };
+        ListNode node = Helper.GenerateListNode(arr);
+        solution.ReverseNodes(node);
+    }
+    [TestMethod]
+    public void MaxTargetNodesTest()
+    {
+        int[][] edges1 = getMultiDimensionalArray("[[0,1],[0,2],[2,3],[2,4]]");
+        int[][] edges2 = getMultiDimensionalArray("[[0,1],[0,2],[0,3],[2,7],[1,4],[4,5],[4,6]]");
+        solution.MaxTargetNodes(edges1, edges2, 2);
+    }
+
+    [TestMethod]
+    public void SwapPairsTest1()
+    {
+        int[] arr = { 1, 2, 3, 4, 5 };
+        ListNode node = Helper.GenerateListNode(arr);
+        solution.SwapPairs(node);
+    }
+
+    [TestMethod]
+    public void SwapPairsTest()
+    {
+        int[] arr = Helper.GenerateArray(40, 90, 10);
+        ListNode node = Helper.GenerateListNode(arr);
+        solution.SwapPairs(node);
+    }
+
+    [TestMethod]
+    public void GenerateParenthesisTest()
+    {
+        var k = solution.GenerateParenthesis(3);
+    }
+
+    [TestMethod]
+    public void MergeKListsTest()
+    {
+        ListNode[] listNodes = new ListNode[10];
+        for (int i = 0; i < 10; i++)
+        {
+            Random random = new Random();
+            int k = random.Next(2, 13);
+
+            int[] arr = Helper.GenerateArray(10, 100, k);
+            ListNode listNode = Helper.GenerateListNode(arr);
+            listNodes[i] = listNode;
+        }
+        solution.MergeKLists(listNodes);
+    }
+
+    [TestMethod]
+    public void LargestPathValueTest1()
+    {
+        string colors = "nnllnzznn";
+        int[][] edges = getMultiDimensionalArray("[[0,1],[1,2],[2,3],[2,4],[3,5],[4,6],[3,6],[5,6],[6,7],[7,8]]");
+        var actual = solution.LargestPathValue(colors, edges);
+        Assert.AreEqual(5, actual);
+    }
+
+    [TestMethod]
+    public void LargestPathValueTest()
+    {
+        string colors = "abaca";
+        int[][] edges = getMultiDimensionalArray("[[0,1],[0,2],[2,3],[3,4]]");
+        var actual = solution.LargestPathValue(colors, edges);
+        Assert.AreEqual(3, actual);
+    }
+
+    [TestMethod]
+    public void ThreeSumTest()
+    {
+        int[] arr = { -1, 0, 1, 2, -1, -4 };
+        var res = solution.ThreeSum(arr);
+    }
+
+    [TestMethod]
+    public void ReverseTest2()
+    {
+        int x = int.MaxValue;
+        var actual = solution.Reverse(x);
+        Assert.AreEqual(0, actual);
+    }
+
+    [TestMethod]
+    public void ReverseTest1()
+    {
+        int x = -6743897;
+        var actual = solution.Reverse(x);
+        x = -x;
+        int expected = int.Parse(new string(x.ToString().Reverse().ToArray()));
+        expected = -expected;
+        Assert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void ReverseTest()
+    {
+        int x = 6743897;
+        var actual = solution.Reverse(x);
+        int expected = int.Parse(new string(x.ToString().Reverse().ToArray()));
+        Assert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void ConvertTest()
+    {
+        string s = "Paypalishiring";
+        var result = solution.Convert(s, 3);
+    }
+
+    [TestMethod]
     public void LongestPalindromeTest1()
     {
         string[] words = { "lc", "cl", "gg", "gg", "gg", "gg", "gg", "gg", "gg", "gg" };

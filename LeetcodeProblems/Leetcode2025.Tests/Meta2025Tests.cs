@@ -22,9 +22,246 @@ public class Meta2025Tests
     }
     #endregion
 
+
     [TestMethod]
     public void Test()
     {
+    }
+
+    [TestMethod]
+    public void ExistTest()
+    {
+        char[][] board = new char[][]
+        {
+            new char[]{ 'A','B','C','E'},
+            new char[]{ 'S','F','C','S'},
+            new char[]{ 'A','B','C','E'},
+            new char[]{ 'A','D','E','E'}
+        };
+        string word = "ABCB";
+        Assert.IsFalse(solution.Exist(board, word));
+    }
+
+    [TestMethod]
+    public void SearchMatrixTest1()
+    {
+        int[][] matrix = getMultiDimensionalArray("[[1,3,5,7],[10,11,16,20],[23,30,34,60]]");
+        int target = 13;
+        Assert.IsFalse(solution.SearchMatrix(matrix, target));
+    }
+
+    [TestMethod]
+    public void SearchMatrixTest()
+    {
+        int[][] matrix = getMultiDimensionalArray("[[1,3,5,7],[10,11,16,20],[23,30,34,60]]");
+        int target = 3;
+        Assert.IsTrue(solution.SearchMatrix(matrix, target));
+    }
+
+    [TestMethod]
+    public void MySqrtTest1()
+    {
+        int x = 100;
+        var res = solution.MySqrt(x);
+        Assert.AreEqual(10, res);
+    }
+
+    [TestMethod]
+    public void MySqrtTest()
+    {
+        int x = 99;
+        var res = solution.MySqrt(x);
+        Assert.AreEqual(9, res);
+    }
+
+    [TestMethod]
+    public void UniquePathsWithObstaclesTest1()
+    {
+        int[][] obstacleGrid = getMultiDimensionalArray("[[0,1],[0,0]]");
+        var res = solution.UniquePathsWithObstacles(obstacleGrid);
+        Assert.AreEqual(1, res);
+    }
+
+    [TestMethod]
+    public void UniquePathsWithObstaclesTest()
+    {
+        int[][] obstacleGrid = getMultiDimensionalArray("[[0,0,0],[0,1,0],[0,0,0]]");
+        var res = solution.UniquePathsWithObstacles(obstacleGrid);
+        Assert.AreEqual(2, res);
+    }
+
+    [TestMethod]
+    public void UniquePathsTest1()
+    {
+        int m = 3;
+        int n = 2;
+
+        var res = solution.UniquePaths(m, n);
+        Assert.AreEqual(3, res);
+    }
+
+    [TestMethod]
+    public void UniquePathsTest()
+    {
+        int m = 3;
+        int n = 7;
+
+        var res = solution.UniquePaths(m, n);
+        Assert.AreEqual(28, res);
+    }
+
+    [TestMethod]
+    public void InsertTest3()
+    {
+        int[][] arr = new int[2][]
+        {
+            new int [] {11,23},
+            new int [] {36,49}
+        };
+        int[] arr1 = new int[] { 7, 10 };
+
+        solution.Insert(arr, arr1);
+    }
+
+    [TestMethod]
+    public void InsertTest2()
+    {
+        int[][] arr = new int[2][]
+        {
+            new int [] {1,3},
+            new int [] {6,9}
+        };
+        int[] arr1 = new int[] { 4, 8 };
+
+        solution.Insert(arr, arr1);
+    }
+
+    [TestMethod]
+    public void InsertTest1()
+    {
+        int[][] arr = new int[2][]
+        {
+            new int [] {1,3},
+            new int [] {6,9}
+        };
+        int[] arr1 = new int[] { 7, 8 };
+
+        solution.Insert(arr, arr1);
+    }
+
+    [TestMethod]
+    public void InsertTest()
+    {
+        int[][] arr = new int[2][]
+        {
+            new int [] {1,3},
+            new int [] {6,9}
+        };
+        int[] arr1 = new int[] { 2, 5 };
+
+        solution.Insert(arr, arr1);
+    }
+
+    [TestMethod]
+    public void SnakesAndLaddersTest3()
+    {
+        int[][] board = getMultiDimensionalArray("[[-1,1,1,1],[-1,7,1,1],[16,1,1,1],[-1,1,9,1]]");
+        solution.SnakesAndLadders(board);
+    }
+
+    [TestMethod]
+    public void SnakesAndLaddersTest2()
+    {
+        int[][] board = getMultiDimensionalArray("[[1,1,-1],[1,1,1],[-1,1,1]]");
+        solution.SnakesAndLadders(board);
+    }
+
+    [TestMethod]
+    public void SnakesAndLaddersTest1()
+    {
+        int[][] board = getMultiDimensionalArray("[[-1,-1,-1],[-1,9,8],[-1,8,9]]");
+        solution.SnakesAndLadders(board);
+    }
+
+    [TestMethod]
+    public void SnakesAndLaddersTest()
+    {
+        int[][] board = getMultiDimensionalArray("[[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,35,-1,-1,13,-1],[-1,-1,-1,-1,-1,-1],[-1,15,-1,-1,-1,-1]]");
+        solution.SnakesAndLadders(board);
+    }
+
+    [TestMethod]
+    public void PermuteUniqueTest()
+    {
+        int[] nums = { 1, 2, 1, 1, 3, 2 };
+        var res = solution.PermuteUnique(nums);
+    }
+
+    [TestMethod]
+    public void ClosestMeetingNodeTest1()
+    {
+        int[] edges = { 4, 4, 8, -1, 9, 8, 4, 4, 1, 1 };
+        int node1 = 5;
+        int node2 = 6;
+
+        var res = solution.ClosestMeetingNode(edges, node1, node2);
+        Assert.AreEqual(1, res);
+    }
+
+    [TestMethod]
+    public void ClosestMeetingNodeTest()
+    {
+        int[] edges = { 5, 4, 5, 4, 3, 6, -1 };
+        int node1 = 0;
+        int node2 = 1;
+
+        var res = solution.ClosestMeetingNode(edges, node1, node2);
+        Assert.AreEqual(-1, res);
+    }
+
+    [TestMethod]
+    public void PermuteTest()
+    {
+        int[] arr = { 1, 2, 3, 4, 5 };
+        solution.Permute(arr);
+    }
+
+    [TestMethod]
+    public void TrapTest()
+    {
+        int[] arr = { 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1 };
+        var res = solution.Trap(arr);
+        Assert.AreEqual(res, 6);
+    }
+
+    [TestMethod]
+    public void CombinationSumTest()
+    {
+        int[] candidates = { 2, 3, 6, 7 };
+        int target = 7;
+        var res = solution.CombinationSum(candidates, target);
+    }
+
+    [TestMethod]
+    public void SearchTest1()
+    {
+        int[] nums = { 2, 3, 4, 5, 1 };
+        solution.Search(nums, 1);
+    }
+
+    [TestMethod]
+    public void SearchTest()
+    {
+        int[] nums = { 3, 1 };
+        solution.Search(nums, 0);
+    }
+
+    [TestMethod]
+    public void MaxTargetNodesTest3()
+    {
+        int[][] edges1 = getMultiDimensionalArray("[[0,1],[0,2],[2,3],[2,4]]");
+        int[][] edges2 = getMultiDimensionalArray("[[0,1],[0,2],[0,3],[2,7],[1,4],[4,5],[4,6]]");
+        solution.MaxTargetNodes(edges1, edges2);
     }
 
     [TestMethod]

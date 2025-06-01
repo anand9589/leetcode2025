@@ -1,4 +1,4 @@
-﻿namespace Leetcode2025
+﻿namespace Common
 {
     public class TreeNode
     {

@@ -1,18 +1,1093 @@
 ﻿
 using Common;
+using System.Data;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Meta2025
 {
     public class Solution
     {
+        public bool Exist(char[][] board, string word)
+        {
+            for (int i = 0; i < board.Length; i++)
+            {
+                for (int j = 0; j < board[i].Length; j++)
+                {
+                    if (board[i][j] == word[0])
+                    {
+                        if (ExistHelper(board, word, new bool[board.Length, board[0].Length], i, j, 0))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private bool ExistHelper(char[][] board, string word, bool[,] visited, int i, int j, int index)
+        {
+            if (index == word.Length) return true;
+
+            if (i < 0 || j < 0 || i >= board.Length || j >= board[0].Length || visited[i, j] || board[i][j] != word[index]) return false;
+            visited[i, j] = true;
+            if (ExistHelper(board, word, visited, i + 1, j, index + 1)) return true;
+            if (ExistHelper(board, word, visited, i, j + 1, index + 1)) return true;
+            if (ExistHelper(board, word, visited, i - 1, j, index + 1)) return true;
+            if (ExistHelper(board, word, visited, i, j - 1, index + 1)) return true;
+            visited[i, j] = false;
+            return false;
+        }
+
+        public bool SearchMatrix(int[][] matrix, int target)
+        {
+            return SearchMatrix(matrix, target, 0, 0, matrix.Length - 1, matrix[0].Length - 1);
+        }
+
+        private bool SearchMatrix(int[][] matrix, int target, int row1, int col1, int row2, int col2)
+        {
+            if (row1 < 0
+                || col1 < 0
+                || row2 >= matrix.Length
+                || col1 >= matrix[row2].Length
+                || row1 > row2
+                || col1 > col2
+                || target < matrix[row1][col1]
+                || target > matrix[row2][col2])
+                return false;
+
+
+            if (row1 == row2)
+            {
+                int midCol = (col1 + col2) / 2;
+                if (matrix[row1][midCol] == target) return true;
+
+                if (matrix[row1][midCol] < target)
+                {
+                    col1 = midCol + 1;
+                }
+                else
+                {
+                    col2 = midCol - 1;
+                }
+            }
+            else
+            {
+                int midRow = (row1 + row2) / 2;
+                if (matrix[midRow][col1] == target) return true;
+                if (matrix[midRow][col1] < target)
+                {
+                    if (matrix[midRow][col2] >= target)
+                    {
+                        row1 = row2 = midRow;
+                    }
+                    else
+                    {
+                        row1 = midRow + 1;
+                    }
+                }
+                else
+                {
+                    row2 = midRow - 1;
+                }
+            }
+
+
+
+            return SearchMatrix(matrix, target, row1, col1, row2, col2);
+        }
+
+        public int ClimbStairs(int n)
+        {
+            if (n <= 3) return n;
+            int pre = 2;
+            int cur = 3;
+
+            for (int i = 4; i <= n; i++)
+            {
+                int temp = cur + pre;
+                pre = cur;
+                cur = temp;
+            }
+
+            return cur;
+        }
+
+
+        public int MySqrt(int x)
+        {
+            if (x == 0) return 0;
+            if (x < 4) return 1;
+
+            int low = 2, high = x / 2;
+            int result = low;
+
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+                if (mid * mid == x) return mid;
+
+                if (mid * mid < x)
+                {
+                    result = mid;
+                    low = mid + 1;
+                }
+                else
+                {
+                    high = mid - 1;
+                }
+            }
+
+            return result;
+        }
+
+        private void MySqrt_Factors(IList<int> factors, int x, int v)
+        {
+            if (v > x / 2) return;
+            if (x % v == 0)
+            {
+                factors.Add(v);
+                x /= v;
+                MySqrt_Factors(factors, x, v);
+                return;
+            }
+            MySqrt_Factors(factors, x, v + 1);
+        }
+
+        public int MinPathSum(int[][] grid)
+        {
+            int rows = grid.Length;
+            int cols = grid[0].Length;
+
+            for (int row = 1; row < rows; row++)
+            {
+                grid[row][0] += grid[row - 1][0];
+            }
+
+            for (int col = 1; col < cols; col++)
+            {
+                grid[0][col] += grid[0][col - 1];
+            }
+
+            for (int row = 1; row < rows; row++)
+            {
+                for (int col = 1; col < cols; col++)
+                {
+                    int prev = Math.Min(grid[row - 1][col], grid[row][col - 1]);
+                    grid[row][col] += prev;
+                }
+            }
+
+            return grid[rows - 1][cols - 1];
+        }
+        public int UniquePathsWithObstacles(int[][] obstacleGrid)
+        {
+
+            int rows = obstacleGrid.Length;
+            int cols = obstacleGrid[0].Length;
+
+            if (obstacleGrid[0][0] == 1 || obstacleGrid[rows - 1][cols - 1] == 1) return 0;
+            obstacleGrid[0][0] = 1;
+            bool obstacleFound = false;
+            for (int row = 1; row < rows; row++)
+            {
+                if (obstacleFound || obstacleGrid[row][0] == 1)
+                {
+                    obstacleFound = true;
+                    obstacleGrid[row][0] = 0;
+                }
+                else
+                {
+                    obstacleGrid[row][0] = 1;
+                }
+            }
+            obstacleFound = false;
+            for (int col = 1; col < cols; col++)
+            {
+                if (obstacleFound || obstacleGrid[0][col] == 1)
+                {
+                    obstacleFound = true;
+                    obstacleGrid[0][col] = 0;
+                }
+                else
+                {
+                    obstacleGrid[0][col] = 1;
+                }
+            }
+
+            for (int row = 1; row < rows; row++)
+            {
+                for (int col = 1; col < cols; col++)
+                {
+                    int newVal = 0;
+                    if (obstacleGrid[row][col] == 0)
+                    {
+                        newVal = obstacleGrid[row][col - 1] + obstacleGrid[row - 1][col];
+                    }
+                    obstacleGrid[row][col] = newVal;
+                }
+            }
+
+
+            return obstacleGrid[rows - 1][cols - 1];
+        }
+
+        public int UniquePaths(int m, int n)
+        {
+
+            int[] arr = new int[n];
+            arr[0] = 1;
+
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 1; j < n; j++)
+                {
+                    arr[j] += arr[j - 1];
+                }
+            }
+
+            return arr[n - 1];
+        }
+        public long DistributeCandies(int n, int limit)
+        {
+            if (limit * 3 < n) return 0;
+            if (limit * 3 == n) return 1;
+            long result = 0;
+            for (int i = Math.Max(0, n - 2 * limit); i <= Math.Min(limit, n); i++)
+            {
+                long n1 = Math.Max(0, n - limit - i);
+                long n2 = Math.Min(limit, n - i);
+                result += n2 - n1 + 1;
+            }
+            return result;
+        }
+        public int[][] Insert(int[][] intervals, int[] newInterval)
+        {
+            int n = intervals.Length;
+            IList<int[]> result = new List<int[]>();
+            /*
+            if (newInterval[1] < intervals[0][0])
+            {
+                result.Add(newInterval);
+                foreach (int[] interval in intervals)
+                {
+                    result.Add(interval);
+                }
+            }
+            else if (newInterval[0] > intervals[n - 1][1])
+            {
+                foreach (int[] interval in intervals)
+                {
+                    result.Add(interval);
+                }
+                result.Add(newInterval);
+            }
+            else
+            {
+                int startIndex = Insert_BinarySearch(intervals, newInterval[0]);
+                int endIndex = Insert_BinarySearch(intervals, newInterval[1], startIndex >= 0 ? startIndex : startIndex * -1);
+                int start = newInterval[0], end = newInterval[1];
+                if (startIndex == 0)
+                {
+                    if (start >= intervals[0][0] && start <= intervals[0][1])
+                    {
+                        start = Math.Min(start, intervals[0][0]);
+                    }
+                }
+                else if (startIndex < 0)
+                {
+
+                }
+                if (startIndex <= 0)
+                {
+                    startIndex *= -1;
+
+                    if (start <)
+                    {
+
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < startIndex; i++)
+                    {
+                        result.Add(intervals[i]);
+                    }
+                }
+            }
+            */
+            return result.ToArray();
+        }
+
+        private int getEndIndex(int[][] intervals, int end, int indexToAdd, out int i)
+        {
+            i = indexToAdd + 1;
+
+            if (end > intervals[indexToAdd][1])
+            {
+                int k = Insert_BinarySearch(intervals, end, i);
+
+                end = Math.Max(end, intervals[k][1]);
+
+                i = k + 1;
+            }
+
+            return end;
+        }
+
+        public int Insert_BinarySearch(int[][] intervals, int search, int low = 0)
+        {
+
+            int mid = 0;
+            int high = intervals.Length - 1;
+
+            while (low <= high)
+            {
+                mid = (low + high) / 2;
+
+                if (intervals[mid][0] <= search && intervals[mid][1] >= search) return mid;
+
+
+                if (search < intervals[mid][0])
+                {
+                    high = mid - 1;
+                }
+                else
+                {
+                    low = mid + 1;
+                }
+
+            }
+
+            return -mid;
+        }
+
+        public int[][] Merge(int[][] intervals)
+        {
+            Array.Sort(intervals, (a, b) => a[0] - b[0]);
+
+            List<int[]> result = new List<int[]>();
+
+            int startIndex = intervals[0][0];
+            int endIndex = intervals[0][1];
+
+            for (int i = 1; i < intervals.Length; i++)
+            {
+                int[] currInterval = intervals[i];
+
+                if (currInterval[0] <= endIndex)
+                {
+                    endIndex = Math.Max(endIndex, currInterval[1]);
+                }
+                else
+                {
+                    result.Add(new int[] { startIndex, endIndex });
+                    startIndex = currInterval[0];
+                    endIndex = currInterval[1];
+                }
+            }
+
+            result.Add(new int[] { startIndex, endIndex });
+
+            return result.ToArray();
+        }
+        public int SnakesAndLadders(int[][] board)
+        {
+            int n = board.Length;
+            int targetCol = n % 2 == 1 ? n - 1 : 0;
+            if (board[0][targetCol] != -1) return -1;
+            Dictionary<int, (int row, int col)> map = new Dictionary<int, (int row, int col)>();
+            int row = n - 1, col = 0;
+            map[1] = (row, col);
+            int increment = 1;
+            col += increment;
+            for (int i = 2; i <= n * n; i++)
+            {
+                map[i] = (row, col);
+                col += increment;
+                if (col < 0)
+                {
+                    increment = 1;
+                    row--;
+                    col++;
+                }
+                else if (col == n)
+                {
+                    increment = -1;
+                    row--;
+                    col--;
+                }
+            }
+
+            Queue<(int index, int w)> queue = new Queue<(int index, int w)>();
+            int index = 0, w = 0;
+            queue.Enqueue((1, 0));
+            bool[] visited = new bool[n * n];
+            while (queue.Count > 0)
+            {
+                (index, w) = queue.Dequeue();
+                if (!visited[index - 1])
+                {
+                    visited[index - 1] = true;
+                    for (int i = 1; i <= 6; i++)
+                    {
+                        (row, col) = map[index + i];
+                        if (row == 0 && col == targetCol) return w + 1;
+
+                        int nextIndex = board[row][col];
+
+                        if (nextIndex <= 0)
+                        {
+                            nextIndex = index + i;
+                        }
+
+                        (int nextRow, int nextCol) = map[nextIndex];
+
+                        if (visited[nextIndex - 1]) continue;
+
+                        if (nextRow == 0 && nextCol == targetCol) return w + 1;
+
+                        queue.Enqueue((nextIndex, w + 1));
+                    }
+                }
+            }
+
+            return -1;
+        }
+
+        public int MaxSubArray1(int[] nums)
+        {
+            int result = nums[0];
+            int lastSum = nums[0];
+            for (int i = 1; i < nums.Length; i++)
+            {
+                int sum = lastSum + nums[i];
+
+                if (sum > nums[i])
+                {
+                    lastSum = sum;
+                }
+                else
+                {
+                    lastSum = nums[i];
+                }
+                result = Math.Max(result, lastSum);
+            }
+            return result;
+        }
+
+        public IList<IList<int>> PermuteUnique(int[] nums)
+        {
+            IList<IList<int>> result = new List<IList<int>>();
+            Array.Sort(nums);
+            PermuteUnique_helper(result, nums, new List<int>(), new bool[nums.Length]);
+            return result;
+        }
+
+        private void PermuteUnique_helper(IList<IList<int>> result, int[] nums, List<int> list, bool[] visited)
+        {
+            if (list.Count == nums.Length)
+            {
+                result.Add(new List<int>(list));
+                return;
+            }
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (visited[i] || (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1])) continue;
+                visited[i] = true;
+                list.Add(nums[i]);
+                PermuteUnique_helper(result, nums, list, visited);
+                list.RemoveAt(list.Count - 1);
+                visited[i] = false;
+            }
+        }
+
+        public int ClosestMeetingNode(int[] edges, int node1, int node2)
+        {
+            if (node1 == node2) return node1;
+            if (edges[node1] == edges[node2]) return edges[node1];
+            int minDistance = edges.Length;
+            int result = -1;
+            bool[] visited1 = new bool[edges.Length];
+            bool[] visited2 = new bool[edges.Length];
+            //visited[node1] = true;
+            //visited[node2] = true;
+            Queue<(int node, int distance, bool first)> q = new Queue<(int, int, bool)>();
+            q.Enqueue((node1, 0, true));
+            q.Enqueue((node2, 0, false));
+
+            visited1[node1] = true;
+            visited2[node2] = true;
+
+            while (q.Count > 0)
+            {
+                var dq = q.Dequeue();
+                int next = edges[dq.node];
+
+                if (next == -1) continue;
+                if (dq.first)
+                {
+                    if (visited2[next])
+                    {
+                        if (minDistance < dq.distance)
+                        {
+                            return result;
+                        }
+                        else if (minDistance == dq.distance)
+                        {
+                            result = Math.Min(result, next);
+                        }
+                        else
+                        {
+                            minDistance = dq.distance;
+                            result = next;
+                        }
+                    }
+                    if (visited1[next]) continue;
+                    visited1[next] = true;
+                }
+                else
+                {
+                    if (visited1[next])
+                    {
+                        if (minDistance < dq.distance)
+                        {
+                            return result;
+                        }
+                        else if (minDistance == dq.distance)
+                        {
+                            result = Math.Min(result, next);
+                        }
+                        else
+                        {
+                            minDistance = dq.distance;
+                            result = next;
+                        }
+                    }
+                    if (visited2[next]) continue;
+                    visited2[next] = true;
+                }
+
+                q.Enqueue((next, dq.distance + 1, dq.first));
+            }
+
+            return result;
+        }
+
+        public int[] MaxTargetNodes(int[][] edges1, int[][] edges2)
+        {
+            int max = getMaxFromTree(edges2);
+            return getTreeArray(edges1, max);
+        }
+        private int[] getTreeArray(int[][] edges, int add)
+        {
+            List<int> list1 = new List<int>();
+            List<int> list2 = new List<int>();
+
+            Dictionary<int, IList<int>> graph = new Dictionary<int, IList<int>>();
+            for (int i = 0; i <= edges.Length; i++)
+            {
+                graph[i] = new List<int>();
+            }
+
+            foreach (int[] edge in edges)
+            {
+                graph[edge[0]].Add(edge[1]);
+                graph[edge[1]].Add(edge[0]);
+            }
+
+            bool[] visited = new bool[edges.Length + 1];
+            Queue<(int v, bool add)> q = new Queue<(int v, bool add)>();
+
+            visited[edges[0][0]] = true;
+            q.Enqueue((edges[0][0], true));
+            while (q.Count > 0)
+            {
+                var dq = q.Dequeue();
+                if (dq.add)
+                {
+                    list1.Add(dq.v);
+                }
+                else
+                {
+                    list2.Add(dq.v);
+                }
+
+                foreach (var neighbor in graph[dq.v])
+                {
+                    if (!visited[neighbor])
+                    {
+                        visited[neighbor] = true;
+                        q.Enqueue((neighbor, !dq.add));
+                    }
+                }
+            }
+
+            int[] result = new int[edges.Length + 1];
+
+            foreach (var l in list1)
+            {
+                result[l] = list1.Count + add;
+            }
+            foreach (var l in list2)
+            {
+                result[l] = list2.Count + add;
+            }
+
+            return result;
+        }
+
+        private int getMaxFromTree(int[][] edges)
+        {
+            int max1 = 0;
+            int max2 = 0;
+
+            Dictionary<int, IList<int>> graph = new Dictionary<int, IList<int>>();
+            for (int i = 0; i <= edges.Length; i++)
+            {
+                graph[i] = new List<int>();
+            }
+
+            foreach (int[] edge in edges)
+            {
+                graph[edge[0]].Add(edge[1]);
+                graph[edge[1]].Add(edge[0]);
+            }
+
+            bool[] visited = new bool[edges.Length + 1];
+            Queue<(int v, bool add)> q = new Queue<(int v, bool add)>();
+
+            visited[edges[0][0]] = true;
+            q.Enqueue((edges[0][0], false));
+            while (q.Count > 0)
+            {
+                var dq = q.Dequeue();
+                if (dq.add) { max1++; }
+
+                foreach (var neighbor in graph[dq.v])
+                {
+                    if (!visited[neighbor])
+                    {
+                        visited[neighbor] = true;
+                        q.Enqueue((neighbor, !dq.add));
+                    }
+                }
+            }
+
+            visited = new bool[edges.Length + 1];
+            visited[edges[0][1]] = true;
+            q.Enqueue((edges[0][1], false));
+            while (q.Count > 0)
+            {
+                var dq = q.Dequeue();
+                if (dq.add) { max2++; }
+
+                foreach (var neighbor in graph[dq.v])
+                {
+                    if (!visited[neighbor])
+                    {
+                        visited[neighbor] = true;
+                        q.Enqueue((neighbor, !dq.add));
+                    }
+                }
+            }
+
+            return Math.Max(max1, max2);
+
+        }
+        public IList<string> BinaryTreePaths(TreeNode root)
+        {
+            IList<string> paths = new List<string>();
+            BinaryTreePathsDFS(paths, new StringBuilder(), root);
+            return paths;
+        }
+
+        private void BinaryTreePathsDFS(IList<string> paths, StringBuilder curr, TreeNode root)
+        {
+            if (root.left == null && root.right == null)
+            {
+                paths.Add(curr.ToString() + root.val);
+
+                return;
+            }
+
+            string currVal = root.val + "->";
+            curr.Append(currVal);
+
+            if (root.left != null)
+            {
+                BinaryTreePathsDFS(paths, curr, root.left);
+            }
+            if (root.right != null)
+            {
+                BinaryTreePathsDFS(paths, curr, root.right);
+            }
+            curr.Remove(curr.Length - currVal.Length, currVal.Length);
+        }
+
+        public IList<IList<int>> Permute(int[] nums)
+        {
+            IList<IList<int>> result = new List<IList<int>>();
+            Permute_Helper(result, new List<int>(), nums, new bool[nums.Length]);
+            return result;
+        }
+
+        private void Permute_Helper(IList<IList<int>> result, IList<int> currList, int[] nums, bool[] visited)
+        {
+
+            if (currList.Count == nums.Length)
+            {
+                result.Add(new List<int>(currList));
+                return;
+            }
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (!visited[i])
+                {
+                    visited[i] = true;
+                    currList.Add(nums[i]);
+                    Permute_Helper(result, currList, nums, visited);
+                    visited[i] = false;
+                    currList.RemoveAt(currList.Count - 1);
+                }
+            }
+        }
+
+        public int Trap(int[] height)
+        {
+            int result = 0;
+
+            int[] next = getNextLargest(height);
+            int[] previous = getPreviousLargest(height);
+
+            for (int i = 1; i < height.Length - 1; i++)
+            {
+                if (next[i] == -1 || previous[i] == -1) continue;
+                int min = Math.Min(height[next[i]], height[previous[i]]);
+                if (min > -1)
+                {
+                    result += (min - height[i]);
+                }
+            }
+            return result;
+        }
+
+        private int[] getPreviousLargest(int[] height)
+        {
+            int[] result = new int[height.Length];
+
+            Stack<int> stack = new Stack<int>();
+
+            int index = 0;
+            stack.Push(index);
+
+            result[index] = -1;
+
+            while (++index < height.Length)
+            {
+                if (height[index] >= height[stack.Peek()])
+                {
+                    result[index] = -1;
+                    stack.Push(index);
+                }
+                else
+                {
+                    result[index] = stack.Peek();
+                }
+            }
+
+            return result;
+        }
+
+        private int[] getNextLargest(int[] height)
+        {
+            int[] result = new int[height.Length];
+
+            Stack<int> stack = new Stack<int>();
+
+            int index = height.Length - 1;
+            stack.Push(index);
+
+            result[index] = -1;
+
+            while (--index >= 0)
+            {
+                if (height[index] >= height[stack.Peek()])
+                {
+                    result[index] = -1;
+                    stack.Push(index);
+                }
+                else
+                {
+                    result[index] = stack.Peek();
+                }
+            }
+
+            return result;
+        }
+
+        public IList<IList<int>> CombinationSum(int[] candidates, int target)
+        {
+            Array.Sort(candidates);
+            IList<IList<int>> result = new List<IList<int>>();
+            CombinationSum_helper(result, candidates, new List<int>(), target, 0);
+            return result;
+        }
+
+        private void CombinationSum_helper(IList<IList<int>> result, int[] candidates, IList<int> currList, int target, int index)
+        {
+            if (target == 0)
+            {
+                result.Add(new List<int>(currList));
+                return;
+            }
+
+            if (index >= candidates.Length || target < candidates[index]) return;
+
+            CombinationSum_helper(result, candidates, currList, target, index + 1);
+            currList.Add(candidates[index]);
+            CombinationSum_helper(result, candidates, currList, target - candidates[index], index);
+            currList.RemoveAt(currList.Count - 1);
+        }
+
+        public int Search(int[] nums, int target)
+        {
+            return Search(nums, target, 0, nums.Length - 1);
+        }
+
+        private int Search(int[] nums, int target, int startIndex, int endIndex)
+        {
+            if (startIndex < 0 || endIndex >= nums.Length || startIndex > endIndex) return -1;
+            if (startIndex == endIndex)
+            {
+                if (nums[startIndex] == target) return startIndex;
+                return -1;
+            }
+            int mid = 0;
+            //already sorted
+            if (nums[startIndex] < nums[endIndex])
+            {
+                if (target > nums[endIndex] || target < nums[startIndex]) return -1;
+
+                int low = startIndex;
+                int high = endIndex;
+                while (low <= high)
+                {
+                    mid = (low + high) / 2;
+                    if (nums[mid] == target) return mid;
+                    if (nums[mid] < target)
+                    {
+                        low = mid + 1;
+                    }
+                    else
+                    {
+                        high = mid - 1;
+                    }
+                }
+                return -1;
+            }
+
+            mid = (startIndex + endIndex) / 2;
+
+            if (nums[mid] == target) return mid;
+
+            int index = Search(nums, target, startIndex, mid - 1);
+            if (index == -1)
+            {
+                index = Search(nums, target, mid + 1, endIndex);
+            }
+            return index;
+        }
+
+        public int[] MaxTargetNodes1(int[][] edges1, int[][] edges2)
+        {
+            int max = getMaxFromTree1(edges2);
+
+            int[] tree1 = getTree(edges1, max);
+            return tree1;
+        }
+
+        private int getMaxFromTree1(int[][] edges)
+        {
+            int max1 = 0;
+            int max2 = 0;
+
+            Dictionary<int, IList<int>> graph = new Dictionary<int, IList<int>>();
+            for (int i = 0; i <= edges.Length; i++)
+            {
+                graph[i] = new List<int>();
+            }
+
+            foreach (int[] edge in edges)
+            {
+                graph[edge[0]].Add(edge[1]);
+                graph[edge[1]].Add(edge[0]);
+            }
+
+            bool[] visited = new bool[edges.Length + 1];
+            Queue<(int v, bool add)> q = new Queue<(int v, bool add)>();
+
+            visited[edges[0][0]] = true;
+            q.Enqueue((edges[0][0], false));
+            while (q.Count > 0)
+            {
+                var dq = q.Dequeue();
+                if (dq.add) { max1++; }
+
+                foreach (var neighbor in graph[dq.v])
+                {
+                    if (!visited[neighbor])
+                    {
+                        visited[neighbor] = true;
+                        q.Enqueue((neighbor, !dq.add));
+                    }
+                }
+            }
+
+            visited = new bool[edges.Length + 1];
+            visited[edges[0][1]] = true;
+            q.Enqueue((edges[0][1], false));
+            while (q.Count > 0)
+            {
+                var dq = q.Dequeue();
+                if (dq.add) { max2++; }
+
+                foreach (var neighbor in graph[dq.v])
+                {
+                    if (!visited[neighbor])
+                    {
+                        visited[neighbor] = true;
+                        q.Enqueue((neighbor, !dq.add));
+                    }
+                }
+            }
+
+            return Math.Max(max1, max2);
+
+        }
+        private int[] getTree(int[][] edges, int addOld)
+        {
+            int[] result = new int[edges.Length + 1];
+            Dictionary<int, IList<int>> graph = new Dictionary<int, IList<int>>();
+            for (int i = 0; i <= edges.Length; i++)
+            {
+                graph[i] = new List<int>();
+            }
+
+            foreach (int[] edge in edges)
+            {
+                graph[edge[0]].Add(edge[1]);
+                graph[edge[1]].Add(edge[0]);
+            }
+
+            for (int i = 0; i <= edges.Length; i++)
+            {
+                bool[] visited = new bool[edges.Length + 1];
+                Queue<(int v, bool add)> q = new Queue<(int v, bool add)>();
+                int curr = 0;
+                visited[i] = true;
+                q.Enqueue((i, true));
+                while (q.Count > 0)
+                {
+                    var dq = q.Dequeue();
+                    if (dq.add) { curr++; }
+
+                    foreach (var neighbor in graph[dq.v])
+                    {
+                        if (!visited[neighbor])
+                        {
+                            visited[neighbor] = true;
+                            q.Enqueue((neighbor, !dq.add));
+                        }
+                    }
+                }
+                result[i] = curr + addOld;
+            }
+            return result;
+        }
+
+
+        private int[] getTree(int[][] edges)
+        {
+            HashSet<int>[] list = new HashSet<int>[edges.Length + 1];
+            int[] result = new int[edges.Length + 1];
+            Dictionary<int, IList<int>> graph = new Dictionary<int, IList<int>>();
+            for (int i = 0; i <= edges.Length; i++)
+            {
+                graph[i] = new List<int>();
+                list[i] = new HashSet<int>();
+            }
+
+            foreach (int[] edge in edges)
+            {
+                graph[edge[0]].Add(edge[1]);
+                graph[edge[1]].Add(edge[0]);
+            }
+
+            bool[] processed = new bool[list.Length];
+            Stack<int> stack = new Stack<int>();
+
+            for (int i = 0; i < list.Length; i++)
+            {
+                if (processed[i]) continue;
+
+                getTreeDFS(graph, list, processed, i);
+            }
+
+            //for (int i = 0; i <= edges.Length; i++)
+            //{
+            //    bool[] visited = new bool[edges.Length + 1];
+            //    Queue<(int v, bool add)> q = new Queue<(int v, bool add)>();
+            //    int curr = 0;
+            //    visited[i] = true;
+            //    q.Enqueue((i, true));
+            //    while (q.Count > 0)
+            //    {
+            //        var dq = q.Dequeue();
+            //        if (dq.add) { curr++; }
+
+            //        foreach (var neighbor in graph[dq.v])
+            //        {
+            //            if (!visited[neighbor])
+            //            {
+            //                visited[neighbor] = true;
+            //                q.Enqueue((neighbor, !dq.add));
+            //            }
+            //        }
+            //    }
+            //    result[i] = curr;
+            //}
+            return result;
+        }
+
+        private void getTreeDFS(Dictionary<int, IList<int>> graph, HashSet<int>[] list, bool[] processed, int i)
+        {
+            processed[i] = true;
+            foreach (var item in graph[i])
+            {
+                if (processed[item])
+                {
+                    foreach (var kk in list[item])
+                    {
+                        list[i].Add(kk);
+                    }
+                }
+                else
+                {
+                    getTreeDFS(graph, list, processed, item);
+                }
+            }
+        }
         public int FirstMissingPositive(int[] nums)
         {
             for (int i = 0; i < nums.Length; i++)
             {
                 int k = nums[i];
 
-                if(k == i+1 || k<=0 || k>nums.Length || nums[i] == nums[k - 1]) continue;
+                if (k == i + 1 || k <= 0 || k > nums.Length || nums[i] == nums[k - 1]) continue;
 
                 swap(nums, i, k - 1);
 
@@ -24,7 +1099,7 @@ namespace Meta2025
                 if (nums[i] != i + 1) return i + 1;
             }
 
-            return nums.Length+1;
+            return nums.Length + 1;
         }
         public void NextPermutation(int[] nums)
         {

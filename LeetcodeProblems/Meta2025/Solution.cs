@@ -8,6 +8,470 @@ namespace Meta2025
 {
     public class Solution
     {
+        TreeNode first, second, prev = new TreeNode(int.MinValue);
+        public void RecoverTree(TreeNode root)
+        {
+            RecoverTreeInorder(root);
+            int temp = second.val;
+            second.val = first.val;
+            first.val = temp;
+        }
+
+        private void RecoverTreeInorder(TreeNode root)
+        {
+            if (root != null && (first==null || second == null))
+            {
+
+                RecoverTreeInorder(root.left);
+
+                if (first == null && prev.val > root.val)
+                {
+                    first = prev;
+                }
+
+                if (first != null && prev.val > root.val)
+                {
+                    second = root;
+                }
+                prev = root;
+                RecoverTreeInorder(root.right);
+            }
+        }
+
+        public bool IsValidBST(TreeNode root)
+        {
+
+            Queue<(TreeNode node, int max, int min)> q = new Queue<(TreeNode node, int max, int min)>();
+
+            q.Enqueue((root, int.MaxValue, int.MinValue));
+
+            while (q.Count > 0)
+            {
+                var dq = q.Dequeue();
+
+                if (dq.node.left != null)
+                {
+                    TreeNode left = dq.node.left;
+
+                    if (left.val >= dq.node.val || left.val < dq.min) return false;
+
+                    q.Enqueue((left, dq.node.val - 1, dq.min));
+                }
+
+                if (dq.node.right != null)
+                {
+                    TreeNode right = dq.node.right;
+
+                    if (right.val <= dq.node.val || right.val > dq.max) return false;
+
+                    q.Enqueue((right, dq.max, dq.node.val + 1));
+                }
+            }
+
+            return true;
+        }
+        public int NumTrees(int n)
+        {
+            if (n <= 1) return 1;
+            if (n == 2) return 2;
+            int[] nums = new int[n + 1];
+            nums[0] = 1;
+            nums[1] = 1;
+            nums[2] = 2;
+
+            for (int i = 3; i <= n; i++)
+            {
+                int curr = 0;
+                int left = 0;
+                int right = i - 1;
+                while (right >= 0)
+                {
+                    curr += (nums[left++] * nums[right--]);
+                }
+                nums[i] = curr;
+            }
+
+            return nums[n];
+        }
+        public IList<TreeNode> GenerateTrees(int n)
+        {
+            return GenerateTreesInRange(1, n);
+        }
+
+        private IList<TreeNode> GenerateTreesInRange(int left, int right)
+        {
+
+            IList<TreeNode> trees = new List<TreeNode>();
+            if (left > right)
+            {
+                trees.Add(null);
+            }
+            else
+            {
+                for (int i = left; i <= right; i++)
+                {
+                    IList<TreeNode> leftSubTrees = GenerateTreesInRange(left, i - 1);
+                    IList<TreeNode> righttSubTrees = GenerateTreesInRange(i + 1, right);
+
+                    foreach (var leftSubTree in leftSubTrees)
+                    {
+                        foreach (var rightSubTree in righttSubTrees)
+                        {
+                            TreeNode node = new TreeNode(i, leftSubTree, rightSubTree);
+                            trees.Add(node);
+                        }
+                    }
+                }
+            }
+
+
+            return trees;
+        }
+
+        private void GenerateTrees_Helper(IList<TreeNode> trees, int n)
+        {
+            int[] left, right;
+
+            for (int i = 1; i <= n; i++)
+            {
+                TreeNode node = new TreeNode(i);
+                left = new int[i - 1];
+                right = new int[n - i];
+                for (int j = 0; j < left.Length; j++)
+                {
+                    left[j] = j + 1;
+                }
+                for (int j = 0; j < right.Length; j++)
+                {
+                    right[j] = i + j + 1;
+                }
+
+
+            }
+        }
+
+        public IList<int> InorderTraversal(TreeNode root)
+        {
+            IList<int> result = new List<int>();
+
+            Stack<TreeNode> stack = new Stack<TreeNode>();
+            TreeNode curr = root;
+
+            while (curr != null || stack.Count > 0)
+            {
+                while (curr != null)
+                {
+                    stack.Push(curr);
+                    curr = curr.left;
+                }
+
+                curr = stack.Pop();
+                result.Add(curr.val);
+                curr = curr.right;
+            }
+
+
+
+
+
+            return result;
+        }
+
+        public IList<int> InorderTraversal1(TreeNode root)
+        {
+            IList<int> result = new List<int>();
+            inorder(result, root);
+            return result;
+        }
+
+        private void inorder(IList<int> result, TreeNode root)
+        {
+            if (root == null) return;
+            inorder(result, root.left);
+            result.Add(root.val);
+            inorder(result, root.right);
+        }
+
+        public ListNode ReverseBetween(ListNode head, int left, int right)
+        {
+            ListNode dummy = new ListNode(-1, head);
+            ListNode temp = dummy;
+            int counter = right - left + 1;
+
+            while (--left > 0)
+            {
+                temp = temp.next;
+
+            }
+            ListNode nn =
+            temp.next = ReverseNodes(temp, counter);
+
+            return dummy.next;
+        }
+
+        public ListNode ReverseNodes(ListNode head, int counter)
+        {
+            ListNode pre = null, curr = head;
+
+            while (curr != null && counter > 0)
+            {
+                ListNode next = curr.next;
+                curr.next = pre;
+                pre = curr;
+                curr = next;
+                counter--;
+            }
+            head.next = curr;
+            return pre;
+        }
+
+        public IList<IList<int>> SubsetsWithDup(int[] nums)
+        {
+            Array.Sort(nums);
+            IList<IList<int>> list = new List<IList<int>>();
+
+            List<int> curr = new List<int>();
+            SubsetsWithDupHelper(list, curr, nums, 0);
+
+            return list;
+        }
+
+        private void SubsetsWithDupHelper(IList<IList<int>> list, List<int> curr, int[] nums, int v)
+        {
+            list.Add(new List<int>(curr));
+            if (v == nums.Length) return;
+
+
+            for (int i = v; i < nums.Length; i++)
+            {
+                if (i != v && nums[i] == nums[i - 1]) continue;
+                curr.Add(nums[i]);
+                SubsetsWithDupHelper(list, curr, nums, i + 1);
+                curr.RemoveAt(curr.Count - 1);
+            }
+
+        }
+
+        public void Merge(int[] nums1, int m, int[] nums2, int n)
+        {
+            int lastIndex1 = m - 1;
+            int lastIndex2 = n - 1;
+            int i;
+
+            if (m == 0)
+            {
+                for (i = 0; i < nums1.Length; i++)
+                {
+                    nums1[i] = nums2[i];
+                }
+            }
+            else
+            {
+                for (i = nums1.Length - 1; lastIndex1 >= 0 && lastIndex2 >= 0; i--)
+                {
+                    if (nums1[lastIndex1] > nums2[lastIndex2])
+                    {
+                        nums1[i] = nums1[lastIndex1];
+                        lastIndex1--;
+                    }
+                    else
+                    {
+                        nums1[i] = nums2[lastIndex2];
+                        lastIndex2--;
+                    }
+                }
+
+                while (lastIndex2 >= 0)
+                {
+                    nums1[i] = nums2[lastIndex2];
+                    lastIndex2--;
+                    i--;
+                }
+            }
+        }
+
+        public ListNode Partition(ListNode head, int x)
+        {
+            if (head == null || head.next == null) return head;
+            ListNode dummy = new ListNode(-1, head);
+
+            ListNode temp = head;
+            ListNode lastSmall = new ListNode(-1, null);
+            ListNode lastHead = new ListNode(-1, null);
+            ListNode tempSmall = lastSmall;
+            ListNode tempHead = lastHead;
+            if (head.val < x)
+            {
+                while (head != null && head.val < x)
+                {
+                    tempSmall.next = head;
+                    tempSmall = tempSmall.next;
+                    head = head.next;
+                }
+                tempSmall.next = null;
+
+                while (head != null && head.val >= x)
+                {
+                    tempHead.next = head;
+                    tempHead = tempHead.next;
+                    head = head.next;
+                }
+                tempHead.next = null;
+            }
+            else
+            {
+                while (head != null && head.val >= x)
+                {
+                    tempHead.next = head;
+                    tempHead = tempHead.next;
+                    head = head.next;
+                }
+                tempHead.next = null;
+
+                while (head != null && head.val < x)
+                {
+                    tempSmall.next = head;
+                    tempSmall = tempSmall.next;
+                    head = head.next;
+                }
+                tempSmall.next = null;
+            }
+
+            while (head != null)
+            {
+                if (head.val < x)
+                {
+                    tempSmall.next = head;
+                    tempSmall = tempSmall.next;
+                }
+                else
+                {
+                    tempHead.next = head;
+                    tempHead = tempHead.next;
+                }
+                head = head.next;
+            }
+
+            tempSmall.next = null;
+            tempHead.next = null;
+
+            tempSmall.next = lastHead.next;
+
+
+            return lastSmall.next;
+        }
+        public int Candy(int[] ratings)
+        {
+            int n = ratings.Length;
+            int[] left = new int[n];
+            int[] right = new int[n];
+            left[0] = 1;
+            right[n - 1] = 1;
+            for (int i = 1; i < ratings.Length; i++)
+            {
+                if (ratings[i] > ratings[i - 1])
+                {
+                    left[i] = left[i - 1] + 1;
+                }
+                else
+                {
+                    left[i] = 1;
+                }
+
+                if (ratings[n - 1 - i] > ratings[n - i])
+                {
+                    right[n - i - 1] = right[n - i] + 1;
+                }
+                else
+                {
+                    right[n - i - 1] = 1;
+                }
+            }
+
+            int sum = 0;
+
+            for (int i = 0; i < n; i++)
+            {
+                int curMax = Math.Max(left[i], right[i]);
+                sum += curMax;
+            }
+
+            return sum;
+        }
+        public int MaximalRectangle(char[][] matrix)
+        {
+            return 0;
+        }
+
+        public int LargestRectangleArea(int[] heights)
+        {
+            int area = 0;
+
+            int[] next = getNextLargestRectangleArea(heights);
+            int[] prev = getPreviousLargestRectangleArea(heights);
+
+            for (int i = 0; i < heights.Length; i++)
+            {
+
+
+                int diff = next[i] - prev[i] + 1;
+
+                int currArea = (diff * heights[i]);
+                area = Math.Max(area, currArea);
+            }
+
+            return area;
+        }
+
+        private int[] getNextLargestRectangleArea(int[] heights)
+        {
+            int[] arr = new int[heights.Length];
+            Stack<int> stack = new Stack<int>();
+            stack.Push(heights.Length - 1);
+            arr[heights.Length - 1] = heights.Length - 1;
+            for (int i = heights.Length - 2; i >= 0; i--)
+            {
+                while (stack.Count > 0 && heights[stack.Peek()] >= heights[i])
+                {
+                    stack.Pop();
+                }
+                if (stack.Count == 0)
+                {
+                    arr[i] = heights.Length - 1;
+                }
+                else
+                {
+                    arr[i] = stack.Peek() - 1;
+                }
+                stack.Push(i);
+            }
+            return arr;
+        }
+
+        private int[] getPreviousLargestRectangleArea(int[] heights)
+        {
+            int[] arr = new int[heights.Length];
+            Stack<int> stack = new Stack<int>();
+            stack.Push(0);
+            for (int i = 1; i < heights.Length; i++)
+            {
+                while (stack.Count > 0 && heights[stack.Peek()] >= heights[i])
+                {
+                    stack.Pop();
+                }
+                if (stack.Count == 0)
+                {
+                    arr[i] = 0;
+                }
+                else
+                {
+                    arr[i] = stack.Peek() + 1;
+                }
+                stack.Push(i);
+            }
+            return arr;
+        }
+
         public bool Exist(char[][] board, string word)
         {
             for (int i = 0; i < board.Length; i++)

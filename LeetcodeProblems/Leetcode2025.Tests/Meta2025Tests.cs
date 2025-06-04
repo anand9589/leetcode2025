@@ -21,11 +21,120 @@ public class Meta2025Tests
         return Helper.GetMultiDimensionalArrayBasedOnString(str);
     }
     #endregion
-
-
     [TestMethod]
     public void Test()
     {
+    }
+
+    [TestMethod]
+    public void RecoverTreeTest()
+    {
+        TreeNode treeNode = new TreeNode(1,
+                                        new TreeNode(3, null,
+                                        new TreeNode(2)));
+
+        solution.RecoverTree(treeNode);
+    }
+    [TestMethod]
+    public void NumTreesTest()
+    {
+        int n = 3;
+        var res = solution.NumTrees(n);
+        Assert.AreEqual(5, res);
+    }
+    [TestMethod]
+    public void ReverseBetweenTest()
+    {
+        int[] arr = {1,2,3,4,5};
+        ListNode node = Helper.GenerateListNode(arr);
+        var k = solution.ReverseBetween(node, 2, 4);
+    }
+
+    [TestMethod]
+    public void SubsetsWithDupTest()
+    {
+        int[] arr = {1, 2, 3, 4};
+        var l = solution.SubsetsWithDup(arr);
+    }
+
+    [TestMethod]
+    public void MergeTest3()
+    {
+        int[] arr1 = { 4, 0, 0, 0, 0, 0 };
+        int m = 1;
+        int[] arr2 = { 1, 2, 3, 5, 6 };
+        int n = 5;
+        solution.Merge(arr1, m, arr2, n);
+
+        int[] arr3 = { 1, 2, 3, 4, 5, 6 };
+        CollectionAssert.AreEqual(arr1, arr3);
+    }
+
+    [TestMethod]
+    public void MergeTest2()
+    {
+        int[] arr1 = { 1, 2, 3, 0, 0, 0 };
+        int m = 3;
+        int[] arr2 = { 2, 5, 6 };
+        int n = 3;
+        solution.Merge(arr1, m, arr2, n);
+        int[] arr3 = { 1, 2, 2, 3, 5, 6 };
+        CollectionAssert.AreEqual(arr1, arr3);
+    }
+
+    [TestMethod]
+    public void MergeTest1()
+    {
+        int[] arr1 = { 2, 0 };
+        int m = 1;
+        int[] arr2 = { 1 };
+        int n = 1;
+        solution.Merge(arr1, m, arr2, n);
+        int[] arr3 = { 1, 2 };
+        CollectionAssert.AreEqual(arr1, arr3);
+    }
+
+    [TestMethod]
+    public void MergeTest()
+    {
+        int[] arr1 = { 0 };
+        int m = 0;
+        int[] arr2 = { 1 };
+        int n = 1;
+        solution.Merge(arr1, m, arr2, n);
+
+        int[] arr3 = { 1 };
+        CollectionAssert.AreEqual(arr1, arr3);
+    }
+
+    [TestMethod]
+    public void PartitionTest()
+    {
+        int[] arr = { 1, 4, 3, 2, 5, 2 };
+        ListNode node = Helper.GenerateListNode(arr);
+
+        solution.Partition(node, 3);
+    }
+    [TestMethod]
+    public void MaximalRectangleTest()
+    {
+        int[][] matrix = getMultiDimensionalArray("[[1,0,1, 0 , 0 ],[ 1 , 0 , 1 , 1 , 1 ],[ 1 , 1 , 1 , 1 ,\"1\"],[\"1\",\"0\",\"0\",\"1\",\"0\"]]");
+    }
+
+    [TestMethod]
+    public void LargestRectangleAreaTest1()
+    {
+        int[] heights = { 2, 1, 5, 6, 2, 3, 1 };
+        var res = solution.LargestRectangleArea(heights);
+        Assert.AreEqual(10, res);
+    }
+
+    [TestMethod]
+    public void LargestRectangleAreaTest()
+    {
+        int[] heights = { 2, 1, 5, 6, 2, 3 };
+        var res = solution.LargestRectangleArea(heights);
+        Assert.AreEqual(10, res);
     }
 
     [TestMethod]

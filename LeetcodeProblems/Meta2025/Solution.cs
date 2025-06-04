@@ -8,6 +8,7 @@ namespace Meta2025
 {
     public class Solution
     {
+
         TreeNode first, second, prev = new TreeNode(int.MinValue);
         public void RecoverTree(TreeNode root)
         {
@@ -19,7 +20,7 @@ namespace Meta2025
 
         private void RecoverTreeInorder(TreeNode root)
         {
-            if (root != null && (first==null || second == null))
+            if (root != null && (first == null || second == null))
             {
 
                 RecoverTreeInorder(root.left);
@@ -3435,6 +3436,62 @@ namespace Meta2025
                 if (d < nums[i]) return false;
             }
             return true;
+        }
+    }
+
+
+    public class Solution528
+    {
+
+        int[] weight;
+        Random random;
+        int maxValue = 0;
+        public Solution528(int[] w)
+        {
+            updateWeights(w);
+            random = new Random();
+        }
+
+        private void updateWeights(int[] w)
+        {
+            weight = new int[w.Length];
+            weight[0] = w[0];
+
+            for (int i = 1; i < w.Length; i++)
+            {
+                weight[i] = weight[i - 1] + w[i];
+            }
+            maxValue = weight[weight.Length - 1];
+        }
+
+        public int PickIndex()
+        {
+            int nextIndex = random.Next(1, maxValue);
+
+            return search(nextIndex);
+        }
+
+        private int search(int nextIndex)
+        {
+            int low = 0, high = weight.Length - 1;
+            int result = high;
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+
+                if (weight[mid] == nextIndex) return mid;
+
+                if (weight[mid] < nextIndex)
+                {
+                    low = mid + 1;
+                }
+                else
+                {
+                    result = mid;
+                    high = mid - 1;
+                }
+            }
+            return result;
         }
     }
 }

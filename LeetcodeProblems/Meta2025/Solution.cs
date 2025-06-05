@@ -24,7 +24,7 @@ namespace Meta2025
 
             for (int i = 0; i < baseStr.Length; i++)
             {
-                stringBuilder.Append((char)(Find(baseStr[i]-'a') + 'a'));
+                stringBuilder.Append((char)(Find(baseStr[i] - 'a') + 'a'));
             }
 
             return stringBuilder.ToString();
@@ -3729,7 +3729,44 @@ namespace Meta2025
             return true;
         }
     }
+    public class MinStack
+    {
+        Stack<int> stack, minStack;
+        public MinStack()
+        {
+            stack = new Stack<int>();
+            minStack = new Stack<int>();
+            minStack.Push(int.MaxValue);
+        }
 
+        public void Push(int val)
+        {
+            stack.Push(val);
+            if (minStack.Peek() >= val)
+            {
+                minStack.Push(val);
+            }
+        }
+
+        public void Pop()
+        {
+            var k = stack.Pop();
+            if (k == minStack.Peek())
+            {
+                minStack.Pop();
+            }
+        }
+
+        public int Top()
+        {
+            return stack.Peek();
+        }
+
+        public int GetMin()
+        {
+            return minStack.Peek();
+        }
+    }
 
     public class Solution538
     {

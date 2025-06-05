@@ -1,13 +1,304 @@
 ﻿
 using Common;
-using System.Data;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Meta2025
 {
     public class Solution
     {
+        int[] chars;
+        public string SmallestEquivalentString(string s1, string s2, string baseStr)
+        {
+            chars = new int[26];
+            for (int i = 0; i < 26; i++)
+            {
+                chars[i] = i;
+            }
+
+            for (int i = 0; i < s1.Length; i++)
+            {
+                Union(s1[i] - 'a', s2[i] - 'a');
+            }
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (int i = 0; i < baseStr.Length; i++)
+            {
+                stringBuilder.Append((char)(Find(baseStr[i]-'a') + 'a'));
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        private void Union(int v1, int v2)
+        {
+            v1 = Find(v1);
+            v2 = Find(v2);
+
+            if (v1 == v2) return;
+
+            if (v1 < v2)
+            {
+                chars[v2] = v1;
+            }
+            else
+            {
+                chars[v1] = v2;
+            }
+        }
+
+        private int Find(int v1)
+        {
+            if (chars[v1] == v1) return v1;
+            return chars[v1] = Find(chars[v1]);
+        }
+
+        public string SmallestEquivalentString1(string s1, string s2, string baseStr)
+        {
+            Dictionary<int, HashSet<int>> graph = new Dictionary<int, HashSet<int>>();
+            for (int c = 0; c <= 25; c++)
+            {
+                graph.Add(c, new HashSet<int>());
+            }
+
+            for (int i = 0; i < s1.Length; i++)
+            {
+                int c1 = s1[i] - 'a';
+                int c2 = s2[i] - 'a';
+
+                graph[c1].Add(c2);
+                graph[c2].Add(c1);
+            }
+
+            int[] parentArray = new int[26];
+            for (int i = 1; i < parentArray.Length; i++)
+            {
+                parentArray[i] = i;
+            }
+            bool[] visited = new bool[26];
+
+            for (int i = 0; i <= 25; i++)
+            {
+                if (visited[i]) continue;
+                visited[i] = true;
+
+                if (graph[i].Count > 0)
+                {
+                    Queue<int> q = new Queue<int>();
+                    q.Enqueue(i);
+                    while (q.Count > 0)
+                    {
+                        int c3 = q.Dequeue();
+                        foreach (var neighbor in graph[c3])
+                        {
+                            if (!visited[neighbor])
+                            {
+                                parentArray[neighbor] = i;
+                                q.Enqueue(neighbor);
+                                visited[neighbor] = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (int i = 0; i < baseStr.Length; i++)
+            {
+                stringBuilder.Append((char)(parentArray[baseStr[i] - 'a'] + 'a'));
+            }
+
+            return stringBuilder.ToString();
+        }
+        public ListNode DetectCycle(ListNode head)
+        {
+            if (head == null || head.next == null) return null;
+
+            ListNode slow = head.next, fast = head.next.next, result = null;
+
+            while (fast != null && fast.next != null)
+            {
+                slow = slow.next;
+                fast = fast.next.next;
+
+                if (slow == fast) break;
+            }
+
+            if (slow == fast)
+            {
+                result = head;
+                while (slow != result)
+                {
+                    slow = slow.next;
+                    result = result.next;
+                }
+            }
+            return result;
+        }
+        public bool HasCycle(ListNode head)
+        {
+            if (head == null || head.next == null) return false;
+
+            ListNode slow = head.next, fast = head.next.next;
+
+            while (fast != null && fast != slow)
+            {
+                slow = slow.next;
+                fast = fast.next;
+            }
+            return fast == slow;
+        }
+        public IList<IList<int>> PathSum(TreeNode root, int targetSum)
+        {
+            IList<IList<int>> lst = new List<IList<int>>();
+            if (root != null)
+            {
+                PathSumHelper(lst, new List<int>(), root, targetSum);
+            }
+            return lst;
+        }
+
+        private void PathSumHelper(IList<IList<int>> result, List<int> currList, TreeNode root, int targetSum)
+        {
+            currList.Add(root.val);
+            targetSum -= root.val;
+            if (root.left == null && root.right == null)
+            {
+                if (targetSum == 0)
+                {
+                    result.Add(new List<int>(currList));
+                }
+            }
+            else
+            {
+                if (root.left != null)
+                {
+                    PathSumHelper(result, currList, root.left, targetSum);
+                }
+                if (root.right != null)
+                {
+                    PathSumHelper(result, currList, root.right, targetSum);
+                }
+            }
+            currList.RemoveAt(currList.Count - 1);
+        }
+
+        public bool HasPathSum(TreeNode root, int targetSum)
+        {
+            if (root != null)
+            {
+                Stack<(TreeNode node, int target)> stack = new Stack<(TreeNode node, int target)>();
+
+                stack.Push((root, targetSum));
+
+                while (stack.Count > 0)
+                {
+                    var pop = stack.Pop();
+
+                    if (pop.node.left == null && pop.node.right == null && pop.target == pop.node.val) return true;
+
+                    int target = pop.target - pop.node.val;
+
+                    if (pop.node.left != null)
+                    {
+                        stack.Push((pop.node.left, target));
+                    }
+                    if (pop.node.right != null)
+                    {
+                        stack.Push((pop.node.right, target));
+                    }
+                }
+
+            }
+            return false;
+        }
+
+        public bool HasPathSum1(TreeNode root, int targetSum)
+        {
+            if (root == null) return false;
+
+            if (root.left == null && root.right == null) return targetSum == root.val;
+
+
+            return HasPathSum(root.left, targetSum - root.val) || HasPathSum(root.right, targetSum - root.val);
+        }
+
+        public TreeNode BuildTree(int[] preorder, int[] inorder)
+        {
+
+            TreeNode root = new TreeNode(preorder[0]);
+            if (preorder.Length > 1)
+            {
+                int[] preOrder1, inOrder1;
+                int indexOfRootInInorder = Array.IndexOf(inorder, preorder[0]);
+                if (indexOfRootInInorder > 0)
+                {
+                    preOrder1 = new int[indexOfRootInInorder];
+                    inOrder1 = new int[indexOfRootInInorder];
+                    for (int i = 0; i < indexOfRootInInorder; i++)
+                    {
+                        preOrder1[i] = preorder[i + 1];
+                        inOrder1[i] = inorder[i];
+                    }
+                    root.left = BuildTree(preOrder1, inOrder1);
+                }
+                int rightLength = preorder.Length - indexOfRootInInorder - 1;
+                if (rightLength > 0)
+                {
+                    preOrder1 = new int[rightLength];
+                    inOrder1 = new int[rightLength];
+
+                    for (int i = 0; i < rightLength; i++)
+                    {
+                        inOrder1[i] = inorder[indexOfRootInInorder + 1 + i];
+                        preOrder1[i] = preorder[preorder.Length - rightLength + i];
+                    }
+                    root.right = BuildTree(preOrder1, inOrder1);
+                }
+            }
+            return root;
+        }
+
+        public bool IsSymmetric(TreeNode root)
+        {
+            return IsSymmetric(root.left, root.right);
+        }
+
+        private bool IsSymmetric(TreeNode left, TreeNode right)
+        {
+            if (left == null && right == null) return true;
+
+            if (left == null || right == null || left.val != right.val) return false;
+
+            return IsSymmetric(left.left, right.right) && IsSymmetric(left.right, right.left);
+        }
+
+        public int[] SortedSquares(int[] nums)
+        {
+            int left = 0, right = nums.Length - 1;
+
+            int[] result = new int[nums.Length];
+
+
+            for (int i = right; i >= 0; i--)
+            {
+                int leftSquare = nums[left] * nums[left], rightSquare = nums[right] * nums[right];
+
+                if (rightSquare > leftSquare)
+                {
+                    result[i] = rightSquare;
+                    right--;
+                }
+                else
+                {
+                    result[i] = leftSquare;
+                    left++;
+                }
+            }
+
+            return result;
+        }
 
         TreeNode first, second, prev = new TreeNode(int.MinValue);
         public void RecoverTree(TreeNode root)
@@ -2006,7 +2297,7 @@ namespace Meta2025
             //foreach (char c in digits)
             //{
             //    stringBuilder.Append(c);
-            //    solveLetterCombinations(list,keys, digits, index+1, stringBuilder);
+            //    solveLetterCombinations(currList,keys, digits, index+1, stringBuilder);
             //    stringBuilder.Remove(stringBuilder.Length-1,1);
             //}
         }
@@ -2252,7 +2543,7 @@ namespace Meta2025
         }
         /// <summary>
         /// TC O(N^2)
-        /// SC O(1) //excluding output list
+        /// SC O(1) //excluding output currList
         /// </summary>
         /// <param name="nums"></param>
         /// <returns></returns>
@@ -3440,13 +3731,13 @@ namespace Meta2025
     }
 
 
-    public class Solution528
+    public class Solution538
     {
 
         int[] weight;
         Random random;
         int maxValue = 0;
-        public Solution528(int[] w)
+        public Solution538(int[] w)
         {
             updateWeights(w);
             random = new Random();
@@ -3461,7 +3752,7 @@ namespace Meta2025
             {
                 weight[i] = weight[i - 1] + w[i];
             }
-            maxValue = weight[weight.Length - 1];
+            maxValue = weight[weight.Length - 1] + 1;
         }
 
         public int PickIndex()
@@ -3492,6 +3783,195 @@ namespace Meta2025
                 }
             }
             return result;
+        }
+    }
+
+
+    public class NumMatrix
+    {
+        int[][] matrix;
+
+        public NumMatrix(int[][] matrix)
+        {
+            int m = matrix.Length;
+            int n = matrix[0].Length;
+            this.matrix = new int[m][];
+            this.matrix[0] = new int[n];
+            this.matrix[0][0] = matrix[0][0];
+            for (int i = 1; i < m; i++)
+            {
+                this.matrix[i] = new int[n];
+                this.matrix[i][0] = this.matrix[i - 1][0] + matrix[i][0];
+            }
+
+            for (int i = 1; i < n; i++)
+            {
+                this.matrix[0][i] = this.matrix[0][i - 1] + matrix[0][i];
+            }
+
+            for (int i = 1; i < m; i++)
+            {
+                for (int j = 1; j < n; j++)
+                {
+                    this.matrix[i][j] = matrix[i][j] + this.matrix[i - 1][j] + this.matrix[i][j - 1] - this.matrix[i - 1][j - 1];
+                }
+            }
+        }
+
+        public int SumRegion(int row1, int col1, int row2, int col2)
+        {
+            int totalSum = matrix[row2][col2];
+
+            if (col1 > 0)
+            {
+                totalSum -= matrix[row2][col1 - 1];
+            }
+            if (row1 > 0)
+            {
+                totalSum -= matrix[row1 - 1][col1];
+
+                if (col1 > 0)
+                {
+                    totalSum += matrix[row1 - 1][col1 - 1];
+                }
+            }
+            return totalSum;
+        }
+    }
+
+    public class LRUCache
+    {
+        LRUCacheNode head, tail;
+        Dictionary<int, LRUCacheNode> keyValuePairs = new Dictionary<int, LRUCacheNode>();
+        int capacity;
+        string filePath = @"C:\Users\anand\Downloads\logs.txt";
+        int counter = 0;
+        public LRUCache(int capacity)
+        {
+            this.capacity = capacity;
+            keyValuePairs = new Dictionary<int, LRUCacheNode>();
+            head = new LRUCacheNode(-1, -1);
+            tail = new LRUCacheNode(-1, -1);
+            head.next = tail;
+            tail.prev = head;
+        }
+
+        public int Get(int key)
+        {
+            //counter++;
+            //Logs($"{counter} Total : {keyValuePairs.Count}");
+
+            //Logs($"Get: {key}");
+            int val = -1;
+            if (keyValuePairs.ContainsKey(key))
+            {
+                val = keyValuePairs[key].value;
+                updateHeadNext(keyValuePairs[key]);
+
+            }
+            //printHeadToTail();
+
+            return val;
+        }
+
+        private void printHeadToTail()
+        {
+            StringBuilder sb = new StringBuilder();
+            LRUCacheNode temp = head;
+            while (temp != null)
+            {
+
+                sb.AppendLine($"key: {temp.key}, value:{temp.value}");
+                temp = temp.next;
+            }
+            Logs(sb.ToString());
+        }
+
+        private void Logs(string text)
+        {
+            File.AppendAllLines(filePath, new string[] { text });
+        }
+        public void Put(int key, int value)
+        {
+
+            //counter++;
+            //Logs($"{counter} Total : {keyValuePairs.Count}");
+            //Logs($"Put: {key} {value}");
+            if (keyValuePairs.ContainsKey(key))
+            {
+                LRUCacheNode curr = keyValuePairs[key];
+                updateHeadNext(curr);
+                curr.value = value;
+            }
+            else
+            {
+                if (keyValuePairs.Count == capacity)
+                {
+                    removeFromTail();
+                }
+
+                AddHeadNext(key, value);
+            }
+            //printHeadToTail();
+        }
+        private void removeFromTail()
+        {
+            int keyToRemove = tail.prev.key;
+
+            LRUCacheNode nodeToRemove = keyValuePairs[keyToRemove];
+            LRUCacheNode nodeToRemovePrev = nodeToRemove.prev;
+
+            nodeToRemovePrev.next = tail;
+            tail.prev = nodeToRemovePrev;
+
+            nodeToRemove = null;
+            keyValuePairs.Remove(keyToRemove);
+        }
+
+
+        private void updateHeadNext(LRUCacheNode curr)
+        {
+            LRUCacheNode currNext = curr.next;
+            LRUCacheNode currPre = curr.prev;
+
+            currPre.next = currNext;
+            currNext.prev = currPre;
+
+            curr.next = null;
+            curr.prev = null;
+
+            LRUCacheNode headNext = head.next;
+            head.next = curr;
+            curr.prev = head;
+            curr.next = headNext;
+            headNext.prev = curr;
+        }
+        private void AddHeadNext(int key, int value)
+        {
+            LRUCacheNode curr = new LRUCacheNode(key, value);
+
+            LRUCacheNode headNext = head.next;
+
+            head.next = curr;
+            curr.prev = head;
+            curr.next = headNext;
+            headNext.prev = curr;
+
+            keyValuePairs[key] = curr;
+        }
+    }
+
+    class LRUCacheNode
+    {
+        public int key;
+        public int value;
+        public LRUCacheNode next;
+        public LRUCacheNode prev;
+
+        public LRUCacheNode(int key, int val)
+        {
+            this.value = val;
+            this.key = key;
         }
     }
 }

@@ -25,6 +25,104 @@ public class Meta2025Tests
     public void Test()
     {
     }
+    [TestMethod]
+    public void LRUCacheTest()
+    {
+        LRUCache lRUCache = new LRUCache(10);
+        string[] command = { "put", "put", "put", "put", "put", "get", "put", "get", "get", "put", "get", "put", "put", "put", "get", "put", "get", "get", "get", "get", "put", "put", "get", "get", "get", "put", "put", "get", "put", "get", "put", "get", "get", "get", "put", "put", "put", "get", "put", "get", "get", "put", "put", "get", "put", "put", "put", "put", "get", "put", "put", "get", "put", "put", "get", "put", "put", "put", "put", "put", "get", "put", "put", "get", "put", "get", "get", "get", "put", "get", "get", "put", "put", "put", "put", "get", "put", "put", "put", "put", "get", "get", "get", "put", "put", "put", "get", "put", "put", "put", "get", "put", "put", "put", "get", "get", "get", "put", "put", "put", "put", "get", "put", "put", "put", "put", "put", "put", "put" };
+        string values = "10,13],[3,17],[6,11],[10,5],[9,10],[13],[2,19],[2],[3],[5,25],[8],[9,22],[5,5],[1,30],[11],[9,12],[7],[5],[8],[9],[4,30],[9,3],[9],[10],[10],[6,14],[3,1],[3],[10,11],[8],[2,14],[1],[5],[4],[11,4],[12,24],[5,18],[13],[7,23],[8],[12],[3,27],[2,12],[5],[2,9],[13,4],[8,18],[1,7],[6],[9,29],[8,21],[5],[6,30],[1,12],[10],[4,15],[7,22],[11,26],[8,17],[9,29],[5],[3,4],[11,30],[12],[4,29],[3],[9],[6],[3,4],[1],[10],[3,29],[10,28],[1,20],[11,13],[3],[3,12],[3,8],[10,9],[3,26],[8],[7],[5],[13,17],[2,27],[11,15],[12],[9,19],[2,15],[3,16],[1],[12,17],[9,1],[6,19],[4],[5],[5],[8,1],[11,7],[5,2],[9,28],[1],[2,2],[7,4],[4,22],[7,24],[9,26],[13,28],[11,26";
+        string[] strings = values.Split("],[");
+
+        for (int c = 0; c < command.Length; c++)
+        {
+            string input = strings[c];
+            switch (command[c])
+            {
+                case "put":
+                    string[] ss = input.Split(',');
+                    lRUCache.Put(int.Parse(ss[0]), int.Parse(ss[1]));
+                    break;
+                default:
+                    lRUCache.Get(int.Parse(input));
+                    break;
+            }
+        }
+    }
+    [TestMethod]
+    public void DetectCycleTest()
+    {
+        int[] arr = { 1, 2 };
+        ListNode node = Helper.GenerateListNode(arr);
+        node.next.next = node;
+        solution.DetectCycle(node);
+    }
+    [TestMethod]
+    public void PathSumTest()
+    {
+        TreeNode root = new TreeNode(5),
+            node1 = new TreeNode(4),
+            node2 = new TreeNode(8),
+            node3 = new TreeNode(11),
+            node4 = new TreeNode(13),
+            node5 = new TreeNode(4),
+            node6 = new TreeNode(7),
+            node7 = new TreeNode(2),
+            node8 = new TreeNode(1);
+
+        root.left = node1;
+        root.right = node2;
+        node1.left = node3;
+        node2.left = node4;
+        node2.right = node5;
+        node3.left = node6;
+        node3.right = node7;
+        node4.right = node8;
+        solution.PathSum(root, 22);
+    }
+    [TestMethod]
+    public void HasPathSumTest()
+    {
+        TreeNode root = new TreeNode(5), 
+            node1 = new TreeNode(4), 
+            node2 = new TreeNode(8), 
+            node3 = new TreeNode(11), 
+            node4 = new TreeNode(13), 
+            node5 = new TreeNode(4), 
+            node6 = new TreeNode(7), 
+            node7 = new TreeNode(2), 
+            node8 = new TreeNode(1);
+
+        root.left = node1;
+        root.right = node2;
+        node1.left = node3;
+        node2.left = node4;
+        node2.right = node5;
+        node3.left = node6;
+        node3.right = node7;
+        node4.right = node8;
+        Assert.IsTrue(solution.HasPathSum(root, 22));
+    }
+    [TestMethod]
+    public void BuildTreeTest2()
+    {
+        int[] preorder = { 1, 2 };
+        int[] inorder = { 1, 2 };
+        var res = solution.BuildTree(preorder, inorder);
+    }
+    [TestMethod]
+    public void BuildTreeTest1()
+    {
+        int[] preorder = { 1, 2 };
+        int[] inorder = { 2, 1 };
+        var res = solution.BuildTree(preorder, inorder);
+    }
+    [TestMethod]
+    public void BuildTreeTest()
+    {
+        int[] preorder = { 3, 9, 20, 15, 7 };
+        int[] inorder = { 9, 3, 15, 20, 7 };
+        var res = solution.BuildTree(preorder, inorder);
+    }
 
     [TestMethod]
     public void RecoverTreeTest()
@@ -45,7 +143,7 @@ public class Meta2025Tests
     [TestMethod]
     public void ReverseBetweenTest()
     {
-        int[] arr = {1,2,3,4,5};
+        int[] arr = { 1, 2, 3, 4, 5 };
         ListNode node = Helper.GenerateListNode(arr);
         var k = solution.ReverseBetween(node, 2, 4);
     }
@@ -53,7 +151,7 @@ public class Meta2025Tests
     [TestMethod]
     public void SubsetsWithDupTest()
     {
-        int[] arr = {1, 2, 3, 4};
+        int[] arr = { 1, 2, 3, 4 };
         var l = solution.SubsetsWithDup(arr);
     }
 

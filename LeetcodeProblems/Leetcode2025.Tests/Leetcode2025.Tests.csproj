@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Amazon2025\Amazon2025.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Leetcode2025\Leetcode2025.csproj" />
     <ProjectReference Include="..\Meta2025\Meta2025.csproj" />

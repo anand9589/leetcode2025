@@ -755,6 +755,35 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 386. Lexicographical Numbers
+        public IList<int> LexicalOrder(int n)
+        {
+            IList<int> numbers = new List<int>();
+
+            for (int i = 1; i <= 9; i++)
+            {
+                LexicalOrderGenerate(numbers, n, i);
+            }
+
+            return numbers;
+        }
+
+        private void LexicalOrderGenerate(IList<int> numbers, int n, int currNum)
+        {
+            if (currNum > n) return;
+
+            numbers.Add(currNum);
+
+            for (int nextDigit = 0; nextDigit <= 9; nextDigit++)
+            {
+                int nextNumber = currNum * 10 + nextDigit;
+                if (nextNumber > n) break;
+                LexicalOrderGenerate(numbers, n, nextNumber);
+            }
+        }
+
+        #endregion
+
         #region 407. Trapping Rain Water II
         public int TrapRainWater(int[][] heightMap)
         {
@@ -1164,6 +1193,44 @@ namespace Leetcode2025
             }
             return result;
 
+        }
+        #endregion
+
+        #region 440. K-th Smallest in Lexicographical Order
+        public int FindKthNumber(int n, int k)
+        {
+            int currNum = 1;
+            k--;
+
+            while (k > 0)
+            {
+                int step = countStep(n, currNum, currNum + 1);
+                if (step <= k)
+                {
+                    currNum++;
+                    k -= step;
+                }
+                else
+                {
+                    currNum *= 10;
+                    k--;
+                }
+            }
+            return currNum;
+        }
+
+        private int countStep(int n, long prefix1, long prefix2)
+        {
+            long steps = 0;
+
+            while (prefix1 <= n)
+            {
+                steps += Math.Min(n + 1, prefix2) - prefix1;
+
+                prefix1 *= 10;
+                prefix2 *= 10;
+            }
+            return (int)steps;
         }
         #endregion
 
@@ -6396,6 +6463,30 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 3170. Lexicographically Minimum String After Removing Stars
+        public string ClearStars(string s)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            int i = 0;
+            int indexToRemove = 0;
+
+            while (i < s.Length)
+            {
+                if (s[i] == '*')
+                {
+
+                }
+                else
+                {
+                    stringBuilder.Append(s[i]);
+                }
+                i++;
+            }
+
+            return s;
+        }
+        #endregion
+
         #region 3174. Clear Digits
         public string ClearDigits(string s)
         {
@@ -7327,6 +7418,39 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 3442. Maximum Difference Between Even and Odd Frequency I
+        public int MaxDifference(string s)
+        {
+            int[] freq = new int[26];
+
+            foreach (char c in s)
+            {
+                freq[c - 'a']++;
+            }
+
+            int minOdd = 101, maxOdd = -1, minEven = 101, maxEven = -1;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (freq[i] > 0)
+                {
+                    if (freq[i] % 2 == 0)
+                    {
+                        minEven = Math.Min(minEven, freq[i]);
+                        maxEven = Math.Max(maxEven, freq[i]);
+                    }
+                    else
+                    {
+                        minOdd = Math.Min(minOdd, freq[i]);
+                        maxOdd = Math.Max(maxOdd, freq[i]);
+                    }
+                }
+            }
+
+            return maxOdd - minEven;
+        }
+        #endregion
+
         #region 3477. Fruits Into Baskets II
         public int NumOfUnplacedFruits(int[] fruits, int[] baskets)
         {
@@ -7514,6 +7638,21 @@ namespace Leetcode2025
             return result;
         }
         #endregion
+
+        public bool CanMakeEqual(int[] nums, int k)
+        {
+            int c = 0;
+            for (int i = 0; i < nums.Length - 1; i++)
+            {
+                if (nums[i] != nums[i + 1])
+                {
+                    c++;
+                    i++;
+                }
+            }
+
+            return c <= k;
+        }
 
         #region 547. Number oF Provinces
         public int FindCircleNum(int[][] isConnected)

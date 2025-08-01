@@ -180,6 +180,18 @@ namespace Leetcode2025.Tests
         }
         #endregion
 
+        #region 386. Lexicographical Numbers
+
+
+        [TestMethod]
+        public void LexicalOrderTest()
+        {
+            int n = 1024;
+            leetcode.LexicalOrder(n);
+
+        }
+        #endregion
+
         #region 407. Trapping Rain Water II
 
         [TestMethod]
@@ -936,6 +948,17 @@ namespace Leetcode2025.Tests
             int[][] meetings = getMultiDimensionalArray("[[2,4],[1,3]]");
             var result = leetcode.CountDays(days, meetings);
             Assert.AreEqual(1, result);
+        }
+        #endregion
+
+
+        #region 3170. Lexicographically Minimum String After Removing Stars
+        [TestMethod]
+        public void ClearStarsTest()
+        {
+            string s = "aabz**abcde******ae";
+            var res = leetcode.ClearStars(s);
+            Assert.AreEqual("zae", res);
         }
         #endregion
 

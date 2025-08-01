@@ -26,6 +26,29 @@
         }
         #endregion
 
+        #region 3. Longest Substring Without Repeating Characters
+        public int LengthOfLongestSubstring(string s)
+        {
+            if (s.Length <= 1) return s.Length;
+            Dictionary<char, int> indexMap = new Dictionary<char, int>();
+            int result = 0;
+            int startIndex = 0;
+            indexMap[s[0]] = 0;
+            for (int i = 1; i < s.Length; i++)
+            {
+                if (indexMap.ContainsKey(s[i]) && indexMap[s[i]] >= startIndex)
+                {
+                    result = Math.Max(i - startIndex, result);
+                    startIndex = indexMap[s[i]] + 1;
+                }
+                indexMap[s[i]] = i;
+            }
+
+
+            return Math.Max(result, s.Length - startIndex);
+        }
+        #endregion
+
         #region 42. Trapping Rain Water
         /*  0   1   2   3   4   5   6   7   8   9   10  11
          * [0,  1,  0,  2,  1,  0,  1,  3,  2,  1,  2,  1]

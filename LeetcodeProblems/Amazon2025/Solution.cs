@@ -100,6 +100,31 @@
         }
         #endregion
 
+        #region 88. Merge Sorted Array
+        public void Merge(int[] nums1, int m, int[] nums2, int n)
+        {
+            int processedIndex = nums1.Length - 1;
+            while (m > 0 && n > 0)
+            {
+                if (nums2[n - 1] >= nums1[m - 1])
+                {
+                    nums1[processedIndex] = nums2[n - 1];
+                    n--;
+                }
+                else
+                {
+                    nums1[processedIndex] = nums1[m - 1];
+                    m--;
+                }
+                processedIndex--;
+            }
+            while (n > 0)
+            {
+                nums1[processedIndex--] = nums2[--n];
+            }
+        }
+        #endregion
+
         #region 118. Pascal's Triangle
         public IList<IList<int>> Generate(int numRows)
         {

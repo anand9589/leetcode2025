@@ -418,5 +418,58 @@ namespace Amazon2025
             return result;
         }
         #endregion
+
+        #region 3477. Fruits Into Baskets II
+        public int NumOfUnplacedFruits(int[] fruits, int[] baskets)
+        {
+            int rem = 0;
+
+            foreach (int fruit in fruits)
+            {
+                int placed = 1;
+                for (int j = 0; j < baskets.Length; j++)
+                {
+
+                    if (baskets[j] >= fruit)
+                    {
+                        baskets[j] = 0;
+                        placed = 0;
+                        break;
+                    }
+                }
+
+                rem += placed;
+            }
+
+            return rem;
+        }
+
+        public int NumOfUnplacedFruits1(int[] fruits, int[] baskets)
+        {
+            int rem = 0;
+            HashSet<int> used = new HashSet<int>();
+
+            foreach (int fruit in fruits)
+            {
+                bool placed = false;
+                for (int j = 0; j < baskets.Length; j++)
+                {
+
+                    if (used.Contains(j)) continue;
+
+                    if (baskets[j] >= fruit)
+                    {
+                        placed = true;
+                        used.Add(j);
+                        break;
+                    }
+                }
+
+                if (!placed) rem++;
+            }
+
+            return rem;
+        }
+        #endregion
     }
 }

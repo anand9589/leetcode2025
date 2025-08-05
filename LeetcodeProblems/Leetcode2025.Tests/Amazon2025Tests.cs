@@ -77,4 +77,16 @@ public class Amazon2025Tests
         var k = solution.MinCost(basket1, basket2);
     }
     #endregion
+
+
+    #region 3477. Fruits Into Baskets II
+
+    [TestMethod]
+    public void NumOfUnplacedFruitsTest()
+    {
+        int[] fruits = { 3, 6, 1 };
+        int[] baskets = { 6, 4, 7 };
+        var k = solution.NumOfUnplacedFruits(fruits, baskets);
+    }
+    #endregion
 }

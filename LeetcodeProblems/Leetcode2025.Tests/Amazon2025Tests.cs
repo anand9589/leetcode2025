@@ -62,7 +62,7 @@ public class Amazon2025Tests
         int startPos = 5;
         int k = 4;
 
-        var t = solution.MaxTotalFruits(arr, startPos, k);  
+        var t = solution.MaxTotalFruits(arr, startPos, k);
     }
     #endregion
 
@@ -72,7 +72,7 @@ public class Amazon2025Tests
     [TestMethod]
     public void MinCostTest()
     {
-        int[] basket1 = {4,2,2,2};
+        int[] basket1 = { 4, 2, 2, 2 };
         int[] basket2 = { 1, 4, 1, 2 };
         var k = solution.MinCost(basket1, basket2);
     }
@@ -84,9 +84,27 @@ public class Amazon2025Tests
     [TestMethod]
     public void NumOfUnplacedFruitsTest()
     {
-        int[] fruits = { 3, 6, 1 };
-        int[] baskets = { 6, 4, 7 };
-        var k = solution.NumOfUnplacedFruits(fruits, baskets);
+        int[] fruits1 = { 63,40,1 };
+        int[] fruits2 = { 59,93,20 };
+        var k = solution.NumOfUnplacedFruits(fruits1, fruits2);
+        Assert.AreEqual(0, k);
+    }
+
+    [TestMethod]
+    public void NumOfUnplacedFruitsTest2()
+    {
+        int[] fruits1 = { 4,2,5};
+        int[] fruits2 = { 3,5,4 };
+        var k = solution.NumOfUnplacedFruits(fruits1, fruits2);
+        Assert.AreEqual(1, k);
+    }
+
+    [TestMethod]
+    public void NumOfUnplacedFruitsTest1()
+    {
+        int[] fruits1 = { 3, 6, 1, 3, 6, 8, 3, 6, 1, 4, 3, 2, 1 };
+        int[] fruits2 = { 6, 4, 7, 8, 4, 7, 9, 5, 1, 3, 4, 4, 1 };
+        var k = solution.NumOfUnplacedFruits(fruits1, fruits2);
     }
     #endregion
 }

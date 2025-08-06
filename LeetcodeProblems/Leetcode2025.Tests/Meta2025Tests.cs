@@ -891,7 +891,7 @@ public class Meta2025Tests
         int[] arr = Helper.GenerateArray();
         int key = arr[5000];
         //Random random = new Random();
-        //int key = random.Next(int.MinValue, int.MaxValue);
+        //int key = random.Next(int.MinValue, int.Value);
 
         Array.Sort(arr);
 

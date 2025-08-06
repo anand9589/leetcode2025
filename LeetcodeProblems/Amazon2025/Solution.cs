@@ -419,8 +419,123 @@ namespace Amazon2025
         }
         #endregion
 
-        #region 3477. Fruits Into Baskets II
+        #region 3477 & 3479. Fruits Into Baskets II
         public int NumOfUnplacedFruits(int[] fruits, int[] baskets)
+        {
+            int rem = 0;
+
+            SegmentTree3479 segmentTree3479 = new SegmentTree3479(baskets);
+
+            for (int i = 0; i < fruits.Length; i++)
+            {
+                if (!segmentTree3479.Search(fruits[i]))
+                {
+                    rem++;
+                }
+            }
+
+            return rem;
+        }
+        class SegmentTree3479
+        {
+            public int StartIndex { get; set; }
+            public int EndIndex { get; set; }
+            public int Value
+            {
+                get; set;
+            }
+
+
+            public SegmentTree3479? Left { get; set; }
+            private SegmentTree3479? Right { get; set; }
+            public SegmentTree3479(int[] baskets, int startIndex = 0)
+            {
+                Generate(baskets, startIndex, baskets.Length - 1);
+            }
+
+            public SegmentTree3479(int[] baskets, int startIndex, int endIndex)
+            {
+                Generate(baskets, startIndex, endIndex);
+            }
+
+            private void Generate(int[] baskets, int startIndex, int endIndex)
+            {
+                this.StartIndex = startIndex;
+                this.EndIndex = endIndex;
+                if (this.StartIndex == this.EndIndex)
+                {
+                    this.Value = baskets[startIndex];
+                }
+                else
+                {
+                    int mid = (startIndex + EndIndex) / 2;
+
+                    Left = new SegmentTree3479(baskets, startIndex, mid);
+                    Right = new SegmentTree3479(baskets, mid + 1, endIndex);
+                    this.Value = Math.Max(Left.Value, Right.Value);
+                }
+            }
+
+            internal bool Search(int v)
+            {
+                if (this.Value < v) return false;
+
+                if (Left == null && Right == null)
+                {
+                    this.Value = 0;
+
+                }
+                else
+                {
+                    if (Left?.Value >= v)
+                    {
+                        Left.Search(v);
+                        //Left.UpdateValue();
+                    }
+                    else if (Right?.Value >= v)
+                    {
+                        Right.Search(v);
+                        //Right.UpdateValue();
+                    }
+                    this.Value = Math.Max(Left == null ? 0 : Left.Value, Right == null ? 0 : Right.Value);
+                }
+                //UpdateValue();
+                return true;
+            }
+
+            internal void UpdateValue()
+            {
+                if (this.Right != null && this.Right.Value == 0)
+                {
+                    this.Right = null;
+                }
+
+                if (this.Left != null && this.Left.Value == 0)
+                {
+                    this.Left = null;
+                }
+
+                if (Left == null && Right == null)
+                {
+                    this.Value = 0;
+                }
+                else if (Left != null && Right != null)
+                {
+                    this.Value = Math.Max(Left.Value, Right.Value);
+                }
+                else if (Left != null)
+                {
+                    this.Value = Left.Value;
+                }
+                else
+                {
+                    this.Value = Right.Value;
+                }
+            }
+        }
+
+
+        public int NumOfUnplacedFruits2(int[] fruits, int[] baskets)
         {
             int rem = 0;
 

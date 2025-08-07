@@ -420,7 +420,69 @@ namespace Amazon2025
         #endregion
 
         #region 3477 & 3479. Fruits Into Baskets II
+        int[] segmentTree3479;
+        int[] basket3479;
         public int NumOfUnplacedFruits(int[] fruits, int[] baskets)
+        {
+            int rem = 0;
+            basket3479 = baskets;
+            segmentTree3479 = new int[(baskets.Length - 1) * 3 + 2];
+
+            buildSegmentTree(0, 0, baskets.Length - 1);
+
+            foreach (int fruit in fruits)
+            {
+                if (!searchInSegments(fruit, 0))
+                {
+                    rem++;
+                }
+            }
+
+            return rem;
+        }
+
+        private bool searchInSegments(int fruit, int index)
+        {
+            if (index >= segmentTree3479.Length || segmentTree3479[index] < fruit) return false;
+
+            int childIndex = index * 2 + 1;
+
+            if (!searchInSegments(fruit, childIndex))
+            {
+                searchInSegments(fruit, childIndex+1);
+            }
+            if (childIndex + 1 < segmentTree3479.Length)
+            {
+                segmentTree3479[index] = Math.Max(segmentTree3479[childIndex], segmentTree3479[childIndex + 1]);
+            }
+            else if (childIndex < segmentTree3479.Length)
+            {
+                segmentTree3479[index] = segmentTree3479[childIndex];
+            }
+            else
+            {
+                segmentTree3479[index] = 0;
+            }
+            return true;
+        }
+
+        private void buildSegmentTree(int currrIndex, int startIndex, int endIndex)
+        {
+            if (startIndex == endIndex)
+            {
+                segmentTree3479[currrIndex] = basket3479[startIndex];
+            }
+            else
+            {
+                int mid = (startIndex + endIndex) / 2;
+                int childIndex = (currrIndex * 2) + 1;
+                buildSegmentTree(childIndex, startIndex, mid);
+                buildSegmentTree(childIndex + 1, mid + 1, endIndex);
+                segmentTree3479[currrIndex] = Math.Max(segmentTree3479[childIndex], segmentTree3479[childIndex + 1]);
+            }
+        }
+
+        public int NumOfUnplacedFruits3(int[] fruits, int[] baskets)
         {
             int rem = 0;
 

@@ -419,6 +419,218 @@ namespace Amazon2025
         }
         #endregion
 
+        #region 3363. Find the Maximum Number of Fruits Collected
+        public int MaxCollectedFruits(int[][] fruits)
+        {
+            return 0;
+        }
+
+        public int MaxCollectedFruits2(int[][] fruits)
+        {
+            int result = 0;
+
+            int maxMoves = fruits.Length - 1;
+
+            for (int i = 0; i <= maxMoves; i++)
+            {
+                result += fruits[i][i];
+                fruits[i][i] = 0;
+            }
+
+            Stack<((int r, int c) cell, int val, int moves)> queue = new Stack<((int r, int c) cell, int val, int moves)>();
+
+            queue.Push(((0, maxMoves), fruits[0][maxMoves], maxMoves));
+            int child1Fruit = int.MinValue;
+
+            while (queue.Count > 0)
+            {
+                var dq = queue.Pop();
+
+                if (dq.moves == 0)
+                {
+                    if (dq.cell.r == maxMoves && dq.cell.c == maxMoves)
+                    {
+                        child1Fruit = Math.Max(child1Fruit, dq.val);
+                    }
+
+                }
+                else
+                {
+                    int row = dq.cell.r + 1;
+                    if (row <= maxMoves)
+                    {
+                        int moves = dq.moves - 1;
+                        int col = dq.cell.c;
+
+                        if (fruits[row][col] >= 0)
+                        {
+                            queue.Push(((row, col), dq.val + fruits[row][col], moves));
+                        }
+
+                        col = dq.cell.c - 1;
+                        if (col > 0 && fruits[row][col] >= 0)
+                        {
+                            queue.Push(((row, col), dq.val + fruits[row][col], moves));
+                        }
+
+                        col = dq.cell.c + 1;
+                        if (col <= maxMoves && fruits[row][col] >= 0)
+                        {
+                            queue.Push(((row, col), dq.val + fruits[row][col], moves));
+                        }
+                    }
+                }
+            }
+
+            int child2Fruit = int.MinValue;
+            queue.Push(((maxMoves, 0), fruits[maxMoves][0], maxMoves));
+
+            while (queue.Count > 0)
+            {
+                var dq = queue.Pop();
+
+                if (dq.moves == 0)
+                {
+                    if (dq.cell.r == maxMoves && dq.cell.c == maxMoves)
+                    {
+                        child2Fruit = Math.Max(child2Fruit, dq.val);
+                    }
+
+                }
+                else
+                {
+                    int col = dq.cell.c + 1;
+                    if (col <= maxMoves)
+                    {
+                        int moves = dq.moves - 1;
+                        int row = dq.cell.r;
+
+                        if (fruits[row][col] >= 0)
+                        {
+                            queue.Push(((row, col), dq.val + fruits[row][col], moves));
+                        }
+
+                        row = dq.cell.r - 1;
+                        if (row > 0 && fruits[row][col] >= 0)
+                        {
+                            queue.Push(((row, col), dq.val + fruits[row][col], moves));
+                        }
+
+                        row = dq.cell.r + 1;
+                        if (row <= maxMoves && fruits[row][col] >= 0)
+                        {
+                            queue.Push(((row, col), dq.val + fruits[row][col], moves));
+                        }
+                    }
+                }
+            }
+            return result + child1Fruit + child2Fruit;
+        }
+
+        public int MaxCollectedFruits1(int[][] fruits)
+        {
+            int result = 0;
+
+            int maxMoves = fruits.Length - 1;
+
+            for (int i = 0; i <= maxMoves; i++)
+            {
+                result += fruits[i][i];
+                fruits[i][i] = 0;
+            }
+
+            Queue<((int r, int c) cell, int val, int moves)> queue = new Queue<((int r, int c) cell, int val, int moves)>();
+
+            queue.Enqueue(((0, maxMoves), fruits[0][maxMoves], maxMoves));
+            int child1Fruit = int.MinValue;
+
+            while (queue.Count > 0)
+            {
+                var dq = queue.Dequeue();
+
+                if (dq.moves == 0)
+                {
+                    if (dq.cell.r == maxMoves && dq.cell.c == maxMoves)
+                    {
+                        child1Fruit = Math.Max(child1Fruit, dq.val);
+                    }
+
+                }
+                else
+                {
+                    int row = dq.cell.r + 1;
+                    if (row <= maxMoves)
+                    {
+                        int moves = dq.moves - 1;
+                        int col = dq.cell.c;
+
+                        if (fruits[row][col] >= 0)
+                        {
+                            queue.Enqueue(((row, col), dq.val + fruits[row][col], moves));
+                        }
+
+                        col = dq.cell.c - 1;
+                        if (col > 0 && fruits[row][col] >= 0)
+                        {
+                            queue.Enqueue(((row, col), dq.val + fruits[row][col], moves));
+                        }
+
+                        col = dq.cell.c + 1;
+                        if (col <= maxMoves && fruits[row][col] >= 0)
+                        {
+                            queue.Enqueue(((row, col), dq.val + fruits[row][col], moves));
+                        }
+                    }
+                }
+            }
+
+            int child2Fruit = int.MinValue;
+            queue.Enqueue(((maxMoves, 0), fruits[maxMoves][0], maxMoves));
+
+            while (queue.Count > 0)
+            {
+                var dq = queue.Dequeue();
+
+                if (dq.moves == 0)
+                {
+                    if (dq.cell.r == maxMoves && dq.cell.c == maxMoves)
+                    {
+                        child2Fruit = Math.Max(child2Fruit, dq.val);
+                    }
+
+                }
+                else
+                {
+                    int col = dq.cell.c + 1;
+                    if (col <= maxMoves)
+                    {
+                        int moves = dq.moves - 1;
+                        int row = dq.cell.r;
+
+                        if (fruits[row][col] >= 0)
+                        {
+                            queue.Enqueue(((row, col), dq.val + fruits[row][col], moves));
+                        }
+
+                        row = dq.cell.r - 1;
+                        if (row > 0 && fruits[row][col] >= 0)
+                        {
+                            queue.Enqueue(((row, col), dq.val + fruits[row][col], moves));
+                        }
+
+                        row = dq.cell.r + 1;
+                        if (row <= maxMoves && fruits[row][col] >= 0)
+                        {
+                            queue.Enqueue(((row, col), dq.val + fruits[row][col], moves));
+                        }
+                    }
+                }
+            }
+            return result + child1Fruit + child2Fruit;
+        }
+
+        #endregion
+
         #region 3477 & 3479. Fruits Into Baskets II
         int[] segmentTree3479;
         int[] basket3479;
@@ -449,7 +661,7 @@ namespace Amazon2025
 
             if (!searchInSegments(fruit, childIndex))
             {
-                searchInSegments(fruit, childIndex+1);
+                searchInSegments(fruit, childIndex + 1);
             }
             if (childIndex + 1 < segmentTree3479.Length)
             {

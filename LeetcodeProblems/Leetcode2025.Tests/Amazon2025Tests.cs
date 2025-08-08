@@ -79,6 +79,24 @@ public class Amazon2025Tests
     #endregion
 
 
+    #region 3363. Find the Maximum Number of Fruits Collected
+    [TestMethod]
+    public void MaxCollectedFruitsTest()
+    {
+        string s = "[[1,2,3,4],[5,6,8,7],[9,10,11,12],[13,14,15,16]]";
+        int[][] fruits = Helper.GetMultiDimensionalArrayBasedOnString(s);
+        var k = solution.MaxCollectedFruits(fruits);
+        Assert.AreEqual(100, k);
+    }
+    [TestMethod]
+    public void MaxCollectedFruitsTest1()
+    {
+        string s = "[[1,1],[1,1]]";
+        int[][] fruits = Helper.GetMultiDimensionalArrayBasedOnString(s);
+        var k = solution.MaxCollectedFruits(fruits);
+        Assert.AreEqual(4, k);
+    }
+    #endregion
     #region 3477. Fruits Into Baskets II
 
     [TestMethod]

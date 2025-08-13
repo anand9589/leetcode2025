@@ -42,6 +42,19 @@ public class Amazon2025Tests
 
     #endregion
 
+
+    #region 397. Integer Replacement
+
+
+    [TestMethod]
+    public void IntegerReplacementTest()
+    {
+        int n = 2147483647;//7;
+        var k = solution.IntegerReplacement(n);
+        Assert.AreEqual(32, k);
+    }
+    #endregion
+
     #region 808. Soup Servings
     [TestMethod]
     public void SoupServingsTest()

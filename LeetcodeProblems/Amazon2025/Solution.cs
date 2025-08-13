@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 
 namespace Amazon2025
@@ -173,22 +175,70 @@ namespace Amazon2025
 
 
         #region 397. Integer Replacement
+        //public int IntegerReplacement1(int n)
+        //{
+        //    if(n == int.MaxValue)
+        //    {
+        //        return 1 + IntegerReplacement1(n - 1);
+        //    }
+        //    return IntegerReplacement1(n);
+
+        //}
+        
         public int IntegerReplacement(int n)
         {
+            if (n == 1) return 0;
+            Dictionary<long, int> keyValuePairs = new Dictionary<long, int>();
+
+            return IntegerReplacementHelper(keyValuePairs, n);
+        }
+
+        public int IntegerReplacementHelper(Dictionary<long, int> keyValuePairs ,long n)
+        {
+            if (n == 1) return 0;
+
+            if (keyValuePairs.ContainsKey(n)) return keyValuePairs[n];
             int result = 0;
+            if (n % 2 == 0)
+            {
+                result = 1 + IntegerReplacementHelper(keyValuePairs, n / 2);
+            }
+            else
+            {
+                result = 1 + Math.Min(IntegerReplacementHelper(keyValuePairs, n + 1), IntegerReplacementHelper(keyValuePairs, n - 1));
+            }
+
+            return keyValuePairs[n] = result;
+        }
+        public int IntegerReplacement1(int n)
+        {
             if (n > 1)
             {
-                result++;
                 if (n % 2 == 0)
                 {
-                    result += IntegerReplacement(n / 2);
+                    return 1 + IntegerReplacement1(n / 2);
                 }
                 else
                 {
-                    result += Math.Max(IntegerReplacement(n + 1), IntegerReplacement(n - 1));
+                    return 1 + Math.Min(IntegerReplacement1((long)n + 1), IntegerReplacement1(n - 1));
                 }
             }
-            return result;
+            return 0;
+        }
+        public int IntegerReplacement1(long n)
+        {
+            if (n > 1)
+            {
+                if (n % 2 == 0)
+                {
+                    return 1 + IntegerReplacement1(n / 2);
+                }
+                else
+                {
+                    return 1 + Math.Min(IntegerReplacement1(n + 1), IntegerReplacement1(n - 1));
+                }
+            }
+            return 0;
         }
         #endregion
 
@@ -590,7 +640,7 @@ namespace Amazon2025
             }
 
             NumberOfWays_Helper(powers, 0, n);
-            return dp2787[n-1][n-1];
+            return dp2787[n - 1][n - 1];
         }
 
         private int NumberOfWays_Helper(int[] powers, int index, int currentSum)

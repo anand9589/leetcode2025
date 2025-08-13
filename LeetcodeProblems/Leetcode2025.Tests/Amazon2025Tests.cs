@@ -28,7 +28,39 @@ public class Amazon2025Tests
         var k = solution.Generate(numRows);
     }
     #endregion
+    #region 326. Power of Three
+    [TestMethod]
+    public void IsPowerOfThreeTest()
+    {
+        solution.IsPowerOfThree(27);
+    }
+    [TestMethod]
+    public void IsPowerOfThreeTest1()
+    {
+        solution.IsPowerOfThree(45);
+    }
 
+    #endregion
+
+    #region 808. Soup Servings
+    [TestMethod]
+    public void SoupServingsTest()
+    {
+        var k = solution.SoupServings1(50);
+    }
+    #endregion
+
+
+    #region 869. Reordered Power of 2
+
+    [TestMethod]
+    public void ReorderedPowerOf2Test()
+    {
+        var k = 152;
+        var s = solution.ReorderedPowerOf2(k);
+        Assert.IsTrue(s);
+    }
+    #endregion
 
     #region 904. Fruit Into Baskets
 
@@ -66,6 +98,38 @@ public class Amazon2025Tests
     }
     #endregion
 
+    #region 2438. Range Product Queries of Powers
+
+    [TestMethod]
+    public void ProductQueriesTest()
+    {
+        int n = 18;
+        int[][] queries = new int[][]
+        {
+            new int[] { 0, 0 },
+            new int[] { 0, 1 },
+            new int[] { 1, 1 }
+        };
+
+        var k = solution.ProductQueries(n, queries);
+    }
+
+    [TestMethod]
+    public void ProductQueriesTest1()
+    {
+        int n = 15;
+        int[][] queries = new int[][]
+        {
+            new int[] { 0, 0 },
+            new int[] { 0, 2 },
+            new int[] { 1, 1 },
+            new int[] { 0, 3 }
+        };
+
+        var k = solution.ProductQueries(n, queries);
+    }
+
+    #endregion
 
     #region 2561. Rearranging Fruits
 
@@ -78,6 +142,17 @@ public class Amazon2025Tests
     }
     #endregion
 
+    #region 2787. Ways to Express an Integer as Sum of Powers
+
+    [TestMethod]
+    public void NumberOfWaysTest()
+    {
+        int n = 4;
+        int x = 1;
+        var k = solution.NumberOfWays(n, x);
+        Assert.AreEqual(2, k);
+    }
+    #endregion
 
     #region 3363. Find the Maximum Number of Fruits Collected
     [TestMethod]

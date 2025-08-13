@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Amazon2025
 {
@@ -157,6 +158,124 @@ namespace Amazon2025
         }
         #endregion
 
+        #region 326. Power of Three
+        public bool IsPowerOfThree(int n)
+        {
+            if (n == 0) return false;
+
+            while (n >= 3 && n % 3 == 0)
+            {
+                n /= 3;
+            }
+            return n == 1;
+        }
+        #endregion
+
+
+        #region 397. Integer Replacement
+        public int IntegerReplacement(int n)
+        {
+            int result = 0;
+            if (n > 1)
+            {
+                result++;
+                if (n % 2 == 0)
+                {
+                    result += IntegerReplacement(n / 2);
+                }
+                else
+                {
+                    result += Math.Max(IntegerReplacement(n + 1), IntegerReplacement(n - 1));
+                }
+            }
+            return result;
+        }
+        #endregion
+
+        #region 808. Soup Servings
+        Dictionary<(int, int), double> map;
+        public double SoupServings(int n)
+        {
+            map = new Dictionary<(int, int), double>();
+
+            return SoupServings(n, n);
+        }
+
+        private double SoupServings(int a, int b)
+        {
+            if (a <= 0 && b <= 0) return 0.5;
+            if (a <= 0) return 1;
+            if (b <= 0) return 0;
+
+            if (map.ContainsKey((a, b))) return map[(a, b)];
+
+            map[(a, b)] = (SoupServings(a - 100, b) + SoupServings(a - 75, b - 25) + SoupServings(a - 50, b - 50) + SoupServings(a - 25, b - 75)) / 4.0;
+
+            return map[(a, b)];
+        }
+
+        public double SoupServings1(int n)
+        {
+            double[,] dp = new double[n + 1, n + 1];
+            for (int i = 0; i <= n; i++)
+            {
+                for (int j = 0; j <= n; j++)
+                {
+                    dp[i, j] = double.MinValue;
+                }
+            }
+
+            return SoupServings1(dp, n, n);
+        }
+        private double SoupServings1(double[,] dp, int a, int b)
+        {
+            if (a <= 0 && b <= 0) return 0.5;
+            if (a <= 0) return 1;
+            if (b <= 0) return 0;
+            if (dp[a, b] != double.MinValue) return dp[a, b];
+
+            dp[a, b] = (SoupServings1(dp, a - 100, b) + SoupServings1(dp, a - 75, b - 25) + SoupServings1(dp, a - 50, b - 50) + SoupServings1(dp, a - 25, b - 75)) / 4;
+            return dp[a, b];
+        }
+        #endregion
+
+        #region 869. Reordered Power of 2
+        public bool ReorderedPowerOf2(int n)
+        {
+            int[] target = countDigits(n);
+            int num = 1;
+            for (int i = 0; i < 31; i++)
+            {
+                if (equals(target, (countDigits(num)))) return true;
+                num = num << 1;
+            }
+            return false;
+        }
+
+        bool equals(int[] a, int[] b)
+        {
+            if (a.Length != b.Length) return false;
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] != b[i]) return false;
+            }
+            return true;
+        }
+
+        private int[] countDigits(int n)
+        {
+            int[] arr = new int[10];
+
+            while (n > 0)
+            {
+                arr[n % 10]++;
+                n /= 10;
+            }
+            return arr;
+        }
+        #endregion
+
         #region 904. Fruit Into Baskets
         public int TotalFruit(int[] fruits)
         {
@@ -307,6 +426,42 @@ namespace Amazon2025
         }
         #endregion
 
+        #region 2438. Range Product Queries of Powers
+        public int[] ProductQueries(int n, int[][] queries)
+        {
+            int[] powers = getPowers(n);
+            const int mod = 1000_000_007;
+
+            List<int> result = new List<int>();
+            foreach (var query in queries)
+            {
+                int x = 1;
+                for (int i = query[0]; i <= query[1]; i++)
+                {
+                    x = (x * powers[i]) % mod;
+                }
+                result.Add(x);
+            }
+            return result.ToArray();
+        }
+
+        private int[] getPowers(int n)
+        {
+            List<int> powers = new List<int>();
+
+            while (n > 0)
+            {
+                int x = n & (n * -1);
+                n -= x;
+                powers.Add(x);
+            }
+
+
+            return powers.ToArray();
+
+        }
+        #endregion
+
         #region 2561. Rearranging Fruits
         public long MinCost(int[] basket1, int[] basket2)
         {
@@ -417,6 +572,83 @@ namespace Amazon2025
 
             return result;
         }
+        #endregion
+
+        #region 2787. Ways to Express an Integer as Sum of Powers
+        const int MOD = 1000_000_007;
+        int result2787 = 0;
+        int[][] dp2787;
+
+        public int NumberOfWays(int n, int x)
+        {
+            int result = 0;
+            int[] powers = getPowers(n, x);
+            dp2787 = new int[n][];
+            for (int i = 0; i < n; i++)
+            {
+                dp2787[i] = Enumerable.Repeat(-1, n).ToArray();
+            }
+
+            NumberOfWays_Helper(powers, 0, n);
+            return dp2787[n-1][n-1];
+        }
+
+        private int NumberOfWays_Helper(int[] powers, int index, int currentSum)
+        {
+            if (index >= powers.Length || currentSum < 0) return 0;
+
+            if (dp2787[index][currentSum] != -1) return dp2787[index][currentSum];
+
+
+            for (int i = index; i < powers.Length; i++)
+            {
+                currentSum -= powers[i];
+                NumberOfWays_Helper(powers, i + 1, currentSum);
+                currentSum += powers[i];
+            }
+            return 0;
+        }
+        private int[] getPowers(int n, int x)
+        {
+            List<int> powers = new List<int>();
+            int sqr = 1;
+            int i = 2;
+            while (sqr <= n)
+            {
+                powers.Add(sqr);
+                sqr = (int)Math.Pow(i++, x);
+            }
+            return powers.ToArray();
+        }
+
+        public int NumberOfWays1(int n, int x)
+        {
+            int result = 0;
+            int[] powers = getPowers(n, x);
+            NumberOfWays_Helper(powers, 0, n);
+            return result2787;
+        }
+
+        private void NumberOfWays_Helper1(int[] powers, int index, int currentSum)
+        {
+            if (index >= powers.Length || currentSum < 0) return;
+
+            if (currentSum == 0)
+            {
+                result2787++;
+                result2787 %= MOD;
+                return;
+            }
+
+            for (int i = index; i < powers.Length; i++)
+            {
+                currentSum -= powers[i];
+                NumberOfWays_Helper1(powers, i + 1, currentSum);
+                currentSum += powers[i];
+            }
+        }
+
+
         #endregion
 
         #region 3363. Find the Maximum Number of Fruits Collected

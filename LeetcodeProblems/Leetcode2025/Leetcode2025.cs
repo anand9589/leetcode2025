@@ -3958,6 +3958,36 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2264. Largest 3-Same-Digit Number in String
+        public string LargestGoodInteger(string num)
+        {
+            string result = "";
+
+            int index = 0;
+
+            while (index <= num.Length - 3)
+            {
+                if (num[index] == num[index + 1])
+                {
+                    if (num[index] == num[index + 2])
+                    {
+                        if (result.Length == 0 || result[0] < num[index])
+                        {
+                            result = num.Substring(index,3);
+                        }
+
+                        index++;
+                    }
+                    index++;
+                }
+                index++;
+
+            }
+
+            return result;
+        }
+        #endregion
+
         #region 2270. Number of Ways to Split Array
         public int WaysToSplitArray(int[] nums)
         {
@@ -7639,6 +7669,7 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region UNKNOWN
         public bool CanMakeEqual(int[] nums, int k)
         {
             int c = 0;
@@ -7653,6 +7684,7 @@ namespace Leetcode2025
 
             return c <= k;
         }
+        #endregion
 
         #region 547. Number oF Provinces
         public int FindCircleNum(int[][] isConnected)
@@ -7923,7 +7955,6 @@ namespace Leetcode2025
             return true;
         }
         #endregion
-
 
         #region Weeklu 449
         #region Q1. Minimum Deletions for At Most K Distinct Characters

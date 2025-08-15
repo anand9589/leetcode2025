@@ -714,6 +714,41 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 342. Power of Four
+        public bool IsPowerOfFour(int n)
+        {
+            if (n <= 0) return false;
+
+            bool oneFound = false;
+            int one_pos = 0;
+            int pos = 1;
+
+            while (n >= 1)
+            {
+                if ((n & 1) == 1)
+                {
+                    if (oneFound) return false;
+                    oneFound = true;
+                    one_pos = pos;
+                }
+                pos++;
+                n = n >> 1;
+            }
+            return pos % 2 == 0;
+        }
+        public bool IsPowerOfFour1(int n)
+        {
+            if (n <= 0) return false;
+
+            while (n > 1 && n % 4 == 0)
+            {
+                n /= 4;
+            }
+
+            return n == 1;
+        }
+        #endregion
+
         #region 368. Largest Divisible Subset
         public IList<int> LargestDivisibleSubset(int[] nums)
         {
@@ -3973,7 +4008,7 @@ namespace Leetcode2025
                     {
                         if (result.Length == 0 || result[0] < num[index])
                         {
-                            result = num.Substring(index,3);
+                            result = num.Substring(index, 3);
                         }
 
                         index++;

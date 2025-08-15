@@ -28,6 +28,17 @@ namespace Leetcode2025.Tests
         {
         }
 
+
+
+        [TestMethod]
+        public void IsPowerOfFourTest()
+        {
+            Assert.IsFalse(leetcode.IsPowerOfFour(5));
+            Assert.IsFalse(leetcode.IsPowerOfFour(7));
+            Assert.IsFalse(leetcode.IsPowerOfFour(8));
+            Assert.IsTrue(leetcode.IsPowerOfFour(16));
+        }
+
         #region 73. Set Matrix Zeroes
         //[[0, 1, 2, 0],[3, 4, 5, 2],[1, 3, 1, 5]]
 

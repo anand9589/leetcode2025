@@ -2082,6 +2082,32 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1323. Maximum 69 Number
+        public int Maximum69Number(int num)
+        {
+            string s = num.ToString();
+
+            int index = -1;
+            int replaceIndex = -1;
+
+            while (++index < s.Length)
+            {
+                if (s[index]=='6')
+                {
+                    replaceIndex = index;
+                    break;  
+                }
+            }
+            if (replaceIndex == -1) return num;
+
+            string k = s.Substring(0, replaceIndex) + "9";
+
+            if(replaceIndex == s.Length-1) return int.Parse(k);
+
+            return int.Parse(k + s.Substring(replaceIndex+1));
+        }
+        #endregion
+
         #region 1358. Number of Substrings Containing All Three Characters
         public int NumberOfSubstrings(string s)
         {

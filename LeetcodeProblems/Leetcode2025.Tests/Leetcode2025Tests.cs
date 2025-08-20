@@ -26,9 +26,19 @@ namespace Leetcode2025.Tests
         [TestMethod]
         public void Test()
         {
+
         }
 
 
+
+        [TestMethod]
+        public void CountSquaresTest()
+        {
+            string s = "[[0, 1, 1, 1],[1, 1, 1, 1],[0, 1, 1, 1]]";
+            int[][] arr = Helper.GetMultiDimensionalArrayBasedOnString(s);
+            var k = leetcode.CountSquares(arr);
+            Assert.AreEqual(15, k);
+        }
 
         [TestMethod]
         public void IsPowerOfFourTest()

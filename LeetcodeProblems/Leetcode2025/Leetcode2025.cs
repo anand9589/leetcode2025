@@ -2067,6 +2067,28 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 1277. Count Square Submatrices with All Ones        
+        public int CountSquares(int[][] matrix)
+        {
+            int result = 0;
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                for (int j = 0; j < matrix[i].Length; j++)
+                {
+                    if (matrix[i][j] == 1 && i > 0 && j > 0)
+                    {
+
+                        int min = Math.Min(matrix[i - 1][j - 1], Math.Min(matrix[i - 1][j], matrix[i][j - 1]));
+                        matrix[i][j] = min + 1;
+                    }
+                    result += matrix[i][j];
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #region 1295. Find Numbers with Even Number of Digits
         public int FindNumbers(int[] nums)
         {
@@ -2092,19 +2114,19 @@ namespace Leetcode2025
 
             while (++index < s.Length)
             {
-                if (s[index]=='6')
+                if (s[index] == '6')
                 {
                     replaceIndex = index;
-                    break;  
+                    break;
                 }
             }
             if (replaceIndex == -1) return num;
 
             string k = s.Substring(0, replaceIndex) + "9";
 
-            if(replaceIndex == s.Length-1) return int.Parse(k);
+            if (replaceIndex == s.Length - 1) return int.Parse(k);
 
-            return int.Parse(k + s.Substring(replaceIndex+1));
+            return int.Parse(k + s.Substring(replaceIndex + 1));
         }
         #endregion
 

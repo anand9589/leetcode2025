@@ -1538,6 +1538,77 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 840. Magic Squares In Grid
+        public int NumMagicSquaresInside(int[][] grid)
+        {
+            int squareCount = 0;
+            int rows = grid.Length;
+            int cols = grid[0].Length;
+
+            if (rows >= 3 && cols >= 3)
+            {
+                for (int row = 0; row < rows - 2; row++)
+                {
+                    for (int col = 0; col < cols - 2; col++)
+                    {
+                        if (isMagicSquare(grid, row, col)) squareCount++;
+                    }
+                }
+            }
+
+            return squareCount;
+        }
+
+        private bool isMagicSquare(int[][] grid, int r, int c)
+        {
+            int row1 = 0, row2 = 0, row3 = 0, col1 = 0, col2 = 0, col3 = 0, dtl = 0, dbr = 0;
+            HashSet<int> keys = new HashSet<int>();
+            for (int i = 0; i < 3; i++)
+            {
+                int k = grid[r][c + i];
+                if (k > 9 || k < 1 || row1 + k > 15 || keys.Contains(k)) return false;
+                row1 += k;
+                keys.Add(k);
+
+                k = grid[r + 1][c + i];
+                if (k > 9 || k < 1 || row2 + k > 15 || keys.Contains(k)) return false;
+                row2 += k;
+                keys.Add(k);
+
+                k = grid[r + 2][c + i];
+                if (k > 9 || k < 1 || row3 + k > 15 || keys.Contains(k)) return false;
+                row3 += k;
+                keys.Add(k);
+
+                k = grid[r + i][c];
+                if (k > 9 || k < 1 || col1 + k > 15) return false;
+                col1 += k;
+
+                k = grid[r + i][c + 1];
+                if (k > 9 || k < 1 || col2 + k > 15) return false;
+                col2 += k;
+
+                k = grid[r + i][c + 2];
+                if (k > 9 || k < 1 || col3 + k > 15) return false;
+                col3 += k;
+
+                k = grid[r + i][c + i];
+                if (k > 9 || k < 1 || dtl + k > 15) return false;
+                dtl += k;
+
+                k = grid[r + 2 - i][c + i];
+                if (k > 9 || k < 1 || dbr + k > 15) return false;
+                dbr += k;
+            }
+
+            if (row1 != 15 || row2 != 15 || row3 != 15 || col1 != 15 || col2 != 15 || col3 != 15 || dtl != 15 || dbr != 15) return false;
+
+            return true;
+        }
+
+
+        #endregion
+
         #region 873. Length of Longest Fibonacci Subsequence
         public int LenLongestFibSubseq(int[] arr)
         {
@@ -2505,6 +2576,40 @@ namespace Leetcode2025
 
 
                     result.Add(map[query[1]].Contains(query[0]));
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region 1504. Count Submatrices With All Ones
+        public int NumSubmat(int[][] mat)
+        {
+            for (int i = 0; i < mat.Length; i++)
+            {
+                for (int j = mat[i].Length - 2; j >= 0; j--)
+                {
+                    if (mat[i][j] == 1) mat[i][j] = mat[i][j + 1] + 1;
+                }
+            }
+
+            int result = 0;
+
+            for (int i = 0; i < mat.Length; i++)
+            {
+                for (int j = 0; j < mat[i].Length; j++)
+                {
+                    int minWidth = mat[i][j];
+
+                    for (int k = i; k < mat.Length; k++)
+                    {
+                        if (mat[k][j] == 0) break;
+
+                        minWidth = Math.Min(minWidth, mat[k][j]);
+
+                        result += minWidth;
+                    }
                 }
             }
 
@@ -4172,6 +4277,132 @@ namespace Leetcode2025
         }
         #endregion
 
+        #region 2353. Design a Food Rating System
+
+        public class FoodRatings2
+        {
+            private readonly Dictionary<string, string> foodToCuisine = new();
+            private readonly Dictionary<string, int> foodToRating = new();
+            private readonly Dictionary<string, SortedSet<(string food, int rating)>> cuisineToFoods = new();
+
+            public FoodRatings2(string[] foods, string[] cuisines, int[] ratings)
+            {
+                for (int i = 0; i < foods.Length; i++)
+                {
+                    string food = foods[i];
+                    string cuisine = cuisines[i];
+                    int rating = ratings[i];
+
+                    foodToCuisine[food] = cuisine;
+                    foodToRating[food] = rating;
+
+                    if (!cuisineToFoods.ContainsKey(cuisine))
+                    {
+                        cuisineToFoods[cuisine] = new SortedSet<(string, int)>(
+                            Comparer<(string, int)>.Create((a, b) =>
+                            {
+                                int cmp = b.Item2.CompareTo(a.Item2); // rating desc
+                                if (cmp == 0)
+                                    cmp = string.Compare(a.Item1, b.Item1, StringComparison.Ordinal); // name asc
+                                return cmp;
+                            }));
+                    }
+
+                    cuisineToFoods[cuisine].Add((food, rating));
+                }
+            }
+
+            public void ChangeRating(string food, int newRating)
+            {
+                string cuisine = foodToCuisine[food];
+                int oldRating = foodToRating[food];
+
+                // Remove old entry
+                cuisineToFoods[cuisine].Remove((food, oldRating));
+
+                // Add new entry
+                cuisineToFoods[cuisine].Add((food, newRating));
+                foodToRating[food] = newRating;
+            }
+
+            public string HighestRated(string cuisine)
+            {
+                return cuisineToFoods[cuisine].Min.food; // Min because SortedSet uses our custom comparer
+            }
+        }
+        public class FoodRatings1
+        {
+            Dictionary<string, (int rating, string cuisine)> foodRatingMap;
+
+            Dictionary<string, PriorityQueue<(string f, int r), (string f, int r)>> cuisineRatingMap;
+
+            public FoodRatings1(string[] foods, string[] cuisines, int[] ratings)
+            {
+                foodRatingMap = new Dictionary<string, (int rating, string cuisine)>();
+                cuisineRatingMap = new Dictionary<string, PriorityQueue<(string f, int r), (string f, int r)>>();
+
+
+                for (int i = 0; i < foods.Length; i++)
+                {
+                    string cuisine = cuisines[i];
+                    string food = foods[i];
+                    int rating = ratings[i];
+
+                    foodRatingMap[food] = (rating, cuisine);
+                    if (!cuisineRatingMap.ContainsKey(cuisine))
+                    {
+                        cuisineRatingMap.Add(cuisine, new PriorityQueue<(string f, int r), (string f, int r)>(new FoodRatingsComparer1()));
+                    }
+                    cuisineRatingMap[cuisine].Enqueue((food, rating), (food, rating));
+                }
+            }
+
+            public void ChangeRating(string food, int newRating)
+            {
+                (int oldRating, string cuisine) = foodRatingMap[food];
+
+                foodRatingMap[food] = (newRating, cuisine);
+                var pq = cuisineRatingMap[cuisine];
+
+                List<(string f, int r)> lst = new List<(string f, int r)>();
+
+
+                while (true)
+                {
+                    var dq = pq.Dequeue();
+                    if (dq.f == food)
+                    {
+                        dq.r = newRating;
+                        pq.Enqueue(dq, dq);
+                        break;
+                    }
+                    lst.Add(dq);
+                }
+
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    pq.Enqueue(lst[i], lst[i]);
+                }
+            }
+
+            public string HighestRated(string cuisine)
+            {
+                return cuisineRatingMap[cuisine].Peek().f;
+            }
+        }
+
+        public class FoodRatingsComparer1 : IComparer<(string f, int r)>
+        {
+            public int Compare((string f, int r) x, (string f, int r) y)
+            {
+                if (x.r == y.r)
+                    return x.f.CompareTo(y.f);
+
+                return y.r - x.r;
+            }
+        }
+        #endregion
+
         #region 2364. Count Number of Bad Pairs
         public long CountBadPairs(int[] nums)
         {
@@ -4470,6 +4701,74 @@ namespace Leetcode2025
                         break;
                     }
                     bools[diff + i] = true;
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region 2402. Meeting Rooms III
+        public int MostBooked(int n, int[][] meetings)
+        {
+            int[] bookedCount = new int[n];
+            PriorityQueue<int, int> availableRooms = new PriorityQueue<int, int>();
+            PriorityQueue<(int room, long freetime), (long freetime, int room)> usedRooms = new PriorityQueue<(int room, long freetime), (long, int)>();
+
+            for (int i = 0; i < n; i++)
+            {
+                availableRooms.Enqueue(i, i);
+            }
+
+            Array.Sort(meetings, (a, b) =>
+            {
+                if (a[0] == b[0]) return a[1].CompareTo(b[1]);
+                return a[0].CompareTo(b[0]);
+            });
+            int room = -1;
+            long freetime = -1;
+            for (int i = 0; i < meetings.Length; i++)
+            {
+                int startTime = meetings[i][0];
+                long endTime = meetings[i][1];
+                while (usedRooms.Count > 0 && usedRooms.Peek().freetime <= startTime)
+                {
+                    (room, freetime) = usedRooms.Dequeue();
+                    availableRooms.Enqueue(room, room);
+                }
+
+                if (availableRooms.Count > 0)
+                {
+                    room = availableRooms.Dequeue();
+                    usedRooms.Enqueue((room, endTime), (endTime, room));
+                    bookedCount[room]++;
+                }
+                else
+                {
+                    (room, freetime) = usedRooms.Dequeue();
+                    //availableRooms.Enqueue(room, room);
+                    //while (usedRooms.Count > 0 && freetime == usedRooms.Peek().freetime)
+                    //{
+                    //    (room, freetime) = usedRooms.Dequeue();
+                    //    availableRooms.Enqueue(room, room);
+                    //}
+
+                    endTime = freetime + endTime - startTime;
+
+                    //room = availableRooms.Dequeue();
+                    //usedRooms.Enqueue((room, endTime), (endTime, room));
+                    usedRooms.Enqueue((room, endTime), (endTime, room));
+                    bookedCount[room]++;
+                }
+            }
+
+            int result = 0;
+
+            for (int i = 1; i < n; i++)
+            {
+                if (bookedCount[result] < bookedCount[i])
+                {
+                    result = i;
                 }
             }
 
@@ -6290,6 +6589,25 @@ namespace Leetcode2025
             }
 
             return counter;
+        }
+        #endregion
+
+        #region 3074. Apple Redistribution into Boxes
+        public int MinimumBoxes(int[] apple, int[] capacity)
+        {
+            Array.Sort(capacity, (a, b) => b.CompareTo(a));
+            int sum = apple.Sum();
+            int capacityIndex = 0;
+
+            foreach (var cap in capacity)
+            {
+                if (sum <= 0) return capacityIndex;
+                capacityIndex++;
+                sum -= cap;
+            }
+
+
+            return capacity.Length;
         }
         #endregion
 

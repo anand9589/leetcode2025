@@ -141,5 +141,15 @@
 
             return node;
         }
+
+        public static bool IsEqualTreeNode(this TreeNode left, TreeNode right)
+        {
+            if (left == null || right == null) return true;
+
+            if (left == null) return false;
+            if (right == null) return false;
+
+            return left.val == right.val && left.left.IsEqualTreeNode(right.left) && left.right.IsEqualTreeNode(right.right);
+        }
     }
 }
